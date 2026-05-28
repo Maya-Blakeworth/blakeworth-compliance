@@ -317,17 +317,43 @@ function formatDate(raw) {
   return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
-// ── Fetch data from Google Sheets API ──
+// ── Parse CSV text into array of arrays ──
+function parseCSV(text) {
+  const rows = [];
+  const lines = text.replace(/\r\n/g, "\n").replace(/\r/g, "\n").split("\n");
+  for (const line of lines) {
+    if (!line.trim()) continue;
+    const row = [];
+    let current = "";
+    let inQuotes = false;
+    for (let i = 0; i < line.length; i++) {
+      const ch = line[i];
+      if (ch === '"') {
+        if (inQuotes && line[i + 1] === '"') { current += '"'; i++; }
+        else { inQuotes = !inQuotes; }
+      } else if (ch === "," && !inQuotes) {
+        row.push(current); current = "";
+      } else {
+        current += ch;
+      }
+    }
+    row.push(current);
+    rows.push(row);
+  }
+  return rows;
+}
+
+// ── Fetch data from published CSV ──
 async function fetchData() {
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${CONFIG.SHEET_ID}/values/${CONFIG.SHEET_NAME}!A2:P200?key=${CONFIG.API_KEY}`;
   try {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`API error: ${res.status}`);
-    const json = await res.json();
-    return json.values || [];
+    const res = await fetch(CONFIG.CSV_URL);
+    if (!res.ok) throw new Error(`Fetch error: ${res.status}`);
+    const text = await res.text();
+    const rows = parseCSV(text);
+    return rows.slice(1); // skip header row
   } catch (err) {
     document.getElementById("table-body").innerHTML =
-      `<tr><td colspan="10" class="state-msg">⚠️ Could not load data. Check API key and Sheet ID in config.js.<br><small>${err.message}</small></td></tr>`;
+      `<tr><td colspan="10" class="state-msg">⚠️ Could not load data. Check that the sheet is published to web.<br><small>${err.message}</small></td></tr>`;
     return [];
   }
 }

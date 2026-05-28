@@ -1,21 +1,14 @@
 // ============================================================
-// BLAKEWORTH COMPLIANCE DASHBOARD — API CONFIGURATION
+// BLAKEWORTH COMPLIANCE DASHBOARD — DATA CONFIGURATION
 // ============================================================
-// SECURITY: This file lives in a PRIVATE GitHub repo only.
-// Never paste this key into chat, email, or any public file.
-// API key is restricted to: Read-only, Sheets API,
-// HTTP referrer: https://maya-blakeworth.github.io/*
+// No API key needed — uses Google Sheets publish-to-web CSV.
+// To update the URL: open the Google Sheet → File → Share →
+// Publish to web → MASTER tab → CSV → Publish → copy URL here.
 // ============================================================
 
 const CONFIG = {
-  // Replace with your Google Sheets API key (see Phase 1.10 setup)
-  API_KEY: "YOUR_API_KEY_HERE",
-
-  // The ID from the Blakeworth_Compliance_Template sheet URL
-  SHEET_ID: "15Bzb9VQ4RsBvGZxZUzTpBWPyhi8uXf9Kfp-lln0_rKM",
-
-  // Which tab to read (MASTER tab)
-  SHEET_NAME: "MASTER",
+  // Google Sheets publish-to-web CSV URL (MASTER tab)
+  CSV_URL: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSdz7JEUMdAGe2DESTUQfwzn3Tjg6TXFYaKDiPQMOgWneClgq3spBZGaQRBXHB6i1iK2_gK1MNldOky/pub?gid=1672074676&single=true&output=csv",
 
   // How often the dashboard auto-refreshes (milliseconds)
   // 300000 = 5 minutes
