@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blakeworth Compliance Dashboard</title>
+  <style>
+    /* ── Reset & base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f0f2f5;
+      color: #1a1a2e;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      background: #1a1a2e;
+      color: white;
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    header h1 {
+      font-size: 1.4rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    header .subtitle {
+      font-size: 0.8rem;
+      opacity: 0.6;
+      margin-top: 2px;
+    }
+
+    #last-updated {
+      font-size: 0.75rem;
+      opacity: 0.5;
+    }
+
+    /* ── Summary tiles ── */
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+      padding: 24px 32px 0;
+    }
+
+    .tile {
+      background: white;
+      border-radius: 10px;
+      padding: 18px 20px;
+      text-align: center;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      border-top: 4px solid transparent;
+    }
+
+    .tile.overdue   { border-top-color: #e53e3e; }
+    .tile.due-soon  { border-top-color: #f6ad55; }
+    .tile.upcoming  { border-top-color: #4299e1; }
+    .tile.current   { border-top-color: #48bb78; }
+    .tile.pending   { border-top-color: #a0aec0; }
+
+    .tile .count {
+      font-size: 2.4rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .tile.overdue  .count { color: #e53e3e; }
+    .tile.due-soon .count { color: #dd6b20; }
+    .tile.upcoming .count { color: #3182ce; }
+    .tile.current  .count { color: #2f855a; }
+    .tile.pending  .count { color: #718096; }
+
+    .tile .label {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #718096;
+      margin-top: 6px;
+    }
+
+    /* ── Filter bar ── */
+    .controls {
+      display: flex;
+      gap: 12px;
+      padding: 20px 32px 0;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .controls select, .controls input {
+      padding: 8px 12px;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      background: white;
+      color: #1a1a2e;
+      cursor: pointer;
+    }
+
+    .controls input { width: 220px; }
+
+    /* ── Table ── */
+    .table-wrap {
+      margin: 16px 32px 32px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+
+    thead th {
+      background: #1a1a2e;
+      color: white;
+      padding: 12px 14px;
+      text-align: left;
+      font-weight: 500;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+    }
+
+    tbody tr { border-bottom: 1px solid #f0f2f5; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: #f7fafc; }
+
+    td { padding: 11px 14px; vertical-align: middle; }
+
+    /* ── Status badges ── */
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 0.73rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      white-space: nowrap;
+    }
+
+    .badge-overdue  { background: #fff5f5; color: #c53030; border: 1px solid #feb2b2; }
+    .badge-due-soon { background: #fffaf0; color: #c05621; border: 1px solid #fbd38d; }
+    .badge-upcoming { background: #ebf8ff; color: #2b6cb0; border: 1px solid #bee3f8; }
+    .badge-current  { background: #f0fff4; color: #276749; border: 1px solid #9ae6b4; }
+    .badge-pending  { background: #f7fafc; color: #4a5568; border: 1px solid #e2e8f0; }
+
+    /* ── Portfolio tags ── */
+    .port {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+    .port-jhu { background: #ebf8ff; color: #2b6cb0; }
+    .port-slp { background: #f0fff4; color: #276749; }
+    .port-dc  { background: #faf5ff; color: #6b46c1; }
+
+    /* ── Empty / loading states ── */
+    .state-msg {
+      text-align: center;
+      padding: 48px;
+      color: #a0aec0;
+      font-size: 0.9rem;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 700px) {
+      header, .summary, .controls, .table-wrap { padding-left: 16px; padding-right: 16px; }
+      .table-wrap { margin-left: 16px; margin-right: 16px; }
+      header h1 { font-size: 1.1rem; }
+      td, th { padding: 9px 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Header ── -->
+<header>
+  <div>
+    <h1>Blakeworth Compliance Dashboard</h1>
+    <div class="subtitle">JHU · SLP · DC — All portfolios</div>
+  </div>
+  <div id="last-updated">Loading…</div>
+</header>
+
+<!-- ── Summary tiles ── -->
+<div class="summary">
+  <div class="tile overdue">
+    <div class="count" id="count-overdue">—</div>
+    <div class="label">Overdue</div>
+  </div>
+  <div class="tile due-soon">
+    <div class="count" id="count-due-soon">—</div>
+    <div class="label">Due Soon</div>
+  </div>
+  <div class="tile upcoming">
+    <div class="count" id="count-upcoming">—</div>
+    <div class="label">Upcoming</div>
+  </div>
+  <div class="tile current">
+    <div class="count" id="count-current">—</div>
+    <div class="label">Current</div>
+  </div>
+  <div class="tile pending">
+    <div class="count" id="count-pending">—</div>
+    <div class="label">Pending</div>
+  </div>
+</div>
+
+<!-- ── Filters ── -->
+<div class="controls">
+  <select id="filter-portfolio">
+    <option value="">All Portfolios</option>
+    <option value="JHU">JHU</option>
+    <option value="SLP">SLP</option>
+    <option value="DC">DC</option>
+  </select>
+  <select id="filter-status">
+    <option value="">All Statuses</option>
+    <option value="Overdue">Overdue</option>
+    <option value="Due Soon">Due Soon</option>
+    <option value="Upcoming">Upcoming</option>
+    <option value="Current">Current</option>
+    <option value="Pending">Pending</option>
+  </select>
+  <select id="filter-category">
+    <option value="">All Categories</option>
+    <option value="LLC Filing">LLC Filing</option>
+    <option value="Property Tax">Property Tax</option>
+    <option value="Loan">Loan</option>
+    <option value="Insurance">Insurance</option>
+    <option value="Rental License">Rental License</option>
+    <option value="Inspection">Inspection</option>
+    <option value="Lead Paint">Lead Paint</option>
+  </select>
+  <input type="text" id="filter-search" placeholder="Search address or LLC…" />
+</div>
+
+<!-- ── Table ── -->
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Row ID</th>
+        <th>Portfolio</th>
+        <th>Property Address</th>
+        <th>LLC Entity</th>
+        <th>Category</th>
+        <th>Due Date</th>
+        <th>Days Until Due</th>
+        <th>Status</th>
+        <th>Responsible</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody id="table-body">
+      <tr><td colspan="10" class="state-msg">Loading compliance data…</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ── Scripts ── -->
+<script src="config.js"></script>
+<script>
+// ── Column index map (0-based, matching MASTER tab columns A–P) ──
+const COL = {
+  ROW_ID:       0,   // A
+  PORTFOLIO:    1,   // B
+  ADDRESS:      2,   // C
+  UNIT:         3,   // D
+  LLC:          4,   // E
+  CATEGORY:     5,   // F
+  DUE_DATE:     6,   // G
+  DAYS_UNTIL:   7,   // H
+  STATUS:       8,   // I
+  RESPONSIBLE:  10,  // K
+  NOTES:        15,  // P
+};
+
+// ── Status → badge class ──
+function badgeClass(status) {
+  const map = {
+    "Overdue":  "badge-overdue",
+    "Due Soon": "badge-due-soon",
+    "Upcoming": "badge-upcoming",
+    "Current":  "badge-current",
+    "Pending":  "badge-pending",
+  };
+  return map[status] || "badge-pending";
+}
+
+// ── Portfolio → tag class ──
+function portClass(portfolio) {
+  const map = { JHU: "port-jhu", SLP: "port-slp", DC: "port-dc" };
+  return map[portfolio] || "";
+}
+
+// ── Format date ──
+function formatDate(raw) {
+  if (!raw) return "—";
+  const d = new Date(raw);
+  if (isNaN(d)) return raw;
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+}
+
+// ── Fetch data from Google Sheets API ──
+async function fetchData() {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${CONFIG.SHEET_ID}/values/${CONFIG.SHEET_NAME}!A2:P200?key=${CONFIG.API_KEY}`;
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`API error: ${res.status}`);
+    const json = await res.json();
+    return json.values || [];
+  } catch (err) {
+    document.getElementById("table-body").innerHTML =
+      `<tr><td colspan="10" class="state-msg">⚠️ Could not load data. Check API key and Sheet ID in config.js.<br><small>${err.message}</small></td></tr>`;
+    return [];
+  }
+}
+
+// ── Render table ──
+let allRows = [];
+
+function render() {
+  const filterPort   = document.getElementById("filter-portfolio").value;
+  const filterStatus = document.getElementById("filter-status").value;
+  const filterCat    = document.getElementById("filter-category").value;
+  const filterSearch = document.getElementById("filter-search").value.toLowerCase();
+
+  const filtered = allRows.filter(row => {
+    const portfolio = (row[COL.PORTFOLIO] || "").trim();
+    const status    = (row[COL.STATUS]    || "").trim();
+    const category  = (row[COL.CATEGORY]  || "").trim();
+    const address   = (row[COL.ADDRESS]   || "").toLowerCase();
+    const llc       = (row[COL.LLC]       || "").toLowerCase();
+
+    if (filterPort   && portfolio !== filterPort)   return false;
+    if (filterStatus && status    !== filterStatus)  return false;
+    if (filterCat    && category  !== filterCat)     return false;
+    if (filterSearch && !address.includes(filterSearch) && !llc.includes(filterSearch)) return false;
+    return true;
+  });
+
+  // Update tiles
+  const counts = { Overdue: 0, "Due Soon": 0, Upcoming: 0, Current: 0, Pending: 0 };
+  allRows.forEach(row => {
+    const s = (row[COL.STATUS] || "").trim();
+    if (s in counts) counts[s]++;
+  });
+  document.getElementById("count-overdue").textContent  = counts["Overdue"];
+  document.getElementById("count-due-soon").textContent = counts["Due Soon"];
+  document.getElementById("count-upcoming").textContent = counts["Upcoming"];
+  document.getElementById("count-current").textContent  = counts["Current"];
+  document.getElementById("count-pending").textContent  = counts["Pending"];
+
+  // Render rows — overdue first, then due soon, then rest
+  const priority = { "Overdue": 0, "Due Soon": 1, "Upcoming": 2, "Current": 3, "Pending": 4 };
+  filtered.sort((a, b) => {
+    const sa = priority[(a[COL.STATUS] || "").trim()] ?? 5;
+    const sb = priority[(b[COL.STATUS] || "").trim()] ?? 5;
+    return sa - sb;
+  });
+
+  if (filtered.length === 0) {
+    document.getElementById("table-body").innerHTML =
+      `<tr><td colspan="10" class="state-msg">No items match the current filters.</td></tr>`;
+    return;
+  }
+
+  document.getElementById("table-body").innerHTML = filtered.map(row => {
+    const status    = (row[COL.STATUS]    || "Pending").trim();
+    const portfolio = (row[COL.PORTFOLIO] || "").trim();
+    const daysRaw   = row[COL.DAYS_UNTIL];
+    const days      = daysRaw === "—" || daysRaw === "" ? "—" : Number(daysRaw);
+    const daysDisplay = typeof days === "number"
+      ? (days < 0 ? `<span style="color:#e53e3e;font-weight:700">${days}d</span>`
+         : days <= 30 ? `<span style="color:#dd6b20;font-weight:600">${days}d</span>`
+         : `${days}d`)
+      : "—";
+
+    return `<tr>
+      <td style="font-family:monospace;font-size:0.75rem;color:#718096">${row[COL.ROW_ID] || ""}</td>
+      <td><span class="port ${portClass(portfolio)}">${portfolio}</span></td>
+      <td>${row[COL.ADDRESS] || ""}${row[COL.UNIT] ? ` <small style="color:#a0aec0">Unit ${row[COL.UNIT]}</small>` : ""}</td>
+      <td style="font-size:0.8rem;color:#4a5568">${row[COL.LLC] || "—"}</td>
+      <td>${row[COL.CATEGORY] || "—"}</td>
+      <td style="white-space:nowrap">${formatDate(row[COL.DUE_DATE])}</td>
+      <td style="text-align:center">${daysDisplay}</td>
+      <td><span class="badge ${badgeClass(status)}">${status}</span></td>
+      <td style="font-size:0.8rem">${row[COL.RESPONSIBLE] || "—"}</td>
+      <td style="font-size:0.75rem;color:#718096;max-width:260px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${(row[COL.NOTES] || "").replace(/"/g,"&quot;")}">${row[COL.NOTES] || ""}</td>
+    </tr>`;
+  }).join("");
+}
+
+// ── Init ──
+async function init() {
+  allRows = await fetchData();
+  render();
+  document.getElementById("last-updated").textContent =
+    "Last updated: " + new Date().toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
+
+  // Auto-refresh
+  setInterval(async () => {
+    allRows = await fetchData();
+    render();
+    document.getElementById("last-updated").textContent =
+      "Last updated: " + new Date().toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
+  }, CONFIG.REFRESH_INTERVAL);
+}
+
+// ── Filter listeners ──
+["filter-portfolio","filter-status","filter-category","filter-search"]
+  .forEach(id => document.getElementById(id).addEventListener("input", render));
+
+// ── Go ──
+init();
+</script>
+</body>
+</html>

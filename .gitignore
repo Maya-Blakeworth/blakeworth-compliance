@@ -1,0 +1,29 @@
+# ============================================================
+# Blakeworth Compliance Dashboard — .gitignore
+# ============================================================
+
+# Environment / secrets (belt + suspenders)
+.env
+.env.*
+*.env
+secrets.js
+private.js
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Node (if ever used)
+node_modules/
+npm-debug.log
+
+# NOTE: config.js IS committed to this private repo intentionally.
+# It contains an API key restricted by HTTP referrer.
+# The repo must remain PRIVATE at all times.
