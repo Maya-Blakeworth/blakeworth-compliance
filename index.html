@@ -5,17 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Blakeworth Compliance Dashboard</title>
   <style>
-    /* ── Reset & base ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background: #f0f4f1;
       color: #1b4332;
       min-height: 100vh;
     }
-
-    /* ── Header ── */
     header {
       background: #1b4332;
       color: white;
@@ -24,32 +20,15 @@
       align-items: center;
       justify-content: space-between;
     }
-
-    header h1 {
-      font-size: 1.4rem;
-      font-weight: 600;
-      letter-spacing: 0.02em;
-    }
-
-    header .subtitle {
-      font-size: 0.8rem;
-      opacity: 0.6;
-      margin-top: 2px;
-    }
-
-    #last-updated {
-      font-size: 0.75rem;
-      opacity: 0.5;
-    }
-
-    /* ── Summary tiles ── */
+    header h1 { font-size: 1.4rem; font-weight: 600; letter-spacing: 0.02em; }
+    header .subtitle { font-size: 0.8rem; opacity: 0.6; margin-top: 2px; }
+    #last-updated { font-size: 0.75rem; opacity: 0.5; }
     .summary {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
       gap: 16px;
       padding: 24px 32px 0;
     }
-
     .tile {
       background: white;
       border-radius: 10px;
@@ -58,25 +37,19 @@
       box-shadow: 0 1px 4px rgba(0,0,0,0.08);
       border-top: 4px solid transparent;
     }
-
     .tile.overdue   { border-top-color: #e53e3e; }
     .tile.due-soon  { border-top-color: #f6ad55; }
     .tile.upcoming  { border-top-color: #4299e1; }
     .tile.current   { border-top-color: #48bb78; }
     .tile.pending   { border-top-color: #a0aec0; }
-
-    .tile .count {
-      font-size: 2.4rem;
-      font-weight: 700;
-      line-height: 1;
-    }
-
+    .tile.critical  { border-top-color: #1a202c; background: #fff5f5; }
+    .tile .count { font-size: 2.4rem; font-weight: 700; line-height: 1; }
     .tile.overdue  .count { color: #e53e3e; }
     .tile.due-soon .count { color: #dd6b20; }
     .tile.upcoming .count { color: #3182ce; }
     .tile.current  .count { color: #2f855a; }
     .tile.pending  .count { color: #718096; }
-
+    .tile.critical .count { color: #c53030; }
     .tile .label {
       font-size: 0.78rem;
       text-transform: uppercase;
@@ -84,18 +57,64 @@
       color: #718096;
       margin-top: 6px;
     }
-
-    /* ── Filter bar ── */
-    .controls {
+    .alert-banner {
+      margin: 16px 32px 0;
+      background: #fff5f5;
+      border: 1px solid #fc8181;
+      border-left: 4px solid #e53e3e;
+      border-radius: 8px;
+      padding: 14px 18px;
+    }
+    .alert-banner.hidden { display: none; }
+    .alert-header { font-weight: 700; color: #c53030; font-size: 0.88rem; margin-bottom: 8px; }
+    .alert-item {
+      font-size: 0.82rem;
+      color: #742a2a;
+      padding: 3px 0;
       display: flex;
-      gap: 12px;
+      align-items: center;
+      gap: 8px;
+    }
+    .alert-item a {
+      color: #c53030;
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 0.78rem;
+      border: 1px solid #fc8181;
+      padding: 1px 8px;
+      border-radius: 10px;
+    }
+    .alert-item a:hover { background: #e53e3e; color: white; }
+    .cat-tabs {
+      display: flex;
+      gap: 8px;
       padding: 20px 32px 0;
       flex-wrap: wrap;
       align-items: center;
     }
-
+    .cat-tab {
+      padding: 6px 18px;
+      border: 1px solid #e2e8f0;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      background: white;
+      color: #4a5568;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .cat-tab:hover { background: #ebf4ee; border-color: #1b4332; color: #1b4332; }
+    .cat-tab.active { background: #1b4332; color: white; border-color: #1b4332; font-weight: 600; }
+    .controls {
+      display: flex;
+      gap: 12px;
+      padding: 12px 32px 0;
+      flex-wrap: wrap;
+      align-items: center;
+    }
     .controls select, .controls input {
-      padding: 8px 12px;
+      padding: 7px 12px;
       border: 1px solid #e2e8f0;
       border-radius: 6px;
       font-size: 0.85rem;
@@ -103,10 +122,7 @@
       color: #1a1a2e;
       cursor: pointer;
     }
-
     .controls input { width: 220px; }
-
-    /* ── Table ── */
     .table-wrap {
       margin: 16px 32px 32px;
       background: white;
@@ -114,49 +130,89 @@
       box-shadow: 0 1px 4px rgba(0,0,0,0.08);
       overflow: hidden;
     }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.85rem;
-    }
-
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
     thead th {
       background: #1b4332;
       color: white;
       padding: 12px 14px;
       text-align: left;
       font-weight: 500;
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       text-transform: uppercase;
       letter-spacing: 0.05em;
       white-space: nowrap;
     }
-
     tbody tr { border-bottom: 1px solid #f0f2f5; }
     tbody tr:last-child { border-bottom: none; }
     tbody tr:hover { background: #f7fafc; }
-
     td { padding: 11px 14px; vertical-align: middle; }
+    tbody tr.row-forfeited { background: #fff5f5; }
+    tbody tr.row-forfeited:hover { background: #fff0f0; }
+    tbody tr.row-not-good { background: #fffaf0; }
+    tbody tr.row-not-good:hover { background: #fff7e6; }
 
-    /* ── Status badges ── */
+    /* Time-based status badges */
     .badge {
       display: inline-block;
       padding: 3px 10px;
       border-radius: 20px;
-      font-size: 0.73rem;
+      font-size: 0.72rem;
       font-weight: 600;
       letter-spacing: 0.03em;
       white-space: nowrap;
     }
-
     .badge-overdue  { background: #fff5f5; color: #c53030; border: 1px solid #feb2b2; }
     .badge-due-soon { background: #fffaf0; color: #c05621; border: 1px solid #fbd38d; }
     .badge-upcoming { background: #ebf8ff; color: #2b6cb0; border: 1px solid #bee3f8; }
     .badge-current  { background: #f0fff4; color: #276749; border: 1px solid #9ae6b4; }
     .badge-pending  { background: #f7fafc; color: #4a5568; border: 1px solid #e2e8f0; }
 
-    /* ── Portfolio tags ── */
+    /* Compliance badges — same pill style */
+    .comp-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      white-space: nowrap;
+    }
+    .comp-forfeited   { background: #1a202c; color: #fff; }
+    .comp-not-good    { background: #fff5f5; color: #c53030; border: 1px solid #feb2b2; }
+    .comp-payment-due { background: #fffaf0; color: #c05621; border: 1px solid #fbd38d; }
+    .comp-good        { background: #f0fff4; color: #276749; border: 1px solid #9ae6b4; }
+    .comp-extension   { background: #ebf8ff; color: #2b6cb0; border: 1px solid #bee3f8; }
+    .comp-not-started { background: #f7fafc; color: #4a5568; border: 1px solid #e2e8f0; }
+    .comp-unknown     { background: #f7fafc; color: #a0aec0; border: 1px solid #e2e8f0; }
+
+    .action-link {
+      display: inline-block;
+      padding: 3px 10px;
+      background: white;
+      border: 1px solid #1b4332;
+      border-radius: 5px;
+      color: #1b4332;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: all 0.15s;
+    }
+    .action-link:hover { background: #1b4332; color: white; }
+    .notes-cell { max-width: 40px; text-align: center; }
+    .notes-icon {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      background: #e2e8f0;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 20px;
+      font-size: 0.72rem;
+      color: #718096;
+      cursor: help;
+    }
+    .notes-icon:hover { background: #1b4332; color: white; }
     .port {
       display: inline-block;
       padding: 2px 8px;
@@ -168,27 +224,18 @@
     .port-jhu { background: #ebf8ff; color: #2b6cb0; }
     .port-slp { background: #f0fff4; color: #276749; }
     .port-dc  { background: #faf5ff; color: #6b46c1; }
-
-    /* ── Empty / loading states ── */
-    .state-msg {
-      text-align: center;
-      padding: 48px;
-      color: #a0aec0;
-      font-size: 0.9rem;
-    }
-
-    /* ── Responsive ── */
+    .state-msg { text-align: center; padding: 48px; color: #a0aec0; font-size: 0.9rem; }
     @media (max-width: 700px) {
-      header, .summary, .controls, .table-wrap { padding-left: 16px; padding-right: 16px; }
+      header, .summary, .cat-tabs, .controls, .table-wrap { padding-left: 16px; padding-right: 16px; }
       .table-wrap { margin-left: 16px; margin-right: 16px; }
       header h1 { font-size: 1.1rem; }
       td, th { padding: 9px 10px; }
+      .alert-banner { margin-left: 16px; margin-right: 16px; }
     }
   </style>
 </head>
 <body>
 
-<!-- ── Header ── -->
 <header>
   <div>
     <h1>Blakeworth Compliance Dashboard</h1>
@@ -197,8 +244,11 @@
   <div id="last-updated">Loading…</div>
 </header>
 
-<!-- ── Summary tiles ── -->
 <div class="summary">
+  <div class="tile critical">
+    <div class="count" id="count-critical">—</div>
+    <div class="label">⚠ Action Needed</div>
+  </div>
   <div class="tile overdue">
     <div class="count" id="count-overdue">—</div>
     <div class="label">Overdue</div>
@@ -206,10 +256,6 @@
   <div class="tile due-soon">
     <div class="count" id="count-due-soon">—</div>
     <div class="label">Due Soon</div>
-  </div>
-  <div class="tile upcoming">
-    <div class="count" id="count-upcoming">—</div>
-    <div class="label">Upcoming</div>
   </div>
   <div class="tile current">
     <div class="count" id="count-current">—</div>
@@ -221,7 +267,21 @@
   </div>
 </div>
 
-<!-- ── Filters ── -->
+<div class="alert-banner hidden" id="alert-banner">
+  <div class="alert-header">⚠️ Immediate Action Required</div>
+  <div id="alert-items"></div>
+</div>
+
+<div class="cat-tabs">
+  <button class="cat-tab active" data-cat="">All Items</button>
+  <button class="cat-tab" data-cat="LLC Filing">LLC Filings</button>
+  <button class="cat-tab" data-cat="Property Tax">Property Tax</button>
+  <button class="cat-tab" data-cat="Rental License">Rental Licenses</button>
+  <button class="cat-tab" data-cat="Inspection">Inspections</button>
+  <button class="cat-tab" data-cat="Insurance">Insurance</button>
+  <button class="cat-tab" data-cat="Lead Paint">Lead Paint</button>
+</div>
+
 <div class="controls">
   <select id="filter-portfolio">
     <option value="">All Portfolios</option>
@@ -237,134 +297,159 @@
     <option value="Current">Current</option>
     <option value="Pending">Pending</option>
   </select>
-  <select id="filter-category">
-    <option value="">All Categories</option>
-    <option value="LLC Filing">LLC Filing</option>
-    <option value="Property Tax">Property Tax</option>
-    <option value="Loan">Loan</option>
-    <option value="Insurance">Insurance</option>
-    <option value="Rental License">Rental License</option>
-    <option value="Inspection">Inspection</option>
-    <option value="Lead Paint">Lead Paint</option>
-  </select>
   <input type="text" id="filter-search" placeholder="Search address or LLC…" />
 </div>
 
-<!-- ── Table ── -->
 <div class="table-wrap">
   <table>
     <thead>
       <tr>
-        <th>Row ID</th>
         <th>Portfolio</th>
-        <th>Property Address</th>
-        <th>LLC Entity</th>
+        <th>Entity / Address</th>
         <th>Category</th>
         <th>Due Date</th>
-        <th>Days Until Due</th>
-        <th>Status</th>
-        <th>Responsible</th>
-        <th>Notes</th>
+        <th>Days</th>
+        <th>Compliance Status</th>
+        <th>Filing Status</th>
+        <th>Action</th>
+        <th title="Notes">ℹ</th>
       </tr>
     </thead>
     <tbody id="table-body">
-      <tr><td colspan="10" class="state-msg">Loading compliance data…</td></tr>
+      <tr><td colspan="9" class="state-msg">Loading compliance data…</td></tr>
     </tbody>
   </table>
 </div>
 
-<!-- ── Scripts ── -->
 <script src="config.js"></script>
 <script>
-// ── Column index map (0-based, matching MASTER tab columns A–P) ──
+
 const COL = {
-  ROW_ID:       0,   // A
-  PORTFOLIO:    1,   // B
-  ADDRESS:      2,   // C
-  UNIT:         3,   // D
-  LLC:          4,   // E
-  CATEGORY:     5,   // F
-  DUE_DATE:     6,   // G
-  DAYS_UNTIL:   7,   // H
-  STATUS:       8,   // I
-  RESPONSIBLE:  10,  // K
-  NOTES:        15,  // P
+  ROW_ID:          0,  // A
+  PORTFOLIO:       1,  // B
+  ADDRESS:         2,  // C
+  UNIT:            3,  // D
+  LLC:             4,  // E
+  CATEGORY:        5,  // F
+  DUE_DATE:        6,  // G
+  DAYS_UNTIL:      7,  // H
+  STATUS:          8,  // I — time-based (Overdue/Current/etc)
+  STATUS_OVERRIDE: 9,  // J — compliance override (Forfeited / Not in Good Standing / etc)
+  RESPONSIBLE:     10, // K
+  NOTES:           15, // P
 };
 
-// ── Status → badge class ──
-function badgeClass(status) {
-  const map = {
-    "Overdue":  "badge-overdue",
-    "Due Soon": "badge-due-soon",
-    "Upcoming": "badge-upcoming",
-    "Current":  "badge-current",
-    "Pending":  "badge-pending",
-  };
-  return map[status] || "badge-pending";
+const JHU_DEPT_IDS = {
+  "Guilford GP, LLC":         "W23302540",
+  "Woodrow Apartments, LLC":  "W25002825",
+  "Calvert St, LLC":          "W22838031",
+  "3119 N Calvert, LLC":      "W25002841",
+  "University Pkwy, LLC":     "W24982449",
+  "Woodrow GP, LLC":          "W25003013",
+  "University GP, LLC":       "W24982431",
+  "Guilford Apartments, LLC": "W23150261",
+  "3106 N Calvert, LLC":      "W23764772",
+  "Soteira Partners LLC":     "W24687469",
+  "Abell St, LLC":            "W22347819",
+  "Saint Paul St, LLC":       "W22812804",
+  "3000 N Calvert St, LLC":   "W23712821"
+};
+
+// Parse compliance — checks Status Override (col J) first, then falls back to Notes text
+function parseCompliance(notes, category, statusOverride) {
+  if (category !== "LLC Filing") return null;
+
+  const ov = (statusOverride || "").trim();
+  if (ov === "Forfeited")
+    return { label: "Forfeited", cls: "comp-forfeited", critical: true };
+  if (ov === "Not in Good Standing")
+    return { label: "Not in Good Standing", cls: "comp-not-good", critical: true };
+  if (ov === "Ready for Payment")
+    return { label: "Payment Due", cls: "comp-payment-due", critical: true };
+
+  const n = (notes || "").toUpperCase();
+  if (n.includes("FORFEITED") || n.includes("REINSTATEMENT"))
+    return { label: "Forfeited", cls: "comp-forfeited", critical: true };
+  if (n.includes("NOT IN GOOD STANDING"))
+    return { label: "Not in Good Standing", cls: "comp-not-good", critical: true };
+  if (n.includes("READY FOR PAYMENT"))
+    return { label: "Payment Due", cls: "comp-payment-due", critical: true };
+  if (n.includes("EXTENSION"))
+    return { label: "Extension Filed", cls: "comp-extension", critical: false };
+  if (n.includes("IN GOOD STANDING") || n.includes("SUBMITTED") || n.includes("FILED"))
+    return { label: "In Good Standing", cls: "comp-good", critical: false };
+  if (n.includes("NOT STARTED"))
+    return { label: "Not Filed", cls: "comp-not-started", critical: false };
+  return null;
 }
 
-// ── Portfolio → tag class ──
-function portClass(portfolio) {
-  const map = { JHU: "port-jhu", SLP: "port-slp", DC: "port-dc" };
-  return map[portfolio] || "";
+function actionLink(row) {
+  const cat = (row[COL.CATEGORY] || "").trim();
+  const llc = (row[COL.LLC] || "").trim();
+  if (cat === "LLC Filing") {
+    const id = JHU_DEPT_IDS[llc];
+    const url = id
+      ? `https://egov.maryland.gov/businessexpress/entitysearch/search?searchType=1&searchValue=${id}`
+      : `https://egov.maryland.gov/businessexpress/`;
+    return `<a href="${url}" target="_blank" class="action-link">SDAT →</a>`;
+  }
+  if (cat === "Property Tax")
+    return `<a href="https://sdat.dat.maryland.gov/RealProperty/" target="_blank" class="action-link">View →</a>`;
+  if (cat === "Rental License")
+    return `<a href="https://dhcd.baltimorecity.gov/" target="_blank" class="action-link">View →</a>`;
+  return `<span style="color:#a0aec0;font-size:0.78rem;">—</span>`;
 }
 
-// ── Format date ──
+function badgeClass(s) {
+  return { "Overdue": "badge-overdue", "Due Soon": "badge-due-soon",
+           "Upcoming": "badge-upcoming", "Current": "badge-current",
+           "Pending": "badge-pending" }[s] || "badge-pending";
+}
+
+function portClass(p) {
+  return { JHU: "port-jhu", SLP: "port-slp", DC: "port-dc" }[p] || "";
+}
+
 function formatDate(raw) {
   if (!raw) return "—";
   const d = new Date(raw);
-  if (isNaN(d)) return raw;
-  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+  return isNaN(d) ? raw : d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
-// ── Parse CSV text into array of arrays ──
+function truncNotes(notes) {
+  if (!notes) return "";
+  const s = notes.trim();
+  return s.length > 120 ? s.slice(0, 117) + "…" : s;
+}
+
 function parseCSV(text) {
   const rows = [];
   const lines = text.replace(/\r\n/g, "\n").replace(/\r/g, "\n").split("\n");
   for (const line of lines) {
     if (!line.trim()) continue;
     const row = [];
-    let current = "";
-    let inQuotes = false;
+    let cur = "", inQ = false;
     for (let i = 0; i < line.length; i++) {
       const ch = line[i];
       if (ch === '"') {
-        if (inQuotes && line[i + 1] === '"') { current += '"'; i++; }
-        else { inQuotes = !inQuotes; }
-      } else if (ch === "," && !inQuotes) {
-        row.push(current); current = "";
-      } else {
-        current += ch;
-      }
+        if (inQ && line[i+1] === '"') { cur += '"'; i++; }
+        else { inQ = !inQ; }
+      } else if (ch === "," && !inQ) {
+        row.push(cur); cur = "";
+      } else { cur += ch; }
     }
-    row.push(current);
+    row.push(cur);
     rows.push(row);
   }
   return rows;
 }
 
-// ── Fetch data from published CSV ──
-async function fetchData() {
-  try {
-    const res = await fetch(CONFIG.CSV_URL);
-    if (!res.ok) throw new Error(`Fetch error: ${res.status}`);
-    const text = await res.text();
-    const rows = parseCSV(text);
-    return rows.slice(1); // skip header row
-  } catch (err) {
-    document.getElementById("table-body").innerHTML =
-      `<tr><td colspan="10" class="state-msg">⚠️ Could not load data. Check that the sheet is published to web.<br><small>${err.message}</small></td></tr>`;
-    return [];
-  }
-}
-
-// ── Render table ──
-let allRows = [];
+let activeCat = "";
+let allRows   = [];
 
 function render() {
   const filterPort   = document.getElementById("filter-portfolio").value;
   const filterStatus = document.getElementById("filter-status").value;
-  const filterCat    = document.getElementById("filter-category").value;
   const filterSearch = document.getElementById("filter-search").value.toLowerCase();
 
   const filtered = allRows.filter(row => {
@@ -373,74 +458,143 @@ function render() {
     const category  = (row[COL.CATEGORY]  || "").trim();
     const address   = (row[COL.ADDRESS]   || "").toLowerCase();
     const llc       = (row[COL.LLC]       || "").toLowerCase();
-
+    if (activeCat    && category  !== activeCat)   return false;
     if (filterPort   && portfolio !== filterPort)   return false;
-    if (filterStatus && status    !== filterStatus)  return false;
-    if (filterCat    && category  !== filterCat)     return false;
+    if (filterStatus && status    !== filterStatus) return false;
     if (filterSearch && !address.includes(filterSearch) && !llc.includes(filterSearch)) return false;
     return true;
   });
 
-  // Update tiles
-  const counts = { Overdue: 0, "Due Soon": 0, Upcoming: 0, Current: 0, Pending: 0 };
+  // Tiles — always from full dataset
+  const counts = { Overdue: 0, "Due Soon": 0, Upcoming: 0, Current: 0, Pending: 0, critical: 0 };
   allRows.forEach(row => {
     const s = (row[COL.STATUS] || "").trim();
     if (s in counts) counts[s]++;
+    const comp = parseCompliance(row[COL.NOTES], (row[COL.CATEGORY] || "").trim(), row[COL.STATUS_OVERRIDE]);
+    if (comp && comp.critical) counts.critical++;
   });
-  document.getElementById("count-overdue").textContent  = counts["Overdue"];
-  document.getElementById("count-due-soon").textContent = counts["Due Soon"];
-  document.getElementById("count-upcoming").textContent = counts["Upcoming"];
-  document.getElementById("count-current").textContent  = counts["Current"];
-  document.getElementById("count-pending").textContent  = counts["Pending"];
+  document.getElementById("count-critical").textContent  = counts.critical;
+  document.getElementById("count-overdue").textContent   = counts["Overdue"];
+  document.getElementById("count-due-soon").textContent  = counts["Due Soon"];
+  document.getElementById("count-current").textContent   = counts["Current"];
+  document.getElementById("count-pending").textContent   = counts["Pending"];
 
-  // Render rows — overdue first, then due soon, then rest
-  const priority = { "Overdue": 0, "Due Soon": 1, "Upcoming": 2, "Current": 3, "Pending": 4 };
+  // Alert banner
+  const critRows = allRows.filter(row => {
+    const c = parseCompliance(row[COL.NOTES], (row[COL.CATEGORY] || "").trim(), row[COL.STATUS_OVERRIDE]);
+    return c && c.critical;
+  });
+  const banner = document.getElementById("alert-banner");
+  if (critRows.length === 0) {
+    banner.classList.add("hidden");
+  } else {
+    banner.classList.remove("hidden");
+    document.getElementById("alert-items").innerHTML = critRows.map(row => {
+      const llc  = (row[COL.LLC] || "").trim();
+      const comp = parseCompliance(row[COL.NOTES], (row[COL.CATEGORY] || "").trim(), row[COL.STATUS_OVERRIDE]);
+      const id   = JHU_DEPT_IDS[llc];
+      const url  = id
+        ? `https://egov.maryland.gov/businessexpress/entitysearch/search?searchType=1&searchValue=${id}`
+        : `https://egov.maryland.gov/businessexpress/`;
+      return `<div class="alert-item">
+        <span class="comp-badge ${comp.cls}" style="font-size:0.68rem;padding:2px 7px">${comp.label}</span>
+        <strong>${llc}</strong>
+        <a href="${url}" target="_blank">View on SDAT →</a>
+      </div>`;
+    }).join("");
+  }
+
+  // Sort: critical compliance first (Forfeited > Not Good > Payment), then by time urgency
+  const tPri = { "Overdue": 0, "Due Soon": 1, "Upcoming": 2, "Current": 3, "Pending": 4 };
+  const cPri = { "comp-forfeited": 0, "comp-not-good": 1, "comp-payment-due": 2 };
   filtered.sort((a, b) => {
-    const sa = priority[(a[COL.STATUS] || "").trim()] ?? 5;
-    const sb = priority[(b[COL.STATUS] || "").trim()] ?? 5;
-    return sa - sb;
+    const ca = parseCompliance(a[COL.NOTES], (a[COL.CATEGORY] || "").trim(), a[COL.STATUS_OVERRIDE]);
+    const cb = parseCompliance(b[COL.NOTES], (b[COL.CATEGORY] || "").trim(), b[COL.STATUS_OVERRIDE]);
+    const critA = ca && ca.critical ? 0 : 1;
+    const critB = cb && cb.critical ? 0 : 1;
+    if (critA !== critB) return critA - critB;
+    if (critA === 0) {
+      const d = (cPri[ca.cls] ?? 9) - (cPri[cb.cls] ?? 9);
+      if (d !== 0) return d;
+    }
+    return (tPri[(a[COL.STATUS] || "").trim()] ?? 5) - (tPri[(b[COL.STATUS] || "").trim()] ?? 5);
   });
 
   if (filtered.length === 0) {
     document.getElementById("table-body").innerHTML =
-      `<tr><td colspan="10" class="state-msg">No items match the current filters.</td></tr>`;
+      `<tr><td colspan="9" class="state-msg">No items match the current filters.</td></tr>`;
     return;
   }
 
   document.getElementById("table-body").innerHTML = filtered.map(row => {
-    const status    = (row[COL.STATUS]    || "Pending").trim();
-    const portfolio = (row[COL.PORTFOLIO] || "").trim();
-    const daysRaw   = row[COL.DAYS_UNTIL];
-    const days      = daysRaw === "—" || daysRaw === "" ? "—" : Number(daysRaw);
-    const daysDisplay = typeof days === "number"
-      ? (days < 0 ? `<span style="color:#e53e3e;font-weight:700">${days}d</span>`
-         : days <= 30 ? `<span style="color:#dd6b20;font-weight:600">${days}d</span>`
-         : `${days}d`)
+    const status   = (row[COL.STATUS]    || "Pending").trim();
+    const portfolio= (row[COL.PORTFOLIO] || "").trim();
+    const category = (row[COL.CATEGORY]  || "").trim();
+    const notes    = (row[COL.NOTES]     || "");
+    const override =  row[COL.STATUS_OVERRIDE] || "";
+    const daysRaw  =  row[COL.DAYS_UNTIL];
+    const days     = (daysRaw === "—" || daysRaw === "") ? "—" : Number(daysRaw);
+    const daysHtml = typeof days === "number"
+      ? (days < 0  ? `<span style="color:#e53e3e;font-weight:700">${days}d</span>`
+       : days <= 30 ? `<span style="color:#dd6b20;font-weight:600">${days}d</span>`
+       : `${days}d`)
       : "—";
 
-    return `<tr>
-      <td style="font-family:monospace;font-size:0.75rem;color:#718096">${row[COL.ROW_ID] || ""}</td>
+    const comp      = parseCompliance(notes, category, override);
+    const compBadge = comp
+      ? `<span class="comp-badge ${comp.cls}">${comp.label}</span>`
+      : `<span style="color:#a0aec0;font-size:0.78rem">—</span>`;
+
+    const entity  = (row[COL.LLC] || row[COL.ADDRESS] || "—");
+    const addrSub = (row[COL.LLC] && row[COL.ADDRESS])
+      ? `<div style="font-size:0.73rem;color:#718096;margin-top:2px">${row[COL.ADDRESS]}${row[COL.UNIT] ? ` · Unit ${row[COL.UNIT]}` : ""}</div>`
+      : "";
+
+    const rowClass = comp
+      ? (comp.cls === "comp-forfeited" ? "row-forfeited"
+       : comp.cls === "comp-not-good"  ? "row-not-good" : "")
+      : "";
+
+    const tip  = truncNotes(notes).replace(/"/g, "&quot;");
+    const note = tip
+      ? `<span class="notes-icon" title="${tip}">ℹ</span>`
+      : `<span style="color:#e2e8f0">—</span>`;
+
+    return `<tr class="${rowClass}">
       <td><span class="port ${portClass(portfolio)}">${portfolio}</span></td>
-      <td>${row[COL.ADDRESS] || ""}${row[COL.UNIT] ? ` <small style="color:#a0aec0">Unit ${row[COL.UNIT]}</small>` : ""}</td>
-      <td style="font-size:0.8rem;color:#4a5568">${row[COL.LLC] || "—"}</td>
-      <td>${row[COL.CATEGORY] || "—"}</td>
-      <td style="white-space:nowrap">${formatDate(row[COL.DUE_DATE])}</td>
-      <td style="text-align:center">${daysDisplay}</td>
+      <td>
+        <div style="font-size:0.83rem;font-weight:500;color:#1b4332">${entity}</div>
+        ${addrSub}
+      </td>
+      <td style="font-size:0.8rem;color:#4a5568;white-space:nowrap">${category}</td>
+      <td style="white-space:nowrap;font-size:0.82rem">${formatDate(row[COL.DUE_DATE])}</td>
+      <td style="text-align:center;font-size:0.82rem">${daysHtml}</td>
+      <td>${compBadge}</td>
       <td><span class="badge ${badgeClass(status)}">${status}</span></td>
-      <td style="font-size:0.8rem">${row[COL.RESPONSIBLE] || "—"}</td>
-      <td style="font-size:0.75rem;color:#718096;max-width:260px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${(row[COL.NOTES] || "").replace(/"/g,"&quot;")}">${row[COL.NOTES] || ""}</td>
+      <td>${actionLink(row)}</td>
+      <td class="notes-cell">${note}</td>
     </tr>`;
   }).join("");
 }
 
-// ── Init ──
+async function fetchData() {
+  try {
+    const res  = await fetch(CONFIG.CSV_URL);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const text = await res.text();
+    return parseCSV(text).slice(1);
+  } catch (err) {
+    document.getElementById("table-body").innerHTML =
+      `<tr><td colspan="9" class="state-msg">⚠️ Could not load data.<br><small>${err.message}</small></td></tr>`;
+    return [];
+  }
+}
+
 async function init() {
   allRows = await fetchData();
   render();
   document.getElementById("last-updated").textContent =
     "Last updated: " + new Date().toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
-
-  // Auto-refresh
   setInterval(async () => {
     allRows = await fetchData();
     render();
@@ -449,11 +603,18 @@ async function init() {
   }, CONFIG.REFRESH_INTERVAL);
 }
 
-// ── Filter listeners ──
-["filter-portfolio","filter-status","filter-category","filter-search"]
+document.querySelectorAll(".cat-tab").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".cat-tab").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    activeCat = btn.dataset.cat;
+    render();
+  });
+});
+
+["filter-portfolio", "filter-status", "filter-search"]
   .forEach(id => document.getElementById(id).addEventListener("input", render));
 
-// ── Go ──
 init();
 </script>
 </body>
