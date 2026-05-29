@@ -188,13 +188,15 @@
       letter-spacing: 0.03em;
       white-space: nowrap;
     }
-    .comp-forfeited   { background: #1a202c; color: #fff; }
-    .comp-not-good    { background: #fff5f5; color: #c53030; border: 1px solid #feb2b2; }
-    .comp-payment-due { background: #fffaf0; color: #c05621; border: 1px solid #fbd38d; }
-    .comp-good        { background: #f0fff4; color: #276749; border: 1px solid #9ae6b4; }
-    .comp-extension   { background: #ebf8ff; color: #2b6cb0; border: 1px solid #bee3f8; }
-    .comp-not-started { background: #f7fafc; color: #4a5568; border: 1px solid #e2e8f0; }
-    .comp-unknown     { background: #f7fafc; color: #a0aec0; border: 1px solid #e2e8f0; }
+    .comp-forfeited      { background: #1a202c; color: #fff; }
+    .comp-dissolved      { background: #742a2a; color: #fff; }
+    .comp-not-good       { background: #fff5f5; color: #c53030; border: 1px solid #feb2b2; }
+    .comp-report-overdue { background: #fffbea; color: #b7791f; border: 1px solid #f6e05e; }
+    .comp-payment-due    { background: #fffaf0; color: #c05621; border: 1px solid #fbd38d; }
+    .comp-good           { background: #f0fff4; color: #276749; border: 1px solid #9ae6b4; }
+    .comp-extension      { background: #ebf8ff; color: #2b6cb0; border: 1px solid #bee3f8; }
+    .comp-not-started    { background: #f7fafc; color: #4a5568; border: 1px solid #e2e8f0; }
+    .comp-unknown        { background: #f7fafc; color: #a0aec0; border: 1px solid #e2e8f0; }
 
     .action-link {
       display: inline-block;
@@ -413,19 +415,29 @@ function parseCompliance(notes, category, statusOverride) {
   // ── LLC Filing ────────────────────────────────────────────
   if (category !== "LLC Filing") return null;
 
+  // ── Status Override checks (col J) ───────────────────────
   if (ov === "Forfeited")
     return { label: "Forfeited", cls: "comp-forfeited", critical: true };
+  if (ov === "Dissolved")
+    return { label: "Dissolved", cls: "comp-dissolved", critical: true };
   if (ov === "Not in Good Standing")
     return { label: "Not in Good Standing", cls: "comp-not-good", critical: true };
+  if (ov === "Annual Report Overdue")
+    return { label: "Annual Report Overdue", cls: "comp-report-overdue", critical: true };
   if (ov === "Ready for Payment")
     return { label: "Payment Due", cls: "comp-payment-due", critical: true };
   if (ov === "Revoked")
     return { label: "Revoked", cls: "comp-forfeited", critical: true };
 
+  // ── Notes text fallback (col P) ───────────────────────────
   if (n.includes("FORFEITED") || n.includes("REINSTATEMENT"))
     return { label: "Forfeited", cls: "comp-forfeited", critical: true };
+  if (n.includes("DISSOLVED"))
+    return { label: "Dissolved", cls: "comp-dissolved", critical: true };
   if (n.includes("NOT IN GOOD STANDING"))
     return { label: "Not in Good Standing", cls: "comp-not-good", critical: true };
+  if (n.includes("ANNUAL REPORT OVERDUE"))
+    return { label: "Annual Report Overdue", cls: "comp-report-overdue", critical: true };
   if (n.includes("READY FOR PAYMENT"))
     return { label: "Payment Due", cls: "comp-payment-due", critical: true };
   if (n.includes("REVOKED"))
