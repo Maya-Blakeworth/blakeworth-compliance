@@ -470,7 +470,12 @@ function docLink(row) {
   const urlMatch = raw.match(/https?:\/\/[^\s"')]+/);
   const url = urlMatch ? urlMatch[0] : (raw.startsWith("http") ? raw : "");
   if (!url) return "";
-  return `<a href="${url}" target="_blank" class="doc-link">📄 Proof</a>`;
+  const cat = (row[COL.CATEGORY] || "").trim();
+  const label = cat === "LLC Filing"     ? "📄 LLC Status"
+              : cat === "Property Tax"   ? "📄 Tax Receipt"
+              : cat === "Rental License" ? "📄 License"
+              : "📄 Proof";
+  return `<a href="${url}" target="_blank" class="doc-link">${label}</a>`;
 }
 
 function badgeClass(s) {
