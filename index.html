@@ -348,6 +348,8 @@ const COL = {
   STATUS_OVERRIDE: 9,  // J — compliance override (Forfeited / Not in Good Standing / etc)
   RESPONSIBLE:     10, // K
   NOTES:           15, // P
+  EXTERNAL_ID:     16, // Q — Dept ID / account number
+  ACTION_URL:      17, // R — direct portal link
 };
 
 const JHU_DEPT_IDS = {
@@ -395,19 +397,25 @@ function parseCompliance(notes, category, statusOverride) {
 }
 
 function actionLink(row) {
-  const cat = (row[COL.CATEGORY] || "").trim();
-  const llc = (row[COL.LLC] || "").trim();
-  if (cat === "LLC Filing") {
-    const id = JHU_DEPT_IDS[llc];
-    const url = id
-      ? `https://egov.maryland.gov/businessexpress/entitysearch/search?searchType=1&searchValue=${id}`
-      : `https://egov.maryland.gov/businessexpress/`;
-    return `<a href="${url}" target="_blank" class="action-link">SDAT →</a>`;
+  const url = (row[COL.ACTION_URL] || "").trim();
+  const cat = (row[COL.CATEGORY]  || "").trim();
+
+  // Use the sheet's Action URL if populated
+  if (url && url.startsWith("http")) {
+    let label = "View →";
+    if (url.includes("egov.maryland.gov"))        label = "SDAT →";
+    else if (url.includes("corporations.pa.gov")) label = "PA Corps →";
+    else if (url.includes("dlcp.dc.gov"))         label = "DC DLCP →";
+    else if (url.includes("sdat.dat.maryland.gov")) label = "Tax →";
+    else if (url.includes("dhcd.baltimore"))      label = "DHCD →";
+    return `<a href="${url}" target="_blank" class="action-link">${label}</a>`;
   }
+
+  // Fallback for rows without an Action URL yet
   if (cat === "Property Tax")
-    return `<a href="https://sdat.dat.maryland.gov/RealProperty/" target="_blank" class="action-link">View →</a>`;
+    return `<a href="https://sdat.dat.maryland.gov/RealProperty/" target="_blank" class="action-link">Tax →</a>`;
   if (cat === "Rental License")
-    return `<a href="https://dhcd.baltimorecity.gov/" target="_blank" class="action-link">View →</a>`;
+    return `<a href="https://dhcd.baltimorecity.gov/" target="_blank" class="action-link">DHCD →</a>`;
   return `<span style="color:#a0aec0;font-size:0.78rem;">—</span>`;
 }
 
