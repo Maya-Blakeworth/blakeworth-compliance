@@ -210,6 +210,21 @@
       transition: all 0.15s;
     }
     .action-link:hover { background: #1b4332; color: white; }
+    .doc-link {
+      display: inline-block;
+      padding: 3px 8px;
+      background: white;
+      border: 1px solid #718096;
+      color: #4a5568;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-decoration: none;
+      white-space: nowrap;
+      margin-left: 4px;
+      transition: all 0.15s;
+    }
+    .doc-link:hover { background: #4a5568; color: white; }
     .notes-cell { max-width: 40px; text-align: center; }
     .notes-icon {
       display: inline-block;
@@ -350,6 +365,7 @@ const COL = {
   NOTES:           15, // P
   EXTERNAL_ID:     16, // Q — Dept ID / account number
   ACTION_URL:      17, // R — direct portal link
+  DOC_LINK:        13, // N — document link (PDF / screenshot proof)
 };
 
 const JHU_DEPT_IDS = {
@@ -417,6 +433,17 @@ function actionLink(row) {
   if (cat === "Rental License")
     return `<a href="https://dhcd.baltimorecity.gov/" target="_blank" class="action-link">DHCD →</a>`;
   return `<span style="color:#a0aec0;font-size:0.78rem;">—</span>`;
+}
+
+function docLink(row) {
+  const raw = (row[COL.DOC_LINK] || "").toString().trim();
+  // The cell may contain a HYPERLINK formula value or a plain URL
+  // When published as CSV, HYPERLINK formula exposes the display text only,
+  // so we also look for a URL embedded in the raw value
+  const urlMatch = raw.match(/https?:\/\/[^\s"')]+/);
+  const url = urlMatch ? urlMatch[0] : (raw.startsWith("http") ? raw : "");
+  if (!url) return "";
+  return `<a href="${url}" target="_blank" class="doc-link">📄 Proof</a>`;
 }
 
 function badgeClass(s) {
@@ -590,7 +617,7 @@ function render() {
       <td style="text-align:center;font-size:0.82rem">${daysHtml}</td>
       <td>${compBadge}</td>
       <td><span class="badge ${badgeClass(status)}">${status}</span></td>
-      <td>${actionLink(row)}</td>
+      <td style="white-space:nowrap">${actionLink(row)}${docLink(row)}</td>
       <td class="notes-cell">${note}</td>
     </tr>`;
   }).join("");
