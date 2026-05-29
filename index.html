@@ -391,8 +391,11 @@ function parseCompliance(notes, category, statusOverride) {
 
   // ── Property Tax ──────────────────────────────────────────
   if (category === "Property Tax") {
-    if (ov === "Overdue" || n.includes("OVERDUE"))
-      return { label: "Overdue", cls: "comp-forfeited", critical: true };
+    if (ov === "Overdue" || n.includes("OVERDUE")) {
+      const amt = notes.match(/\$[\d,]+\.?\d*/);
+      const amtLabel = amt ? ` · ${amt[0]}` : "";
+      return { label: `Overdue${amtLabel}`, cls: "comp-forfeited", critical: true };
+    }
     if (ov === "" && n.includes("CURRENT"))
       return { label: "Paid", cls: "comp-good", critical: false };
     return null;
