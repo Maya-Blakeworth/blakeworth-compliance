@@ -1,14 +1,14 @@
-// -------------------------------------------------------
+// ============================================================
 // BLAKEWORTH COMPLIANCE DASHBOARD — DATA CONFIGURATION (live)
-// -------------------------------------------------------
-// Three publish-to-web CSV feeds from "Blakeworth_Compliance_Template".
+// ============================================================
+// Three publish-to-web CSV feeds from "Blakeworth Compliance — Source of Truth".
 // Each is one tab of the same Sheet, addressed by its gid.
-// To rotate later: in the Sheet, File > Share > Publish to web > Stop publishing,
-// Then re-publish and update these URLs.
-// -------------------------------------------------------
+// To rotate later: in the Sheet, File → Share → Publish to web → Stop publishing,
+// then re-publish and update these URLs.
+// ============================================================
 
 window.CONFIG = {
-    MASTER_CSV_URL: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSdz7JEUMdAGe2DESTUQfwzn3Tjg6TXFYaKDiPQMOgWneClgq3spBZGaQRBXHB6i1iK2_gK1MNldOky/pub?gid=1672074676&single=true&output=csv",
-    DOCS_CSV_URL:   "https://docs.google.com/spreadsheets/d/e/2PACX-1vSdz7JEUMdAGe2DESTUQfwzn3Tjg6TXFYaKDiPQMOgWneClgq3spBZGaQRBXHB6i1iK2_gK1MNldOky/pub?gid=1606116319&single=true&output=csv",
-    LINKS_CSV_URL:  "https://docs.google.com/spreadsheets/d/e/2PACX-1vSFKs41099EB7y7pEFBuogrAlB33f7xxJ_cCcvKClW4P1e-hSzeWIDPKp8C4b_Ko2Xf-nXWgasKPrBP/pub?gid=1821796381&single=true&output=csv",
+  MASTER_CSV_URL: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQNae-sHgBR0y3X1VUQlOwl-gQsR8D9GqB6SS79Nd_5eFqpXp4V9G5GD-Zmhth22TBfsnZU5nUVGFyf/pub?gid=1135568484&single=true&output=csv",
+  DOCS_CSV_URL:   "https://docs.google.com/spreadsheets/d/e/2PACX-1vQNae-sHgBR0y3X1VUQlOwl-gQsR8D9GqB6SS79Nd_5eFqpXp4V9G5GD-Zmhth22TBfsnZU5nUVGFyf/pub?gid=302109147&single=true&output=csv",
+  LINKS_CSV_URL:  "https://docs.google.com/spreadsheets/d/e/2PACX-1vQNae-sHgBR0y3X1VUQlOwl-gQsR8D9GqB6SS79Nd_5eFqpXp4V9G5GD-Zmhth22TBfsnZU5nUVGFyf/pub?gid=367798854&single=true&output=csv",
 };
