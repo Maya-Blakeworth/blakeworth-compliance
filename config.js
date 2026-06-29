@@ -9,6 +9,6 @@
 
 window.CONFIG = {
   MASTER_CSV_URL: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQNae-sHgBR0y3X1VUQlOwl-gQsR8D9GqB6SS79Nd_5eFqpXp4V9G5GD-Zmhth22TBfsnZU5nUVGFyf/pub?gid=1135568484&single=true&output=csv",
-  DOCS_CSV_URL:   "https://docs.google.com/spreadsheets/d/e/2PACX-1vQNae-sHgBR0y3X1VUQlOwl-gQsR8D9GqB6SS79Nd_5eFqpXp4V9G5GD-Zmhth22TBfsnZU5nUVGFyf/pub?gid=302109147&single=true&output=csv",
+  DOCS_CSV_URL:   "https://docs.google.com/spreadsheets/d/e/2PACX-1vQNae-sHgBR0y3X1VUQlOwl-gQsR8D9GqB6SS79Nd_5eFqpXp4V9G5GD-Zmhth22TBfsnZU5nUVGFyf/pub?gid=672067850&single=true&output=csv",
   LINKS_CSV_URL:  "https://docs.google.com/spreadsheets/d/e/2PACX-1vQNae-sHgBR0y3X1VUQlOwl-gQsR8D9GqB6SS79Nd_5eFqpXp4V9G5GD-Zmhth22TBfsnZU5nUVGFyf/pub?gid=367798854&single=true&output=csv",
-};
+};h
