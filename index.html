@@ -58,14 +58,26 @@
   .phchip{font-size:12px;font-weight:600;padding:4px 10px;border-radius:999px}
   .phchip.c{background:var(--crit-bg);color:var(--crit)}.phchip.s{background:var(--serious-bg);color:var(--serious)}.phchip.r{background:#eef0ec;color:#5b655b}.phchip.ok{background:var(--current-bg);color:var(--current)}
   .phsub{font-size:11.5px;color:var(--muted)}
-  .tmap{display:flex;flex-wrap:wrap;gap:6px;align-content:flex-start;width:100%}
-  .tmtile{border-radius:9px;padding:12px;color:#fff;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;cursor:pointer;transition:transform .12s}
-  .tmtile:hover{transform:scale(1.015)}
-  .tmtile.r1{background:#9e2f29}.tmtile.r2{background:#c0682e}.tmtile.r3{background:#c9a227}.tmtile.rr{background:#9aa39a}
-  .tmtile.chip{padding:6px 8px;justify-content:center;border-radius:7px}
-  .tmtile.chip .tamt{font-size:12.5px}
-  .tmtile .tamt{font-family:var(--fd);font-weight:600;line-height:1}
-  .tmtile .tlab{font-size:11px;opacity:.93;line-height:1.25;margin-top:6px}
+
+  /* ===== OUTSTANDING BALANCES (aligned layout) ===== */
+  .baltop{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}
+  @media(max-width:640px){.baltop{grid-template-columns:1fr}}
+  .bigcard{border-radius:11px;padding:16px 18px;color:#fff;cursor:pointer;transition:transform .12s;min-height:96px;display:flex;flex-direction:column;justify-content:space-between}
+  .bigcard:hover{transform:scale(1.01)}
+  .bigcard.r1{background:#9e2f29}.bigcard.r2{background:#c0682e}.bigcard.r3{background:#c9a227}
+  .bigcard .bamt{font-family:var(--fd);font-size:26px;font-weight:600;line-height:1}
+  .bigcard.r2 .bamt,.bigcard.r3 .bamt{font-size:21px}
+  .bigcard .blab{font-size:12px;opacity:.93;line-height:1.3;margin-top:10px}
+  .ballist{border:1px solid var(--border);border-radius:11px;overflow:hidden}
+  .balhead{display:flex;justify-content:space-between;padding:11px 16px;background:var(--surface-2);font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);font-weight:700}
+  .balrow{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:10px 16px;border-top:1px solid var(--border);cursor:pointer}
+  .balrow:first-child{border-top:none}
+  .balrow:hover{background:var(--surface-2)}
+  .balrow .bl-name{font-size:13.5px;font-weight:600;color:var(--ink)}
+  .balrow .bl-sub{font-weight:500;color:var(--muted)}
+  .balrow .bl-amt{font-family:var(--fd);font-variant-numeric:tabular-nums;font-weight:600;font-size:14px;white-space:nowrap;color:var(--ink)}
+  .balmore{padding:12px 16px;border-top:1px solid var(--border);font-size:12.5px;font-weight:600;color:var(--primary);cursor:pointer;text-align:center;background:var(--surface)}
+  .balmore:hover{background:var(--surface-2)}
   .tmnote{font-size:11.5px;color:var(--muted);margin-top:12px;font-style:italic}
   .ovfoot{display:flex;gap:22px;flex-wrap:wrap;font-size:12.5px;color:var(--muted)}
   .ovfoot b{color:var(--ink)}
@@ -148,6 +160,7 @@
   var items=[];
   var allFilter={pf:'all',cat:'all',group:'severity'};
   var actionRoutineOpen=false;
+  var balExpanded=false;
 
   /* ---------- CSV + data layer ---------- */
   function parseCSV(text){
@@ -227,10 +240,10 @@
     PORTFOLIOS.forEach(function(pf){ h+=phCard(pf); });
     h+='</div></div>';
 
-    // treemap
-    h+='<div class="card"><h2>Outstanding balances</h2><div class="cap">Confirmed balances only. Tap any to open.</div>';
+    // outstanding balances (aligned)
+    h+='<div class="card"><h2>Outstanding balances</h2><div class="cap">Largest first. Tap any to open it.</div>';
     if(out.length){
-      h+='<div class="tmap" id="tmap"></div>';
+      h+='<div id="balances"></div>';
     }else{
       h+='<div class="pending" style="margin:6px 0">No outstanding balances captured yet.</div>';
     }
@@ -240,9 +253,9 @@
     h+='<div class="card" style="padding:18px 24px"><div class="ovfoot"><span><b>'+na.length+'</b> need action</span><span><b>'+cur.length+'</b> current</span><span><b>'+missing+'</b> missing a file</span><span><b>'+money0(total)+'</b> outstanding (so far)</span></div></div>';
 
     document.getElementById('overview').innerHTML=h;
-    // wire donuts -> All filtered
+    // wire portfolio cards -> All filtered
     Array.prototype.forEach.call(document.querySelectorAll('#overview .phcard'),function(d){d.addEventListener('click',function(){allFilter.pf=d.getAttribute('data-pf');switchTab('all');});});
-    if(out.length)renderTreemap(out);
+    if(out.length)renderBalances(out);
   }
   var PF_META={JHU:{sub:'13 LLCs · 57 units'},SLP:{sub:'9 LLCs · 31 units'},DC:{sub:'1 property'}};
   function phCard(pf){
@@ -258,34 +271,32 @@
     var sub=(PF_META[pf]||{}).sub||'';
     return '<div class="phcard" data-pf="'+pf+'"><div class="phtop"><div><div class="phnum">'+todo+'</div><div class="phlbl">need action</div></div><div class="phpf">'+pf+'</div></div><div class="phchips">'+chips+'</div><div class="phsub">'+sub+'</div></div>';
   }
-  // squarified treemap
-  function squarify(data,x,y,w,h){
-    var nodes=data.map(function(d){return{item:d.item,value:d.value};});
-    var total=nodes.reduce(function(s,n){return s+n.value;},0);var area=w*h;
-    nodes.forEach(function(n){n._a=total>0?n.value/total*area:0;});
-    var out=[],rect={x:x,y:y,w:w,h:h},row=[],left=nodes.slice();
-    function wr(rw,side){var s=rw.reduce(function(a,n){return a+n._a;},0);var mx=Math.max.apply(null,rw.map(function(n){return n._a;}));var mn=Math.min.apply(null,rw.map(function(n){return n._a;}));return Math.max(side*side*mx/(s*s),s*s/(side*side*mn));}
-    function lay(rw,rc){var ra=rw.reduce(function(a,n){return a+n._a;},0);if(rc.w>=rc.h){var cw=ra/rc.h;var yy=rc.y;rw.forEach(function(n){var rh=n._a/cw;out.push({item:n.item,x:rc.x,y:yy,w:cw,h:rh});yy+=rh;});rc.x+=cw;rc.w-=cw;}else{var rh2=ra/rc.w;var xx=rc.x;rw.forEach(function(n){var rw2=n._a/rh2;out.push({item:n.item,x:xx,y:rc.y,w:rw2,h:rh2});xx+=rw2;});rc.y+=rh2;rc.h-=rh2;}}
-    while(left.length){var n=left[0];var side=Math.min(rect.w,rect.h);
-      if(row.length===0){row.push(n);left.shift();continue;}
-      if(wr(row,side)>=wr(row.concat([n]),side)){row.push(n);left.shift();}else{lay(row,rect);row=[];}}
-    if(row.length)lay(row,rect);
-    return out;
-  }
-  function renderTreemap(out){
-    var el=document.getElementById('tmap');if(!el)return;
+
+  /* ---------- OUTSTANDING BALANCES: aligned list ---------- */
+  function balName(i){return (i.property==='Entity-level'||!i.property)?(i.llc||'Entity-level'):i.property;}
+  function renderBalances(out){
+    var el=document.getElementById('balances');if(!el)return;
     var sorted=out.slice().sort(function(a,b){return(b.amount||0)-(a.amount||0);});
-    el.innerHTML=sorted.map(function(i,ix){
-      var ttl='title="'+esc(i.property)+' — '+esc(i.sourceStatus)+' — '+money(i.amount)+'"';
-      if(ix<=2){
-        var cls=ix===0?'r1':(ix===1?'r2':'r3');
-        var w=ix===0?46:25, asz=ix===0?26:(ix===1?19:18);
-        return'<div class="tmtile '+cls+'" data-id="'+i.id+'" '+ttl+' style="width:'+w+'%;height:120px"><div class="tamt" style="font-size:'+asz+'px">'+money0(i.amount)+'</div><div class="tlab">'+esc(i.property)+' — '+esc(i.category.toLowerCase())+'</div></div>';
+    var tops=sorted.slice(0,3), rest=sorted.slice(3);
+    var h='<div class="baltop">'+tops.map(function(i,ix){
+      var cls=ix===0?'r1':(ix===1?'r2':'r3');
+      return '<div class="bigcard '+cls+'" data-id="'+i.id+'"><div class="bamt">'+money0(i.amount)+'</div><div class="blab">'+esc(balName(i))+' — '+esc(i.category.toLowerCase())+'</div></div>';
+    }).join('')+'</div>';
+    if(rest.length){
+      var restTotal=rest.reduce(function(s,i){return s+(i.amount||0);},0);
+      var shown=balExpanded?rest:rest.slice(0,10);
+      h+='<div class="ballist"><div class="balhead"><span>Other balances</span><span>'+rest.length+' items · '+money0(restTotal)+' total</span></div>';
+      h+=shown.map(function(i){
+        return '<div class="balrow" data-id="'+i.id+'"><div class="bl-name">'+esc(balName(i))+' <span class="bl-sub">· '+esc(i.category.toLowerCase())+'</span></div><div class="bl-amt">'+money0(i.amount)+'</div></div>';
+      }).join('');
+      if(rest.length>10){
+        h+='<div class="balmore" id="balToggle">'+(balExpanded?'▾ Show fewer':'▸ Show all '+rest.length+' balances')+'</div>';
       }
-      // the rest: small grey chips — clearly minor, sized small because the amounts are small
-      return'<div class="tmtile rr chip" data-id="'+i.id+'" '+ttl+' style="width:6%;height:36px"><div class="tamt">'+money0(i.amount)+'</div></div>';
-    }).join('');
-    Array.prototype.forEach.call(el.querySelectorAll('.tmtile'),function(t){t.addEventListener('click',function(){openDrawer(t.getAttribute('data-id'));});});
+      h+='</div>';
+    }
+    el.innerHTML=h;
+    Array.prototype.forEach.call(el.querySelectorAll('[data-id]'),function(t){t.addEventListener('click',function(){openDrawer(t.getAttribute('data-id'));});});
+    var bt=document.getElementById('balToggle');if(bt)bt.addEventListener('click',function(e){e.stopPropagation();balExpanded=!balExpanded;renderBalances(out);});
   }
 
   /* ---------- ACTION ---------- */
@@ -374,7 +385,6 @@
   }
   Array.prototype.forEach.call(document.querySelectorAll('.tab'),function(t){t.addEventListener('click',function(){switchTab(t.getAttribute('data-v'));});});
   document.getElementById('scrim').addEventListener('click',closeDrawer);
-  window.addEventListener('resize',function(){if(document.getElementById('overview').classList.contains('on')){var o=outstandingItems();if(o.length)renderTreemap(o);}});
 
   /* ---------- boot ---------- */
   function boot(master,docs,links){items=buildItems(master,docs,links);renderOverview();renderAction();renderAll();}
