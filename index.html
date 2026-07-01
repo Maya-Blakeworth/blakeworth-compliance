@@ -37,16 +37,6 @@
   .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px 24px;margin-bottom:18px}
   .card h2{font-family:var(--fd);font-size:16px;font-weight:600}
   .card .cap{font-size:12px;color:var(--muted);margin:2px 0 18px}
-  .donuts{display:flex;justify-content:space-around;align-items:center;gap:10px;flex-wrap:wrap}
-  .donut{text-align:center;cursor:pointer}
-  .donut svg{display:block;margin:0 auto}
-  .donut .pf{font-family:var(--fd);font-size:17px;font-weight:600;margin-top:8px}
-  .donut .pfsub{font-size:11px;color:var(--muted)}
-  .ctr{font-family:var(--fd);font-size:13px;font-weight:600;fill:var(--ink)}
-  .ctrl{font-size:5.5px;text-transform:uppercase;letter-spacing:.4px;fill:var(--muted)}
-  .leg{display:flex;gap:18px;margin-top:16px;font-size:12px;color:var(--muted);flex-wrap:wrap}
-  .leg span{display:flex;align-items:center;gap:6px}
-  .sw{width:11px;height:11px;border-radius:3px}.sw.c{background:var(--crit)}.sw.s{background:var(--serious)}.sw.r{background:var(--routine)}.sw.g{background:var(--current)}
   .phcards{display:flex;gap:14px;flex-wrap:wrap}
   .phcard{flex:1;min-width:210px;border:1px solid var(--border);border-radius:13px;padding:18px 20px;cursor:pointer;transition:border-color .12s;background:var(--surface)}
   .phcard:hover{border-color:var(--primary-2)}
@@ -59,7 +49,7 @@
   .phchip.c{background:var(--crit-bg);color:var(--crit)}.phchip.s{background:var(--serious-bg);color:var(--serious)}.phchip.r{background:#eef0ec;color:#5b655b}.phchip.ok{background:var(--current-bg);color:var(--current)}
   .phsub{font-size:11.5px;color:var(--muted)}
 
-  /* ===== OUTSTANDING BALANCES (aligned layout) ===== */
+  /* ===== OUTSTANDING BALANCES + CLEARED (aligned layout) ===== */
   .baltop{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}
   @media(max-width:640px){.baltop{grid-template-columns:1fr}}
   .bigcard{border-radius:11px;padding:16px 18px;color:#fff;cursor:pointer;transition:transform .12s;min-height:96px;display:flex;flex-direction:column;justify-content:space-between}
@@ -78,6 +68,7 @@
   .balrow .bl-amt{font-family:var(--fd);font-variant-numeric:tabular-nums;font-weight:600;font-size:14px;white-space:nowrap;color:var(--ink)}
   .balmore{padding:12px 16px;border-top:1px solid var(--border);font-size:12.5px;font-weight:600;color:var(--primary);cursor:pointer;text-align:center;background:var(--surface)}
   .balmore:hover{background:var(--surface-2)}
+  .clrtag{display:inline-block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--current);background:var(--current-bg);padding:2px 7px;border-radius:5px;margin-left:8px;vertical-align:1px}
   .tmnote{font-size:11.5px;color:var(--muted);margin-top:12px;font-style:italic}
   .ovfoot{display:flex;gap:22px;flex-wrap:wrap;font-size:12.5px;color:var(--muted)}
   .ovfoot b{color:var(--ink)}
@@ -102,6 +93,7 @@
   .ghead{display:flex;align-items:center;gap:9px;margin:18px 0 8px}.ghead .lab{font-family:var(--fd);font-size:15px;font-weight:600}.ghead .ct{font-size:11px;color:var(--muted)}.ghead .ru{flex:1;height:1px;background:var(--border)}
   .lrow{display:grid;grid-template-columns:300px 1fr 120px 105px 95px;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:11px 15px;margin-bottom:6px;border-left:4px solid var(--routine);cursor:pointer}
   .lrow.c{border-left-color:var(--crit);background:var(--crit-bg)}.lrow.s{border-left-color:var(--serious);background:var(--serious-bg)}.lrow.g{border-left-color:var(--current)}
+  .lrow.done{opacity:.6}
   .lrow .issue{font-weight:600;font-size:13px}.lrow .issue.dim{font-weight:500;color:#3c443c}
   .lrow .prop{font-weight:600;font-size:13px}.lrow .payer{font-size:11.5px;color:var(--muted)}
   .lrow .x{font-size:12px;color:#46504a}.lrow .amt{font-variant-numeric:tabular-nums;font-weight:600;font-size:12.5px;text-align:right}.lrow .amt.z{color:var(--muted);font-weight:500}
@@ -114,6 +106,7 @@
   .drawer{position:fixed;top:0;right:0;height:100%;width:450px;max-width:92vw;background:var(--surface);border-left:1px solid var(--border);transform:translateX(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);z-index:50;overflow-y:auto}
   .drawer.open{transform:translateX(0)}
   .drawer-head{background:var(--primary);color:#fff;padding:22px 24px;position:relative}
+  .drawer-head.done{background:#5f6b60}
   .drawer-head .cat{font-size:11px;text-transform:uppercase;letter-spacing:1.2px;opacity:.85}
   .drawer-head h2{font-family:var(--fd);font-weight:600;font-size:22px;margin-top:6px;line-height:1.15}
   .drawer-head .sub{font-size:13px;opacity:.85;margin-top:6px}
@@ -122,8 +115,19 @@
   .row-kv .lab{font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);font-weight:600}
   .row-kv .val{font-size:14px;font-weight:500;text-align:right}
   .badge{display:inline-block;padding:4px 11px;border-radius:999px;font-size:12px;font-weight:600}
-  .b-crit{background:var(--crit-bg);color:var(--crit)}.b-serious{background:var(--serious-bg);color:var(--serious)}.b-routine{background:#eef0ec;color:#5b655b}.b-current{background:var(--current-bg);color:var(--current)}.b-pending{background:#eef0ec;color:#7a857b}
+  .b-crit{background:var(--crit-bg);color:var(--crit)}.b-serious{background:var(--serious-bg);color:var(--serious)}.b-routine{background:#eef0ec;color:#5b655b}.b-current{background:var(--current-bg);color:var(--current)}.b-pending{background:#eef0ec;color:#7a857b}.b-done{background:var(--current-bg);color:var(--primary)}
   .sect-title{font-family:var(--fd);font-weight:600;font-size:15px;margin:22px 0 10px}
+  /* status controls */
+  .statusbox{background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:14px}
+  .statusrow{display:flex;gap:10px;flex-wrap:wrap}
+  .sbtn{flex:1;min-width:130px;padding:11px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface);font-family:var(--fb);font-weight:600;font-size:13.5px;cursor:pointer;color:var(--ink);transition:all .15s}
+  .sbtn:hover{border-color:var(--primary-2);background:var(--surface-2)}
+  .sbtn.paid,.sbtn.cleared{border-color:var(--current);color:var(--primary)}
+  .sbtn.reopen{border-style:dashed}
+  .sbtn:disabled{opacity:.5;cursor:default}
+  .statusnote{font-size:12.5px;color:var(--muted);margin-top:10px}
+  .statusnote b{color:var(--primary)}
+  .statusoff{font-size:12.5px;color:var(--muted);font-style:italic}
   .note{font-size:13.5px;line-height:1.55;background:var(--surface-2);border-radius:8px;padding:12px 14px}
   .doclist,.linklist{display:flex;flex-direction:column;gap:9px}
   .docrow,.linkbtn{display:flex;align-items:center;gap:11px;padding:11px 13px;border:1px solid var(--border);border-radius:8px;text-decoration:none;color:var(--ink);transition:all .15s}
@@ -133,7 +137,6 @@
   .linkbtn{justify-content:space-between;font-size:13.5px;font-weight:600}
   .pending{display:block;text-align:center;padding:12px;border-radius:8px;background:var(--surface-2);color:var(--muted);font-weight:600;font-size:13.5px;font-style:italic;border:1px dashed var(--border)}
   .closebtn{position:absolute;top:18px;right:20px;background:transparent;border:none;color:#fff;font-size:24px;cursor:pointer;line-height:1;opacity:.85}
-  .why{margin-top:26px;font-size:12px;color:var(--muted);line-height:1.6;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px}.why b{color:var(--ink)}
 </style>
 </head>
 <body>
@@ -154,13 +157,14 @@
   </div>
   <div class="scrim" id="scrim"></div>
   <aside class="drawer" id="drawer"></aside>
-<script src="config.js?v=2"></script>
+<script src="config.js?v=3"></script>
 <script>
   var PORTFOLIOS=['JHU','SLP','DC'];
   var items=[];
   var allFilter={pf:'all',cat:'all',group:'severity'};
   var actionRoutineOpen=false;
   var balExpanded=false;
+  var clearedExpanded=false;
 
   /* ---------- CSV + data layer ---------- */
   function parseCSV(text){
@@ -178,6 +182,7 @@
   function parseMoney(v){if(v==null)return null;var s=String(v).trim();if(s==='')return null;var n=parseFloat(s.replace(/[$,]/g,''));return isNaN(n)?null:n;}
   function parseDate(d){if(!d)return null;var s=String(d).trim();var iso=s.match(/^(\d{4})-(\d{2})-(\d{2})/);if(iso)return new Date(+iso[1],+iso[2]-1,+iso[3]);var us=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);if(us)return new Date(+us[3],+us[1]-1,+us[2]);var dd=new Date(s);return isNaN(dd)?null:dd;}
   function fmtDue(d){var dt=parseDate(d);if(!dt)return'Pending';return dt.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}
+  function fmtWhen(s){if(!s)return'';var d=parseDate(s)||new Date(s);if(isNaN(d))return'';return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}
   function money(a){return'$'+a.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
   function money0(a){return'$'+Math.round(a).toLocaleString('en-US');}
   function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
@@ -190,8 +195,13 @@
       return{id:id,portfolio:(r.Portfolio||'').trim(),property:(r.Property_Address||'Entity-level').trim(),unit:(r.Unit||'').trim(),
         llc:(r.LLC_Entity||'').trim(),category:(r.Category||'').trim(),due:(r.Due_Date||'').trim(),health:(r.Health||'').trim(),
         sourceStatus:(r.Source_Status||'').trim(),amount:parseMoney(r.Billed_Amount),responsible:(r.Responsible||'').trim(),
-        notes:(r.Notes||'').trim(),docs:dByRow[id]||[],links:lByRow[id]||[]};});
+        notes:(r.Notes||'').trim(),status:(r.Status||'').trim(),clearedAt:(r.Cleared_At||'').trim(),docs:dByRow[id]||[],links:lByRow[id]||[]};});
   }
+
+  /* ---------- cleared state (set from the dashboard) ---------- */
+  function isCleared(i){return /paid|cleared|done|resolved|complete/i.test(i.status||'');}
+  function active(){return items.filter(function(i){return !isCleared(i);});}
+  function clearedList(){return items.filter(isCleared);}
 
   /* ---------- severity (same tiers as the sheet) ---------- */
   function severityRank(i){
@@ -205,12 +215,13 @@
   }
   function seriousSub(i){var st=(i.sourceStatus||'').toLowerCase();return (i.category==='LLC Filing'&&(/20\d\d\s*&\s*20\d\d/.test(st)||/two years/.test(st)))?0:1;}
   function tierKey(i){
+    if(isCleared(i))return'done';
     if(i.health==='Needs action'){var r=severityRank(i);return r===0?'crit':(r===1?'serious':'routine');}
     if(i.health==='Current')return'current';
     if(i.health==='Upcoming')return'routine';
     return'pending';
   }
-  var TIER={crit:{cls:'c',badge:'b-crit',name:'Critical'},serious:{cls:'s',badge:'b-serious',name:'Serious'},routine:{cls:'',badge:'b-routine',name:'Routine'},current:{cls:'g',badge:'b-current',name:'Current'},pending:{cls:'',badge:'b-pending',name:'Pending'}};
+  var TIER={crit:{cls:'c',badge:'b-crit',name:'Critical'},serious:{cls:'s',badge:'b-serious',name:'Serious'},routine:{cls:'',badge:'b-routine',name:'Routine'},current:{cls:'g',badge:'b-current',name:'Current'},pending:{cls:'',badge:'b-pending',name:'Pending'},done:{cls:'done',badge:'b-done',name:'Cleared'}};
   function compareRows(a,b){
     var ord={'Needs action':0,'Upcoming':1,'Current':2};
     var ha=(ord[a.health]===undefined?3:ord[a.health]),hb=(ord[b.health]===undefined?3:ord[b.health]);
@@ -222,16 +233,17 @@
   function amtCell(a,cls){if(a===null)return'<div class="amt z '+(cls||'')+'">—</div>';if(a===0)return'<div class="amt z '+(cls||'')+'">$0.00</div>';return'<div class="amt '+(cls||'')+'">'+money(a)+'</div>';}
 
   /* ---------- OVERVIEW ---------- */
-  function outstandingItems(){return items.filter(function(i){return i.health==='Needs action'&&(i.amount||0)>0;});}
+  function outstandingItems(){return active().filter(function(i){return i.health==='Needs action'&&(i.amount||0)>0;});}
   function renderOverview(){
-    var na=items.filter(function(i){return i.health==='Needs action';});
-    var cur=items.filter(function(i){return i.health==='Current';});
+    var av=active();
+    var na=av.filter(function(i){return i.health==='Needs action';});
+    var cur=av.filter(function(i){return i.health==='Current';});
     var lost=na.filter(function(i){return severityRank(i)===0;});
     var out=outstandingItems();
+    var cleared=clearedList();
     var total=out.reduce(function(s,i){return s+(i.amount||0);},0);
     var missing=na.filter(function(i){return i.docs.length===0;}).length;
     var top=out.slice().sort(function(a,b){return(b.amount||0)-(a.amount||0);})[0];
-    var dominant=top&&total>0&&(top.amount/total)>=0.5;
     var billWord=(top&&/tax/i.test(top.category))?'tax bill':(top?(top.category.toLowerCase()+' balance'):'');
     var h='<div class="headline">Most urgent: <b>'+lost.length+' entit'+(lost.length===1?'y':'ies')+' out of standing</b>'+(top?(', and a single <b>'+money0(top.amount)+' '+billWord+'</b> on '+esc(top.property)+'.'):'.')+'</div>';
 
@@ -245,21 +257,26 @@
     if(out.length){
       h+='<div id="balances"></div>';
     }else{
-      h+='<div class="pending" style="margin:6px 0">No outstanding balances captured yet.</div>';
+      h+='<div class="pending" style="margin:6px 0">No outstanding balances — all clear.</div>';
     }
     h+='<div class="tmnote">Shows confirmed balances so far; County tax amounts still being added.</div></div>';
 
+    // cleared log
+    if(cleared.length){
+      h+='<div class="card"><h2>Cleared</h2><div class="cap">Paid or resolved from the dashboard. Tap to view or reopen.</div><div id="clearedlog"></div></div>';
+    }
+
     // foot
-    h+='<div class="card" style="padding:18px 24px"><div class="ovfoot"><span><b>'+na.length+'</b> need action</span><span><b>'+cur.length+'</b> current</span><span><b>'+missing+'</b> missing a file</span><span><b>'+money0(total)+'</b> outstanding (so far)</span></div></div>';
+    h+='<div class="card" style="padding:18px 24px"><div class="ovfoot"><span><b>'+na.length+'</b> need action</span><span><b>'+cur.length+'</b> current</span><span><b>'+missing+'</b> missing a file</span><span><b>'+money0(total)+'</b> outstanding (so far)</span><span><b>'+cleared.length+'</b> cleared</span></div></div>';
 
     document.getElementById('overview').innerHTML=h;
-    // wire portfolio cards -> All filtered
     Array.prototype.forEach.call(document.querySelectorAll('#overview .phcard'),function(d){d.addEventListener('click',function(){allFilter.pf=d.getAttribute('data-pf');switchTab('all');});});
     if(out.length)renderBalances(out);
+    if(cleared.length)renderClearedLog(cleared);
   }
   var PF_META={JHU:{sub:'13 LLCs · 57 units'},SLP:{sub:'9 LLCs · 31 units'},DC:{sub:'1 property'}};
   function phCard(pf){
-    var rows=items.filter(function(i){return i.portfolio===pf;});
+    var rows=active().filter(function(i){return i.portfolio===pf;});
     var c={crit:0,serious:0,routine:0};
     rows.forEach(function(i){var k=tierKey(i);if(c[k]!==undefined)c[k]++;});
     var todo=c.crit+c.serious+c.routine;
@@ -299,14 +316,32 @@
     var bt=document.getElementById('balToggle');if(bt)bt.addEventListener('click',function(e){e.stopPropagation();balExpanded=!balExpanded;renderBalances(out);});
   }
 
+  /* ---------- CLEARED log ---------- */
+  function renderClearedLog(list){
+    var el=document.getElementById('clearedlog');if(!el)return;
+    var sorted=list.slice().sort(function(a,b){var da=parseDate(a.clearedAt),db=parseDate(b.clearedAt);if(da&&db)return db-da;return (b.amount||0)-(a.amount||0);});
+    var shown=clearedExpanded?sorted:sorted.slice(0,8);
+    var h='<div class="ballist"><div class="balhead"><span>Recently cleared</span><span>'+sorted.length+' items</span></div>';
+    h+=shown.map(function(i){
+      return '<div class="balrow" data-id="'+i.id+'"><div class="bl-name">'+esc(balName(i))+' <span class="bl-sub">· '+esc(i.category.toLowerCase())+'</span><span class="clrtag">'+esc(i.status)+'</span></div><div class="bl-amt" style="color:var(--muted)">'+(i.amount?money0(i.amount):'—')+'</div></div>';
+    }).join('');
+    if(sorted.length>8){
+      h+='<div class="balmore" id="clrToggle">'+(clearedExpanded?'▾ Show fewer':'▸ Show all '+sorted.length+' cleared')+'</div>';
+    }
+    h+='</div>';
+    el.innerHTML=h;
+    Array.prototype.forEach.call(el.querySelectorAll('[data-id]'),function(t){t.addEventListener('click',function(){openDrawer(t.getAttribute('data-id'));});});
+    var ct=document.getElementById('clrToggle');if(ct)ct.addEventListener('click',function(e){e.stopPropagation();clearedExpanded=!clearedExpanded;renderClearedLog(list);});
+  }
+
   /* ---------- ACTION ---------- */
   function actionRow(i){
     var k=tierKey(i),t=TIER[k];
-    return'<div class="arow '+t.cls+'" data-id="'+i.id+'"><div><div class="what">'+esc(i.sourceStatus||'—')+'</div><div class="who">'+esc(i.property)+(i.property!=='Entity-level'?' · ':'')+(i.property==='Entity-level'?esc(i.llc):esc(i.llc))+' · '+esc(i.portfolio)+'</div></div>'+
+    return'<div class="arow '+t.cls+'" data-id="'+i.id+'"><div><div class="what">'+esc(i.sourceStatus||'—')+'</div><div class="who">'+esc(i.property)+(i.property!=='Entity-level'?' · ':'')+esc(i.llc)+' · '+esc(i.portfolio)+'</div></div>'+
       '<div class="cat">'+esc(i.category)+'</div><div class="due'+(parseDate(i.due)?'':' p')+'">'+fmtDue(i.due)+'</div>'+amtCell(i.amount)+'</div>';
   }
   function renderAction(){
-    var na=items.filter(function(i){return i.health==='Needs action';}).sort(compareRows);
+    var na=active().filter(function(i){return i.health==='Needs action';}).sort(compareRows);
     var crit=na.filter(function(i){return severityRank(i)===0;});
     var serious=na.filter(function(i){return severityRank(i)===1;});
     var routine=na.filter(function(i){return severityRank(i)===2;});
@@ -317,6 +352,7 @@
       if(actionRoutineOpen){h+='<div class="bandlab"><span class="d" style="background:var(--routine)"></span>Routine — current-year filings &amp; small balances</div>'+routine.map(actionRow).join('')+'<div class="collapsed" id="routineToggle">▾ <b>Hide routine</b></div>';}
       else{h+='<div class="collapsed" id="routineToggle">▸ <b>'+routine.length+' routine items</b> — 2026 filings &amp; open invoices · tap to expand</div>';}
     }
+    if(!crit.length&&!serious.length&&!routine.length){h+='<div class="empty">Nothing needs action right now — everything is cleared or current.</div>';}
     document.getElementById('action').innerHTML=h;
     Array.prototype.forEach.call(document.querySelectorAll('#action .arow'),function(r){r.addEventListener('click',function(){openDrawer(r.getAttribute('data-id'));});});
     var rt=document.getElementById('routineToggle');if(rt)rt.addEventListener('click',function(){actionRoutineOpen=!actionRoutineOpen;renderAction();});
@@ -324,8 +360,8 @@
 
   /* ---------- ALL ---------- */
   function listRow(i){
-    var k=tierKey(i),t=TIER[k];var dim=(k==='routine'||k==='current'||k==='pending')?' dim':'';
-    return'<div class="lrow '+t.cls+'" data-id="'+i.id+'"><div class="issue'+dim+'">'+esc(i.sourceStatus||'—')+'</div>'+
+    var k=tierKey(i),t=TIER[k];var dim=(k==='routine'||k==='current'||k==='pending'||k==='done')?' dim':'';
+    return'<div class="lrow '+t.cls+'" data-id="'+i.id+'"><div class="issue'+dim+'">'+esc(i.sourceStatus||'—')+(isCleared(i)?(' <span class="clrtag">'+esc(i.status)+'</span>'):'')+'</div>'+
       '<div><div class="prop">'+esc(i.property)+(i.unit?(' · '+esc(i.unit)):'')+'</div><div class="payer">'+esc(i.llc)+'</div></div>'+
       '<div class="x">'+esc(i.category)+'</div><div class="x">'+fmtDue(i.due)+'</div>'+amtCell(i.amount)+'</div>';
   }
@@ -338,15 +374,19 @@
       '<div><span class="f">Group</span><select id="grpSel"><option value="severity"'+(allFilter.group==='severity'?' selected':'')+'>By severity</option><option value="llc"'+(allFilter.group==='llc'?' selected':'')+'>By LLC</option></select></div>'+
       '</div>';
     var f=items.filter(function(i){return(allFilter.pf==='all'||i.portfolio===allFilter.pf)&&(allFilter.cat==='all'||i.category===allFilter.cat);});
+    var fa=f.filter(function(i){return !isCleared(i);});
+    var fc=f.filter(isCleared);
     if(!f.length){h+='<div class="empty">No items match these filters.</div>';}
     else if(allFilter.group==='llc'){
-      var g={};f.forEach(function(i){(g[i.llc]=g[i.llc]||[]).push(i);});
+      var g={};fa.forEach(function(i){(g[i.llc]=g[i.llc]||[]).push(i);});
       Object.keys(g).sort().forEach(function(llc){var rows=g[llc].sort(compareRows);
         h+='<div class="ghead"><span class="lab">'+esc(llc)+'</span><span class="ct">'+rows.length+'</span><span class="ru"></span></div>'+rows.map(listRow).join('');});
+      if(fc.length){h+='<div class="ghead"><span class="lab">Cleared</span><span class="ct">'+fc.length+'</span><span class="ru"></span></div>'+fc.slice().sort(compareRows).map(listRow).join('');}
     }else{
       var bands=[['crit','Critical'],['serious','Serious'],['routine','Routine'],['current','Current'],['pending','Pending']];
-      bands.forEach(function(b){var rows=f.filter(function(i){return tierKey(i)===b[0];}).sort(compareRows);if(!rows.length)return;
+      bands.forEach(function(b){var rows=fa.filter(function(i){return tierKey(i)===b[0];}).sort(compareRows);if(!rows.length)return;
         h+='<div class="ghead"><span class="lab">'+b[1]+'</span><span class="ct">'+rows.length+'</span><span class="ru"></span></div>'+rows.map(listRow).join('');});
+      if(fc.length){h+='<div class="ghead"><span class="lab">Cleared</span><span class="ct">'+fc.length+'</span><span class="ru"></span></div>'+fc.slice().sort(compareRows).map(listRow).join('');}
     }
     document.getElementById('all').innerHTML=h;
     Array.prototype.forEach.call(document.querySelectorAll('#all .lrow'),function(r){r.addEventListener('click',function(){openDrawer(r.getAttribute('data-id'));});});
@@ -356,26 +396,62 @@
   }
 
   /* ---------- DRAWER ---------- */
+  function statusActions(i){
+    var cfg=window.CONFIG||{};
+    if(!cfg.STATUS_WRITE_URL){
+      return '<div class="statusbox"><div class="statusoff">Status editing isn’t connected yet. Add STATUS_WRITE_URL in config.js to turn on Mark paid / Mark cleared.</div></div>';
+    }
+    if(isCleared(i)){
+      return '<div class="statusbox"><div class="statusrow"><button class="sbtn reopen" data-act="reopen" data-id="'+i.id+'">↩ Reopen item</button></div><div class="statusnote">Marked <b>'+esc(i.status)+'</b>'+(i.clearedAt?(' on '+esc(fmtWhen(i.clearedAt))):'')+'. It’s in the Cleared log and off the active views.</div></div>';
+    }
+    var payLabel=(i.amount&&i.amount>0)?'✓ Mark paid':'✓ Mark done';
+    return '<div class="statusbox"><div class="statusrow"><button class="sbtn paid" data-act="Paid" data-id="'+i.id+'">'+payLabel+'</button><button class="sbtn cleared" data-act="Cleared" data-id="'+i.id+'">✓ Mark cleared</button></div><div class="statusnote">Clearing an item removes it from Action and Outstanding and files it under Cleared.</div></div>';
+  }
   function openDrawer(id){
-    var i=items.find(function(x){return x.id===id;});if(!i)return;var t=TIER[tierKey(i)];
+    var i=items.find(function(x){return x.id===id;});if(!i)return;var t=TIER[tierKey(i)];var done=isCleared(i);
     var docsHtml=i.docs.length?'<div class="doclist">'+i.docs.map(function(d){return'<a class="docrow" href="'+d.url+'" target="_blank" rel="noopener"><span class="doctype">'+esc(d.type)+'</span><span class="doclabel">'+esc(d.label)+'</span><span class="docarr">›</span></a>';}).join('')+'</div>':'<div class="pending">No files attached yet</div>';
     var linksHtml=i.links.length?'<div class="linklist">'+i.links.map(function(l){return'<a class="linkbtn" href="'+l.url+'" target="_blank" rel="noopener">'+esc(l.label)+'<span class="arr">›</span></a>';}).join('')+'</div>':'<div class="pending">No portal links saved yet</div>';
     document.getElementById('drawer').innerHTML=
-      '<div class="drawer-head"><button class="closebtn" id="closeDrawer">×</button><div class="cat">'+esc(i.category)+' · '+esc(i.portfolio)+'</div><h2>'+esc(i.property)+'</h2><div class="sub">Payer: '+esc(i.llc)+'</div></div>'+
+      '<div class="drawer-head'+(done?' done':'')+'"><button class="closebtn" id="closeDrawer">×</button><div class="cat">'+esc(i.category)+' · '+esc(i.portfolio)+'</div><h2>'+esc(i.property)+'</h2><div class="sub">Payer: '+esc(i.llc)+'</div></div>'+
       '<div class="drawer-body">'+
         '<div class="row-kv"><span class="lab">Status</span><span class="val"><span class="badge '+t.badge+'">'+t.name+'</span></span></div>'+
         '<div class="row-kv"><span class="lab">What the portal says</span><span class="val">'+esc(i.sourceStatus||'—')+'</span></div>'+
         '<div class="row-kv"><span class="lab">Due date</span><span class="val">'+fmtDue(i.due)+'</span></div>'+
         '<div class="row-kv"><span class="lab">Billed</span><span class="val">'+(i.amount===null?'—':money(i.amount))+'</span></div>'+
         '<div class="row-kv"><span class="lab">Responsible</span><span class="val">'+esc(i.responsible||'—')+'</span></div>'+
+        '<div class="sect-title">Update status</div>'+statusActions(i)+
         '<div class="sect-title">Notes</div><div class="note">'+esc(i.notes||'—')+'</div>'+
         '<div class="sect-title">Files ('+i.docs.length+')</div>'+docsHtml+
         '<div class="sect-title">Where to act</div>'+linksHtml+
       '</div>';
     document.getElementById('drawer').classList.add('open');document.getElementById('scrim').classList.add('open');
     document.getElementById('closeDrawer').addEventListener('click',closeDrawer);
+    Array.prototype.forEach.call(document.querySelectorAll('#drawer .sbtn'),function(b){b.addEventListener('click',function(){var act=b.getAttribute('data-act');setStatus(b.getAttribute('data-id'),act==='reopen'?'':act);});});
   }
   function closeDrawer(){document.getElementById('drawer').classList.remove('open');document.getElementById('scrim').classList.remove('open');}
+
+  /* ---------- write status back to the sheet ---------- */
+  function rerenderAll(){renderOverview();renderAction();renderAll();}
+  function setDrawerBusy(on){Array.prototype.forEach.call(document.querySelectorAll('#drawer .sbtn'),function(b){b.disabled=on;b.textContent=on?'Saving…':b.textContent;});}
+  async function setStatus(id,statusVal){
+    var cfg=window.CONFIG||{};
+    if(!cfg.STATUS_WRITE_URL)return;
+    var i=items.find(function(x){return x.id===id;});if(!i)return;
+    var prevS=i.status,prevA=i.clearedAt;
+    setDrawerBusy(true);
+    i.status=statusVal; i.clearedAt=statusVal?new Date().toISOString():'';
+    try{
+      var u=cfg.STATUS_WRITE_URL+'?action=setStatus&token='+encodeURIComponent(cfg.STATUS_TOKEN||'')+'&row_id='+encodeURIComponent(id)+'&status='+encodeURIComponent(statusVal);
+      var r=await fetch(u,{method:'GET'});
+      var j=await r.json();
+      if(!j||!j.ok)throw new Error((j&&j.error)||'save failed');
+      rerenderAll(); openDrawer(id);
+    }catch(e){
+      i.status=prevS; i.clearedAt=prevA;
+      rerenderAll(); openDrawer(id);
+      alert('Could not save that status change:\n'+e.message+'\n\nNothing was changed. Check the connection and try again.');
+    }
+  }
 
   /* ---------- tabs ---------- */
   function switchTab(v){
