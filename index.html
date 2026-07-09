@@ -4581,7 +4581,7 @@ function commBadgeHtml(cs) {
   return `<span class="comm-badge ${map[cs]||'comm-unstarted'}">${cs}</span>`;
 }
 function fmtDate(d) {
-  if (!d) return '&#8212;';
+  if (!d) return '—';
   return new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
 }
 function fmtAmt(a) {
@@ -4676,7 +4676,7 @@ function renderTable() {
         <div class="entity-name">${r.entity}</div>
         <div class="entity-sub">${r.portfolio} &#183; ${r.address}</div>
       </td>
-      <td style="font-size:12px;font-weight:600;color:#475569;text-align:center">${r.unit||'&#8212;'}</td>
+      <td style="font-size:12px;font-weight:600;color:#475569;text-align:center">${r.unit||'—'}</td>
       <td style="font-size:12px;color:#64748b;text-align:center">${r.category}</td>
       <td style="text-align:center"><span class="badge ${statusBadgeClass(r.status)}">${r.status}</span></td>
       <td style="font-size:12px;color:#64748b;text-align:center">${fmtDate(r.due_date)}${daysHtml(r)}</td>
@@ -4732,8 +4732,8 @@ function openPanel(r) {
     db.textContent=n<0?'Overdue '+Math.abs(n)+'d':n+'d until due';
     db.className='days-badge '+(n<0?'days-overdue':n<=30?'days-urgent':'days-ok');
   } else db.textContent=r.due_date?fmtDate(r.due_date):'';
-  document.getElementById('dp-source').textContent=r.source_status||'&#8212;';
-  document.getElementById('dp-amount').textContent=r.amount?fmtAmt(r.amount):'&#8212;';
+  document.getElementById('dp-source').textContent=r.source_status||'—';
+  document.getElementById('dp-amount').textContent=r.amount?fmtAmt(r.amount):'—';
   const respEl=document.getElementById('dp-responsible');
   const CONTACTS={
     'Dallas':    {name:'Dallas Basha',title:'Partner &#8211; Business Operations',email:'dallas@blakeworth.com',phone:'+1 (202) 375-0652'},
@@ -4743,10 +4743,10 @@ function openPanel(r) {
     'CSC':       {name:'Zachary Tolliver',title:'Commercial Director, CSC',email:'Zachary.Tolliver@cscglobal.com',phone:''},
     'Jacob Rappaport': {name:'Jacob M. Rappaport &#9888;&#65039;',title:'Ranchleigh Consulting &#8212; &#9888;&#65039; Convicted bank fraud April 2026. Confirm with Dallas.',email:'',phone:'(443) 845-3966'},
     'Ramona':    {name:'Ramona &#8212; Bluejay Property Management',title:'Property Manager, DC Portfolio',email:'',phone:''},
-    'Steve &#8212; American Management': {name:'Steve Riegger',title:'Director of Property Management, American Management',email:'propertymanager@americanmanage.com',phone:'410.366.2100 ext 107'},
-    'Ramonia &#8212; Bluejay Property Management': {name:'Ramona &#8212; Bluejay Property Management',title:'Property Manager, DC Portfolio',email:'',phone:''},
-    'Pat &#8212; Canton Property Management': {name:'Pat &#8212; Canton Property Management',title:'Property Manager, Canton',email:'',phone:''},
-    'Marj/Kristina &#8212; Forefront Property Management': {name:'Marjorie Feehan Roberts',title:'Property Manager, 4Front Management',email:'marjorie@4frontmgmt.com',phone:'c: 570-620-6107 &#183; o: 484-222-0688'},
+    'Steve — American Management': {name:'Steve Riegger',title:'Director of Property Management, American Management',email:'propertymanager@americanmanage.com',phone:'410.366.2100 ext 107'},
+    'Ramonia — Bluejay Property Management': {name:'Ramona &#8212; Bluejay Property Management',title:'Property Manager, DC Portfolio',email:'',phone:''},
+    'Pat — Canton Property Management': {name:'Pat &#8212; Canton Property Management',title:'Property Manager, Canton',email:'',phone:''},
+    'Marj/Kristina — Forefront Property Management': {name:'Marjorie Feehan Roberts',title:'Property Manager, 4Front Management',email:'marjorie@4frontmgmt.com',phone:'c: 570-620-6107 &#183; o: 484-222-0688'},
   };
   const ct=CONTACTS[r.responsible];
   const ctDiv=document.getElementById('dp-contact');
@@ -4756,11 +4756,11 @@ function openPanel(r) {
       +(ct.email?`<br><a href="mailto:${ct.email}" style="color:#2563eb">${ct.email}</a>`:'')
       +(ct.phone?`<br>${ct.phone}`:'');
   } else {
-    respEl.textContent=r.responsible||'&#8212;';
+    respEl.textContent=r.responsible||'—';
     ctDiv.innerHTML='';
   }
   document.getElementById('dp-action').textContent=r.action_required||'No action required.';
-  document.getElementById('dp-notes').textContent=r.notes||'&#8212;';
+  document.getElementById('dp-notes').textContent=r.notes||'—';
   // comm flow
   const stepIdx=COMM_STEPS.indexOf(r.comm_status);
   document.getElementById('dp-comm-flow').innerHTML=COMM_STEPS.map((s,i)=>{
@@ -4855,35 +4855,46 @@ function terminalLabel(category) {
 
 function draftEmail() {
   const r=DATA.find(x=>x.id===activeRow); if (!r) return;
-  // Resolve contact
-  const CONTACTS_LOCAL={
-    'Dallas':    {name:'Dallas Basha',email:'dallas@blakeworth.com'},
-    'Steve':     {name:'Steve Riegger',email:'propertymanager@americanmanage.com'},
-    'Marjorie':  {name:'Marjorie Feehan Roberts',email:'marjorie@4frontmgmt.com'},
-    'Maya':      {name:'Maya Miyazaki',email:'maya@blakeworth.com'},
-    'CSC':       {name:'Zachary Tolliver',email:'Zachary.Tolliver@cscglobal.com'},
-    'Steve &#8212; American Management': {name:'Steve Riegger',email:'propertymanager@americanmanage.com'},
-    'Marj/Kristina &#8212; Forefront Property Management': {name:'Marjorie Feehan Roberts',email:'marjorie@4frontmgmt.com'},
+  const CE={
+    'Dallas':{name:'Dallas Basha',email:'dallas@blakeworth.com'},
+    'Steve':{name:'Steve Riegger',email:'propertymanager@americanmanage.com'},
+    'Steve — American Management':{name:'Steve Riegger',email:'propertymanager@americanmanage.com'},
+    'Marjorie':{name:'Marjorie Feehan Roberts',email:'marjorie@4frontmgmt.com'},
+    'Marj/Kristina — Forefront Property Management':{name:'Marjorie Feehan Roberts',email:'marjorie@4frontmgmt.com'},
+    'Maya':{name:'Maya Miyazaki',email:'maya@blakeworth.com'},
+    'CSC':{name:'Zachary Tolliver',email:'Zachary.Tolliver@cscglobal.com'},
+    'Katie Teta':{name:'Katie Teta',email:''},
+    'Pat — Canton Property Management':{name:'Pat',email:''},
+    'Ramona':{name:'Ramona',email:''},
+    'Ramonia — Bluejay Property Management':{name:'Ramona',email:''}
   };
-  const ct = CONTACTS_LOCAL[r.responsible] || {};
-  const toEmail = ct.email || '';
-  const firstName = ct.name ? ct.name.split(' ')[0] : (r.responsible || 'Team');
-  const sourceLink = r.source_doc ? `\nSource document: ${r.source_doc}\n` : '';
-  const amtLine = r.amount && parseFloat(r.amount) > 0 ? `\nAmount: ${fmtAmt(r.amount)}` : '';
-  const dueLine = r.due_date ? `\nDue date: ${fmtDate(r.due_date)}` : '';
-  const subj = encodeURIComponent(`Action Required: ${r.entity} &#8212; ${r.category}`);
-  const body = encodeURIComponent(
-    `Hi ${firstName},\n\nThese are the items that need your attention. Could you please assist us with the information below?\n\n` +
-    `&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;\n` +
-    `Entity / Property: ${r.entity}${r.address && r.address !== 'Entity-level' ? ' &#8212; ' + r.address : ''}${r.unit ? ', ' + r.unit : ''}\n` +
-    `Category: ${r.category}\n` +
-    `Current status: ${r.status}${dueLine}${amtLine}\n` +
-    `\nAction needed:\n${r.action_required || 'Please review and advise.'}${sourceLink}\n` +
-    `&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;\n\n` +
-    `Thank you,\nMaya Miyazaki\nManager &#8211; Real Estate Operations\nBlakeworth Management\nmaya@blakeworth.com | +1 (202) 919-7788`
+  const ct=CE[r.responsible]||{};
+  const toEmail=ct.email||'';
+  const firstName=ct.name?ct.name.split(' ')[0]:(r.responsible||'Team');
+  const LABELS={'Citation':'an open citation','Inspection':'a pending inspection','LLC Filing':'a pending LLC filing','Lead Certification':'a Lead Certification requirement','Property Tax':'an outstanding property tax balance','Registered Agent':'a Registered Agent matter','Rental License':'a Rental License renewal','Utility':'a utility account matter'};
+  const issueLabel=LABELS[r.category]||'a compliance matter';
+  const hasAmt=r.amount&&parseFloat(r.amount)>0;
+  const amtVal=hasAmt?('$'+parseFloat(r.amount).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})):'';
+  const amtStr=hasAmt?' (balance: '+amtVal+')':'';
+  const propLine=r.entity+(r.address&&r.address!=='Entity-level'?' — '+r.address:'')+(r.unit?', Unit '+r.unit:'');
+  const dueLine=r.due_date?fmtDate(r.due_date):'N/A';
+  const D='————————————————————';
+  const subj=encodeURIComponent('Action Required: '+r.entity+' — '+r.category);
+  const body=encodeURIComponent(
+    'Hi '+firstName+',\n\n'+
+    'I am writing to follow up on '+issueLabel+amtStr+' for '+r.entity+'. Could you please assist? See details below.\n\n'+
+    D+'\n'+
+    'Item: '+r.category+' — '+r.status+'\n'+
+    'Entity / Property: '+propLine+'\n'+
+    'Due Date: '+dueLine+'\n'+
+    (hasAmt?'Balance Due: '+amtVal+'\n':'')+
+    (r.action_required?'Action Needed: '+r.action_required+'\n':'')+
+    (r.source_doc?'Source Document: '+r.source_doc+'\n':'')+
+    D+'\n\n'+
+    'Thank you,\nMaya Miyazaki\nManager – Real Estate Operations\nBlakeworth Management\nmaya@blakeworth.com | +1 (202) 919-7788'
   );
-  const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1${toEmail ? '&to=' + encodeURIComponent(toEmail) : ''}&su=${subj}&body=${body}`;
-  window.open(gmailUrl, '_blank');
+  const gmailUrl='https://mail.google.com/mail/?view=cm&fs=1'+(toEmail?'&to='+encodeURIComponent(toEmail):'')+' &su='+subj+'&body='+body;
+  window.open(gmailUrl,'_blank');
 }
 
 // &#9472;&#9472; instructions modal &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
