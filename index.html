@@ -43,7 +43,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-siz
 .instr-btn:hover{background:#f1f5f9;color:#1e293b}
 
 /* MAIN */
-.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.main{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden}
 
 /* OVERVIEW */
 .overview{background:#f8fafc;border-bottom:1px solid #e2e8f0;padding:12px 16px;flex-shrink:0}
@@ -4504,6 +4504,9 @@ const DATA = [
   }
 
 ];
+// Decode HTML entities in DATA (fix for literal &#183; etc.)
+(function(){var ta=document.createElement('textarea');function d(s){if(typeof s!=='string')return s;ta.innerHTML=s;return ta.value;}DATA.forEach(function(r){Object.keys(r).forEach(function(k){r[k]=d(r[k]);});});})();
+
 
 // &#9472;&#9472; state &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
 let activeRow = null;
