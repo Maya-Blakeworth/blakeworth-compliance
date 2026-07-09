@@ -4864,35 +4864,34 @@ function draftEmail() {
     'Maya':{name:'Maya Miyazaki',email:'maya@blakeworth.com'},
     'CSC':{name:'Zachary Tolliver',email:'Zachary.Tolliver@cscglobal.com'},
     'Katie Teta':{name:'Katie Teta',email:''},
+    'Pat':{name:'Pat',email:''},
     'Pat — Canton Property Management':{name:'Pat',email:''},
+    'Zachary Basha':{name:'Zachary',email:''},
     'Ramona':{name:'Ramona',email:''},
     'Ramonia — Bluejay Property Management':{name:'Ramona',email:''}
   };
   const ct=CE[r.responsible]||{};
   const toEmail=ct.email||'';
   const firstName=ct.name?ct.name.split(' ')[0]:(r.responsible||'Team');
-  const LABELS={'Citation':'an open citation','Inspection':'a pending inspection','LLC Filing':'a pending LLC filing','Lead Certification':'a Lead Certification requirement','Property Tax':'an outstanding property tax balance','Registered Agent':'a Registered Agent matter','Rental License':'a Rental License renewal','Utility':'a utility account matter'};
-  const issueLabel=LABELS[r.category]||'a compliance matter';
+  const propLine=r.address&&r.address!=='Entity-level'
+    ?r.address+(r.unit?', Unit '+r.unit:'')
+    :r.entity.replace(/,?\s*(LLC\.?|Inc\.?)$/i,'').trim();
   const hasAmt=r.amount&&parseFloat(r.amount)>0;
   const amtVal=hasAmt?('$'+parseFloat(r.amount).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})):'';
-  const amtStr=hasAmt?' (balance: '+amtVal+')':'';
-  const propLine=r.entity+(r.address&&r.address!=='Entity-level'?' — '+r.address:'')+(r.unit?', Unit '+r.unit:'');
   const dueLine=r.due_date?fmtDate(r.due_date):'N/A';
+  const srcLine=r.source_doc?'See file: '+r.source_doc:'';
+  const actionLine=r.action_required?'Action Needed: '+r.action_required:'';
+  const INTROS={'Rental License':'a Rental License renewal','Citation':'an open citation','Inspection':'a pending inspection','LLC Filing':'a pending LLC filing','Lead Certification':'a Lead Certification requirement','Property Tax':'an outstanding property tax balance','Registered Agent':'a Registered Agent matter','Utility':'a utility account matter'};
+  const intro=INTROS[r.category]||'a compliance matter';
+  let details='Status: '+r.status+'\nDue Date: '+dueLine;
+  if(hasAmt&&r.category==='Property Tax') details+='\nBalance Due: '+amtVal;
+  if(hasAmt&&r.category==='Citation') details+='\nFine: '+amtVal;
+  if(hasAmt&&r.category!=='Property Tax'&&r.category!=='Citation') details+='\nAmount: '+amtVal;
+  if(actionLine) details+='\n'+actionLine;
+  if(srcLine) details+='\n'+srcLine;
   const D='————————————————————';
-  const subj=encodeURIComponent('Action Required: '+r.entity+' — '+r.category);
-  const body=encodeURIComponent(
-    'Hi '+firstName+',\n\n'+
-    'I am writing to follow up on '+issueLabel+amtStr+' for '+r.entity+'. Could you please assist? See details below.\n\n'+
-    D+'\n'+
-    'Item: '+r.category+' — '+r.status+'\n'+
-    'Entity / Property: '+propLine+'\n'+
-    'Due Date: '+dueLine+'\n'+
-    (hasAmt?'Balance Due: '+amtVal+'\n':'')+
-    (r.action_required?'Action Needed: '+r.action_required+'\n':'')+
-    (r.source_doc?'Source Document: '+r.source_doc+'\n':'')+
-    D+'\n\n'+
-    'Thank you,\nMaya Miyazaki\nManager – Real Estate Operations\nBlakeworth Management\nmaya@blakeworth.com | +1 (202) 919-7788'
-  );
+  const subj=encodeURIComponent('Action Required: '+propLine+' — '+r.category);
+  const body=encodeURIComponent('Hi '+firstName+',\n\nI am writing to follow up on '+intro+' at '+propLine+'. Could you please assist? See details below.\n\n'+D+'\n'+details+'\n'+D+'\n\nThank you,\nMaya Miyazaki');
   const gmailUrl='https://mail.google.com/mail/?view=cm&fs=1'+(toEmail?'&to='+encodeURIComponent(toEmail):'')+' &su='+subj+'&body='+body;
   window.open(gmailUrl,'_blank');
 }
