@@ -4724,7 +4724,7 @@ function toggleRow(id) {
 function openPanel(r) {
   document.getElementById('detail-panel').classList.add('open');
   document.getElementById('dp-entity').textContent=r.entity;
-  document.getElementById('dp-sub').textContent=r.portfolio+' &#183; '+r.category+(r.address?' &#183; '+r.address:'')+(r.unit?' &#8212; Unit '+r.unit:'');
+  document.getElementById('dp-sub').textContent=r.portfolio+' · '+r.category+(r.address?' · '+r.address:'')+(r.unit?' &#8212; Unit '+r.unit:'');
   const sb=document.getElementById('dp-status-badge');
   sb.textContent=r.status; sb.className='badge '+statusBadgeClass(r.status);
   const n=daysUntil(r.due_date), db=document.getElementById('dp-days-badge');
