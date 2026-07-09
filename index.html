@@ -4892,7 +4892,7 @@ function draftEmail() {
   const D='————————————————————';
   const subj=encodeURIComponent('Action Required: '+propLine+' — '+r.category);
   const body=encodeURIComponent('Hi '+firstName+',\n\nI am writing to follow up on '+intro+' at '+propLine+'. Could you please assist? See details below.\n\n'+D+'\n'+details+'\n'+D+'\n\nThank you,\nMaya Miyazaki');
-  const gmailUrl='https://mail.google.com/mail/?view=cm&fs=1'+(toEmail?'&to='+encodeURIComponent(toEmail):'')+' &su='+subj+'&body='+body;
+  const gmailUrl='https://mail.google.com/mail/?view=cm&fs=1'+(toEmail?'&to='+encodeURIComponent(toEmail):'')+'&su='+subj+'&body='+body;
   window.open(gmailUrl,'_blank');
 }
 
