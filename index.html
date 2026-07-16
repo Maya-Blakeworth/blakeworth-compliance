@@ -4736,8 +4736,8 @@ function renderTable() {
     <tr class="data-row ${rowClass(r)}${activeRow===r.id?' active':''}" id="row-${r.id}" onclick="toggleRow('${r.id}')">
       <td><span class="pri-dot ${priDotClass(r.status)}"></span></td>
       <td class="col-entity">
-        <div class="entity-name">${r.entity}</div>
-        <div class="entity-sub">${r.portfolio} · ${r.address}</div>
+        <div class="entity-name">${['LLC Filing','Registered Agent'].includes(r.category)?r.entity:(r.address&&r.address!=='Entity-level'?r.address:r.entity)}</div>
+        <div class="entity-sub">${['LLC Filing','Registered Agent'].includes(r.category)?r.portfolio+' · '+r.address:r.entity+(r.unit?' — Unit '+r.unit:'')}</div>
       </td>
       <td style="font-size:12px;font-weight:600;color:#475569;text-align:center">${r.unit||'—'}</td>
       <td style="font-size:12px;color:#64748b;text-align:center">${r.category}</td>
@@ -4787,8 +4787,9 @@ function toggleRow(id) {
 }
 function openPanel(r) {
   document.getElementById('detail-panel').classList.add('open');
-  document.getElementById('dp-entity').textContent=r.entity;
-  document.getElementById('dp-sub').textContent=r.portfolio+' · '+r.category+(r.address?' · '+r.address:'')+(r.unit?' — Unit '+r.unit:'');
+  const _isEntityCat=['LLC Filing','Registered Agent'].includes(r.category);
+  document.getElementById('dp-entity').textContent=_isEntityCat?r.entity:(r.address&&r.address!=='Entity-level'?r.address:r.entity);
+  document.getElementById('dp-sub').textContent=_isEntityCat?(r.portfolio+' · '+r.address):(r.entity+' · '+r.portfolio+' · '+r.category+(r.unit?' — Unit '+r.unit:''));
   const sb=document.getElementById('dp-status-badge');
   sb.textContent=r.status; sb.className='badge '+statusBadgeClass(r.status);
   const n=daysUntil(r.due_date), db=document.getElementById('dp-days-badge');
