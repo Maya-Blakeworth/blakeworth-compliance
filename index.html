@@ -590,7 +590,7 @@ function fmtAmt(a) {
 function updateStats() {
   const fl=DATA.filter(isFlagged);
   document.getElementById('stat-flagged').textContent=fl.length;
-  const out=fl.reduce((s,r)=>s+parseFloat(r.amount||0),0);
+  const out=fl.reduce((s,r)=>s+(parseFloat((r.amount||'').replace(/[$,]/g,''))||0),0);
   document.getElementById('stat-outstanding').textContent=out.toLocaleString('en-US',{maximumFractionDigits:0});
   document.getElementById('stat-awaiting').textContent=DATA.filter(r=>r.comm_status==='Notified').length;
   document.getElementById('all-badge').textContent=fl.length;
@@ -653,7 +653,7 @@ function renderSidebar() {
     if (!el) return;
     const pd = byPort[port]||{total:0,flagged:0};
     const amtTotal = DATA.filter(r=>r.portfolio===port&&r.amount&&isFlagged(r))
-      .reduce((s,r)=>s+parseFloat(r.amount||0),0);
+      .reduce((s,r)=>s+(parseFloat((r.amount||'').replace(/[$,]/g,''))||0),0);
     const fEl = el.querySelector('.ov-flagged');
     if (fEl) fEl.innerHTML = (pd.flagged > 0 ? pd.flagged : '<span style="color:#16a34a">✓</span>') + ' <span>' + (pd.flagged > 0 ? 'flagged' : 'all clear') + '</span>';
     const tEl = el.querySelector('.ov-total');
