@@ -594,7 +594,9 @@ function fmtDate(d) {
 }
 function fmtAmt(a) {
   if (!a) return '';
-  return '$'+parseFloat(a).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const n = parseFloat(String(a).replace(/[$,]/g,''));
+  if (isNaN(n)) return '';
+  return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
 }
 
 // ── stats ─────────────────────────────────────────────────────────────────────
