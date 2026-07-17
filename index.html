@@ -762,7 +762,7 @@ function openPanel(r) {
     db.textContent=n<0?'Overdue '+Math.abs(n)+'d':n+'d until due';
     db.className='days-badge '+(n<0?'days-overdue':n<=30?'days-urgent':'days-ok');
   } else db.textContent=r.due_date?fmtDate(r.due_date):'';
-  document.getElementById('dp-source').textContent=r.source_status||'—';
+  document.getElementById('dp-source').textContent=r.status||'—';
   document.getElementById('dp-amount').textContent=r.amount?fmtAmt(r.amount):'—';
   const respEl=document.getElementById('dp-responsible');
   const CONTACTS={
