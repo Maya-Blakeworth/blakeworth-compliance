@@ -1,22 +1,18 @@
 // ============================================================
 // BLAKEWORTH COMPLIANCE DASHBOARD — DATA CONFIGURATION (live)
 // ============================================================
-// Three publish-to-web CSV feeds from the "Blakeworth_Compliance" Sheet
+// Three gviz/tq CSV feeds from the "Blakeworth_Compliance" Sheet
 // (doc id 1e5vJd30ZMxj7WTQW__B4QDrwYYh0xMluAmsuRlakYHs). Tabs: MASTER / DOCS / LINKS.
-// Each is one tab of the same Sheet, addressed by its gid.
-// To rotate later: in the Sheet, File → Share → Publish to web → Stop publishing,
-// then re-publish and update these URLs.
+// gviz/tq is used instead of publish-to-web because the sheet is publicly
+// shared (anyone with link can view), so the feed always reflects live data.
 // ============================================================
 
 window.CONFIG = {
-  MASTER_CSV_URL: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQNae-sHgBR0y3X1VUQlOwl-gQsR8D9GqB6SS79Nd_5eFqpXp4V9G5GD-Zmhth22TBfsnZU5nUVGFyf/pub?gid=1135568484&single=true&output=csv",
-  DOCS_CSV_URL:   "https://docs.google.com/spreadsheets/d/e/2PACX-1vQNae-sHgBR0y3X1VUQlOwl-gQsR8D9GqB6SS79Nd_5eFqpXp4V9G5GD-Zmhth22TBfsnZU5nUVGFyf/pub?gid=672067850&single=true&output=csv",
-  LINKS_CSV_URL:  "https://docs.google.com/spreadsheets/d/e/2PACX-1vQNae-sHgBR0y3X1VUQlOwl-gQsR8D9GqB6SS79Nd_5eFqpXp4V9G5GD-Zmhth22TBfsnZU5nUVGFyf/pub?gid=367798854&single=true&output=csv",
+  MASTER_CSV_URL: "https://docs.google.com/spreadsheets/d/1e5vJd30ZMxj7WTQW__B4QDrwYYh0xMluAmsuRlakYHs/gviz/tq?tqx=out:csv&gid=1135568484",
+  DOCS_CSV_URL:   "https://docs.google.com/spreadsheets/d/1e5vJd30ZMxj7WTQW__B4QDrwYYh0xMluAmsuRlakYHs/gviz/tq?tqx=out:csv&gid=672067850",
+  LINKS_CSV_URL:  "https://docs.google.com/spreadsheets/d/1e5vJd30ZMxj7WTQW__B4QDrwYYh0xMluAmsuRlakYHs/gviz/tq?tqx=out:csv&gid=367798854",
 
   // ---- Status write-back (Mark paid / Mark cleared) ----
-  // Paste the Apps Script web-app /exec URL here after you deploy Code.gs.
-  // Leave it empty ("") to keep the dashboard read-only (buttons stay hidden).
   STATUS_WRITE_URL: "https://script.google.com/macros/s/AKfycbxOavoP_ng6ThR1ZI_fdSLynkEE25qtWN9qQX1qY4W0W9fZYhFRcvj_waq-eJ4QbEMh/exec",
-  // Must match SECRET_TOKEN in Code.gs. Use a long random string.
   STATUS_TOKEN: "bw-KUF1d7Owbd9PiX-r-56MtQ",
 };
