@@ -713,7 +713,7 @@ function renderTable() {
 
 // ── nav ───────────────────────────────────────────────────────────────────────
 function filterBy(port,cat) {
-  hideInsuranceView();
+  if (typeof hideInsuranceView === 'function') hideInsuranceView();
   filterPortfolio=port; filterCategory=cat;
   document.querySelectorAll('.cat-item').forEach(el=>el.classList.remove('active'));
   document.getElementById('nav-all').classList.toggle('active',!port);
