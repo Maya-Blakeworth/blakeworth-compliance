@@ -493,7 +493,7 @@ async function loadData() {
     const resp = await fetch(window.CONFIG.MASTER_CSV_URL);
     if (!resp.ok) throw new Error('HTTP ' + resp.status);
     const text = await resp.text();
-    DATA = parseCSV(text).filter(r => r.portfolio && r.category);
+    DATA = parseCSV(text).filter(r => ['JHU','SLP','HOLDING','DC'].includes(r.portfolio) && r.category);
     if (loader) loader.remove();
     loadState();
     updateStats();
