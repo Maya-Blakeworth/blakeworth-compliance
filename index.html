@@ -468,8 +468,8 @@ function parseCSV(text) {
       entity:           g('LLC_Entity'),
       category:         g('Category'),
       due_date:         g('Due_Date'),
-      status:           g('Health'),
-      source_status:    g('Source_Status'),
+      health:           g('Health'),
+      status:           g('Source_Status'),
       amount:           g('Billed_Amount'),
       responsible:      g('Responsible'),
       notes:            g('Notes'),
@@ -534,10 +534,10 @@ function loadState() {
 }
 
 // ── status helpers ────────────────────────────────────────────────────────────
-const FLAGGED_SET = new Set(['Filing Needed','Reinstatement Required','Tax Due','Invoice Due','License Renewal Needed','Outstanding Balance','Verify with Dallas','Inspection Due','TBD']);
-const isFlagged = r => FLAGGED_SET.has(r.status) || r.status === '-' || r.status === '';
-const isCurrent = r => ['Current','Auto-pay','Active'].includes(r.status);
-const isCleared = r => ['Cleared','Superseded'].includes(r.status);
+const FLAGGED_SET = new Set(['Filing Needed','Reinstatement Required','Tax Due','Invoice Due','License Renewal Needed','Outstanding Balance','Verify with Dallas','Inspection Due','TBD','Needs action','Needs Action','Overdue','Expired','Revoked','Not Paid','Unpaid','Action Required','Past Due']);
+const isFlagged = r => FLAGGED_SET.has(r.health) || r.health === '-' || r.health === '' || (r.status && /revok|not paid|not confirm|unpaid|overdue|expired|action required|needs action/i.test(r.status));
+const isCurrent = r => ['Current','Auto-pay','Active'].includes(r.health);
+const isCleared = r => ['Cleared','Superseded'].includes(r.health);
 
 function statusBadgeClass(s) {
   if (s==='Reinstatement Required') return 'badge-red';
@@ -697,16 +697,16 @@ function renderTable() {
   document.getElementById('row-count').textContent=rows.length+' items';
   document.getElementById('tbody').innerHTML=rows.map(r=>`
     <tr class="data-row ${rowClass(r)}${activeRow===r.id?' active':''}" id="row-${r.id}" onclick="toggleRow('${r.id}')">
-      <td><span class="pri-dot ${priDotClass(r.status)}"></span></td>
+      <td><span class="pri-dot ${priDotClass(r.health)}"></span></td>
       <td class="col-entity">
         <div class="entity-name">${['LLC Filing','Registered Agent'].includes(r.category)?r.entity:(r.address&&r.address!=='Entity-level'?r.address:r.entity)}</div>
         <div class="entity-sub">${['LLC Filing','Registered Agent'].includes(r.category)?r.portfolio+' · '+r.address:r.entity+(r.unit?' — Unit '+r.unit:'')}</div>
       </td>
       <td style="font-size:12px;font-weight:600;color:#475569;text-align:center">${r.unit||'—'}</td>
       <td style="font-size:12px;color:#64748b;text-align:center">${r.category}</td>
-      <td style="text-align:center"><span class="badge ${statusBadgeClass(r.status)}">${r.status}</span></td>
+      <td style="text-align:center"><span class="badge ${statusBadgeClass(r.health)}">${r.status}</span></td>
       <td style="font-size:12px;color:#64748b;text-align:center">${fmtDate(r.due_date)}${daysHtml(r)}</td>
-      <td style="font-size:12px;font-weight:600;color:#b91c1c;text-align:center">${r.amount&&parseFloat(r.amount)>0?fmtAmt(r.amount):''}</td>
+      <td style="font-size:12px;font-weight:600;color:#b91c1c;text-align:center">${r.amount&&(parseFloat((r.amount||'').replace(/[$,]/g,''))||0)>0?fmtAmt(r.amount):''}</td>
       <td>${commBadgeHtml(r.comm_status, r.id)}</td>
     </tr>`).join('');
 }
@@ -754,7 +754,7 @@ function openPanel(r) {
   document.getElementById('dp-entity').textContent=_isEntityCat?r.entity:(r.address&&r.address!=='Entity-level'?r.address:r.entity);
   document.getElementById('dp-sub').textContent=_isEntityCat?(r.portfolio+' · '+r.address):(r.entity+' · '+r.portfolio+' · '+r.category+(r.unit?' — Unit '+r.unit:''));
   const sb=document.getElementById('dp-status-badge');
-  sb.textContent=r.status; sb.className='badge '+statusBadgeClass(r.status);
+  sb.textContent=r.status; sb.className='badge '+statusBadgeClass(r.health);
   const n=daysUntil(r.due_date), db=document.getElementById('dp-days-badge');
   if (n!==null&&isFlagged(r)) {
     db.textContent=n<0?'Overdue '+Math.abs(n)+'d':n+'d until due';
