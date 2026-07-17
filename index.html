@@ -469,7 +469,7 @@ function parseCSV(text) {
       category:         g('Category'),
       due_date:         g('Due_Date'),
       health:           g('Health'),
-      status:           g('Source_Status'),
+      status:           g('Status') || g('Source_Status'),
       amount:           g('Billed_Amount'),
       responsible:      g('Responsible'),
       notes:            g('Notes'),
