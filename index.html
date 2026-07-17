@@ -214,7 +214,7 @@ td.col-entity{text-align:left}
 .ins-badge.upcoming{background:#fff7ed;color:#c2410c}
 .ins-pending-note{font-size:10px;color:#94a3b8;font-style:italic;padding:8px 14px;border-top:1px solid #f1f5f9}
 </style>
-<script src="config.js?v=23"></script>
+<script src="config.js?v=24"></script>
 </head>
 <body>
 <div id="data-loader" style="position:fixed;inset:0;background:#0f172a;display:flex;align-items:center;justify-content:center;z-index:9999;color:#94a3b8;font-family:sans-serif;font-size:14px;">
@@ -804,31 +804,22 @@ function openPanel(r) {
   document.getElementById('dp-source').textContent=r.source_status||'—';
   document.getElementById('dp-amount').textContent=r.amount?fmtAmt(r.amount):'—';
   const respEl=document.getElementById('dp-responsible');
-  const CONTACTS={
-    'Dallas Basha':    {name:'Dallas Basha',title:'Partner – Business Operations',email:'dallas@blakeworth.com',phone:'+1 (202) 375-0652'},
-    'Steve Riegger':   {name:'Steve Riegger',title:'Director of Property Management, American Management',email:'propertymanager@americanmanage.com',phone:'410.366.2100 ext 107'},
-    'Marjorie Feehan Roberts': {name:'Marjorie Feehan Roberts',title:'Property Manager, 4Front Management',email:'marjorie@4frontmgmt.com',phone:'c: 570-620-6107 · o: 484-222-0688'},
-    'Maya':            {name:'Maya Miyazaki',title:'Manager – Real Estate Operations, Blakeworth',email:'maya@blakeworth.com',phone:'+1 (202) 919-7788'},
-    'Ramonia Hines':   {name:'Ramonia Hines',title:'Property Manager, Bluejay Property Management',email:'',phone:''},
-    'Fran Moore':      {name:'Fran Moore',title:'Agent, Heller Kowitz Insurance',email:'fran@hellerkowitz.com',phone:'443-501-0178'},
-    'Patricia Weaver': {name:'Patricia Weaver',title:'President, Canton Management Company',email:'patweaver@cantonmanagement.com',phone:'410-342-2205 ext 226'},
-    'Rhea Baker / Lily': {name:'Rhea Baker / Lily',title:'Agent, Statefarm-Baltimore',email:'lily.balbi.vabyjt@statefarm.com',phone:'703-847-6880'},
-    'Tom French':      {name:'Tom French',title:'Agent, Statefarm-Bethlehem',email:'tom.french.qugq@statefarm.com',phone:'610-725-8700'},
-    'Zachary Basha':   {name:'Zachary Basha',title:'Partner, University Pkwy, LLC',email:'',phone:'+1 (202) 304-3035'},
-  };
-  const ct=CONTACTS[r.responsible];
   const ctDiv=document.getElementById('dp-contact');
-  if(ct){
-    respEl.textContent='';
-    ctDiv.innerHTML=`<div style="color:#334155;line-height:1.8;font-size:12px">`
-      +`<div>${ct.name}</div>`
-      +`<div style="color:#64748b">${ct.title}</div>`
-      +(ct.email?`<div><a href="mailto:${ct.email}" style="color:#2563eb;text-decoration:none">${ct.email}</a></div>`:'')
-      +(ct.phone?`<div style="color:#64748b">${ct.phone}</div>`:'')
-      +`</div>`;
+  respEl.textContent='';
+  if (r.responsible) {
+    // Parse the multi-line responsible field (name, title, email, phone on separate lines)
+    const lines = r.responsible.split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
+    const isEmail = s => s.includes('@');
+    const isPhone = s => /[\d\-\.\+\(\) ext]+/.test(s) && !s.includes('@') && s.replace(/[\d\s\-\.\+\(\)extEXT]/g,'').length < 8;
+    ctDiv.innerHTML = `<div style="color:#334155;line-height:1.9;font-size:12px">`
+      + lines.map((l,i) => {
+          if (i===0) return `<div>${l}</div>`;
+          if (isEmail(l)) return `<div><a href="mailto:${l}" style="color:#2563eb;text-decoration:none">${l}</a></div>`;
+          return `<div style="color:#64748b">${l}</div>`;
+        }).join('')
+      + `</div>`;
   } else {
-    respEl.textContent=r.responsible||'—';
-    ctDiv.innerHTML='';
+    ctDiv.innerHTML='<span style="color:#94a3b8">—</span>';
   }
   // Notes (hide section if empty)
   const notesSection = document.getElementById('dp-notes-section');
