@@ -766,17 +766,16 @@ function openPanel(r) {
   document.getElementById('dp-amount').textContent=r.amount?fmtAmt(r.amount):'—';
   const respEl=document.getElementById('dp-responsible');
   const CONTACTS={
-    'Dallas':    {name:'Dallas Basha',title:'Partner – Business Operations',email:'dallas@blakeworth.com',phone:'+1 (202) 375-0652'},
-    'Steve':     {name:'Steve Riegger',title:'Director of Property Management, American Management',email:'propertymanager@americanmanage.com',phone:'410.366.2100 ext 107'},
-    'Marjorie':  {name:'Marjorie Feehan Roberts',title:'Property Manager, 4Front Management',email:'marjorie@4frontmgmt.com',phone:'c: 570-620-6107 · o: 484-222-0688'},
-    'Maya':      {name:'Maya Miyazaki',title:'Manager – Real Estate Operations, Blakeworth',email:'maya@blakeworth.com',phone:'+1 (202) 919-7788'},
-    'CSC':       {name:'Zachary Tolliver',title:'Commercial Director, CSC',email:'Zachary.Tolliver@cscglobal.com',phone:''},
-    'Jacob Rappaport': {name:'Jacob M. Rappaport ⚠️',title:'Ranchleigh Consulting — ⚠️ Convicted bank fraud April 2026. Confirm with Dallas.',email:'',phone:'(443) 845-3966'},
-    'Ramona':    {name:'Ramona — Bluejay Property Management',title:'Property Manager, DC Portfolio',email:'',phone:''},
-    'Steve — American Management': {name:'Steve Riegger',title:'Director of Property Management, American Management',email:'propertymanager@americanmanage.com',phone:'410.366.2100 ext 107'},
-    'Ramonia — Bluejay Property Management': {name:'Ramona — Bluejay Property Management',title:'Property Manager, DC Portfolio',email:'',phone:''},
-    'Pat — Canton Property Management': {name:'Pat — Canton Property Management',title:'Property Manager, Canton',email:'',phone:''},
-    'Marj/Kristina — Forefront Property Management': {name:'Marjorie Feehan Roberts',title:'Property Manager, 4Front Management',email:'marjorie@4frontmgmt.com',phone:'c: 570-620-6107 · o: 484-222-0688'},
+    'Dallas Basha':    {name:'Dallas Basha',title:'Partner – Business Operations',email:'dallas@blakeworth.com',phone:'+1 (202) 375-0652'},
+    'Steve Riegger':   {name:'Steve Riegger',title:'Director of Property Management, American Management',email:'propertymanager@americanmanage.com',phone:'410.366.2100 ext 107'},
+    'Marjorie Feehan Roberts': {name:'Marjorie Feehan Roberts',title:'Property Manager, 4Front Management',email:'marjorie@4frontmgmt.com',phone:'c: 570-620-6107 · o: 484-222-0688'},
+    'Maya':            {name:'Maya Miyazaki',title:'Manager – Real Estate Operations, Blakeworth',email:'maya@blakeworth.com',phone:'+1 (202) 919-7788'},
+    'Ramonia Hines':   {name:'Ramonia Hines',title:'Property Manager, Bluejay Property Management',email:'',phone:''},
+    'Fran Moore':      {name:'Fran Moore',title:'',email:'',phone:''},
+    'Patricia Weaver': {name:'Patricia Weaver',title:'',email:'',phone:''},
+    'Rhea Baker / Lily': {name:'Rhea Baker / Lily',title:'',email:'',phone:''},
+    'Tom French':      {name:'Tom French',title:'',email:'',phone:''},
+    'Zachary Basha':   {name:'Zachary Basha',title:'',email:'',phone:''},
   };
   const ct=CONTACTS[r.responsible];
   const ctDiv=document.getElementById('dp-contact');
@@ -887,13 +886,16 @@ function draftEmail() {
   const r=DATA.find(x=>x.id===activeRow); if (!r) return;
   // Resolve contact
   const CONTACTS_LOCAL={
-    'Dallas':    {name:'Dallas Basha',email:'dallas@blakeworth.com'},
-    'Steve':     {name:'Steve Riegger',email:'propertymanager@americanmanage.com'},
-    'Marjorie':  {name:'Marjorie Feehan Roberts',email:'marjorie@4frontmgmt.com'},
-    'Maya':      {name:'Maya Miyazaki',email:'maya@blakeworth.com'},
-    'CSC':       {name:'Zachary Tolliver',email:'Zachary.Tolliver@cscglobal.com'},
-    'Steve — American Management': {name:'Steve Riegger',email:'propertymanager@americanmanage.com'},
-    'Marj/Kristina — Forefront Property Management': {name:'Marjorie Feehan Roberts',email:'marjorie@4frontmgmt.com'},
+    'Dallas Basha':    {name:'Dallas Basha',email:'dallas@blakeworth.com'},
+    'Steve Riegger':   {name:'Steve Riegger',email:'propertymanager@americanmanage.com'},
+    'Marjorie Feehan Roberts': {name:'Marjorie Feehan Roberts',email:'marjorie@4frontmgmt.com'},
+    'Maya':            {name:'Maya Miyazaki',email:'maya@blakeworth.com'},
+    'Ramonia Hines':   {name:'Ramonia Hines',email:''},
+    'Fran Moore':      {name:'Fran Moore',email:''},
+    'Patricia Weaver': {name:'Patricia Weaver',email:''},
+    'Rhea Baker / Lily': {name:'Rhea Baker / Lily',email:''},
+    'Tom French':      {name:'Tom French',email:''},
+    'Zachary Basha':   {name:'Zachary Basha',email:''},
   };
   const ct = CONTACTS_LOCAL[r.responsible] || {};
   const toEmail = ct.email || '';
