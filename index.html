@@ -386,6 +386,10 @@ td.col-entity{text-align:left}
         <div class="dp-field"><div class="dp-label">Amount due</div><div class="dp-value amount" id="dp-amount"></div></div>
         <div class="dp-field"><div class="dp-label">Responsible</div><div class="dp-value" id="dp-responsible"></div><div id="dp-contact" style="margin-top:4px;font-size:11px;color:#475569;line-height:1.6"></div></div>
       </div>
+      <div class="dp-section" id="dp-notes-section">
+        <div class="dp-section-title">Notes</div>
+        <div class="dp-box" id="dp-notes">—</div>
+      </div>
       <div class="dp-section" id="dp-ra-section">
         <div class="dp-section-title">RA &amp; Entity</div>
         <div id="dp-ra"></div>
@@ -405,10 +409,6 @@ td.col-entity{text-align:left}
       <div class="dp-section">
         <div class="dp-section-title">Comm flow</div>
         <div class="comm-flow" id="dp-comm-flow"></div>
-      </div>
-      <div class="dp-section">
-        <div class="dp-section-title">Notes</div>
-        <div class="dp-box" id="dp-notes">—</div>
       </div>
       <div class="dp-section">
         <div class="dp-section-title">Activity log</div>
@@ -706,7 +706,7 @@ function renderTable() {
       </td>
       <td style="font-size:12px;font-weight:600;color:#475569;text-align:center">${r.unit||'—'}</td>
       <td style="font-size:12px;color:#64748b;text-align:center">${r.category}</td>
-      <td style="text-align:center"><span class="badge ${statusBadgeClass(r.health)}">${r.status}</span></td>
+      <td style="text-align:center"><span class="badge ${statusBadgeClass(r.health)}">${r.health}</span></td>
       <td style="font-size:12px;color:#64748b;text-align:center">${fmtDate(r.due_date)}${daysHtml(r)}</td>
       <td style="font-size:12px;font-weight:600;color:#b91c1c;text-align:center">${r.amount&&(parseFloat((r.amount||'').replace(/[$,]/g,''))||0)>0?fmtAmt(r.amount):''}</td>
       <td>${commBadgeHtml(r.comm_status, r.id)}</td>
@@ -756,7 +756,7 @@ function openPanel(r) {
   document.getElementById('dp-entity').textContent=_isEntityCat?r.entity:(r.address&&r.address!=='Entity-level'?r.address:r.entity);
   document.getElementById('dp-sub').textContent=_isEntityCat?(r.portfolio+' · '+r.address):(r.entity+' · '+r.portfolio+' · '+r.category+(r.unit?' — Unit '+r.unit:''));
   const sb=document.getElementById('dp-status-badge');
-  sb.textContent=r.status; sb.className='badge '+statusBadgeClass(r.health);
+  sb.textContent=r.health; sb.className='badge '+statusBadgeClass(r.health);
   const n=daysUntil(r.due_date), db=document.getElementById('dp-days-badge');
   if (n!==null&&isFlagged(r)) {
     db.textContent=n<0?'Overdue '+Math.abs(n)+'d':n+'d until due';
@@ -788,8 +788,23 @@ function openPanel(r) {
     respEl.textContent=r.responsible||'—';
     ctDiv.innerHTML='';
   }
-  document.getElementById('dp-action').textContent=r.action_required||'No action required.';
-  document.getElementById('dp-notes').textContent=r.notes||'—';
+  // Notes (hide section if empty)
+  const notesSection = document.getElementById('dp-notes-section');
+  if (r.notes) {
+    document.getElementById('dp-notes').textContent=r.notes;
+    notesSection.style.display='';
+  } else {
+    notesSection.style.display='none';
+  }
+  // Action required — show link from LINKS tab if available, else text
+  const actionEl=document.getElementById('dp-action');
+  if (r.action_url) {
+    actionEl.innerHTML=`<a href="${r.action_url}" target="_blank" style="color:#2563eb;font-weight:500">Open action portal →</a>`;
+  } else if (r.action_required) {
+    actionEl.textContent=r.action_required;
+  } else {
+    actionEl.textContent='No action required.';
+  }
   // comm flow
   const stepIdx=COMM_STEPS.indexOf(r.comm_status);
   document.getElementById('dp-comm-flow').innerHTML=COMM_STEPS.map((s,i)=>{
