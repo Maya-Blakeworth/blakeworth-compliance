@@ -97,7 +97,7 @@ td.col-entity{text-align:left}
 /* priority dot */
 .pri-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;display:inline-block}
 .pri-red{background:#ef4444}.pri-yellow{background:#f59e0b}.pri-purple{background:#9333ea}
-.pri-blue{background:#3b82f6}.pri-green{background:#22c55e}.pri-gray{background:#cbd5e1}
+.pri-blue{background:#3b82f6}.pri-green{background:#22c55e}.pri-gray{background:#cbd5e1}.pri-orange{background:#f97316}
 
 /* entity cell */
 .entity-name{font-weight:600;color:#0f172a;font-size:13px}
@@ -107,7 +107,7 @@ td.col-entity{text-align:left}
 .badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;white-space:nowrap}
 .badge-red{background:#fef2f2;color:#b91c1c}.badge-yellow{background:#fefce8;color:#854d0e}
 .badge-purple{background:#faf5ff;color:#6b21a8}.badge-blue{background:#eff6ff;color:#1d4ed8}
-.badge-green{background:#f0fdf4;color:#15803d}.badge-gray{background:#f8fafc;color:#64748b}
+.badge-green{background:#f0fdf4;color:#15803d}.badge-gray{background:#f8fafc;color:#64748b}.badge-orange{background:#fff7ed;color:#c2410c}
 
 /* comm badge */
 .comm-badge{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:500;border:1px solid;white-space:nowrap}
@@ -214,7 +214,7 @@ td.col-entity{text-align:left}
 .ins-badge.upcoming{background:#fff7ed;color:#c2410c}
 .ins-pending-note{font-size:10px;color:#94a3b8;font-style:italic;padding:8px 14px;border-top:1px solid #f1f5f9}
 </style>
-<script src="config.js"></script>
+<script src="config.js?v=20"></script>
 </head>
 <body>
 <div id="data-loader" style="position:fixed;inset:0;background:#0f172a;display:flex;align-items:center;justify-content:center;z-index:9999;color:#94a3b8;font-family:sans-serif;font-size:14px;">
@@ -469,7 +469,8 @@ function parseCSV(text) {
       category:         g('Category'),
       due_date:         g('Due_Date'),
       health:           g('Health'),
-      status:           g('Status') || g('Source_Status'),
+      status:           g('Status') || g('Health'),
+      source_status:    g('Source_Status'),
       amount:           g('Billed_Amount'),
       responsible:      g('Responsible'),
       notes:            g('Notes'),
@@ -540,19 +541,41 @@ const isCurrent = r => ['Current','Auto-pay','Active'].includes(r.health);
 const isCleared = r => ['Cleared','Superseded'].includes(r.health);
 
 function statusBadgeClass(s) {
-  if (s==='Reinstatement Required') return 'badge-red';
-  if (['Filing Needed','Invoice Due','Tax Due','Verify with Dallas'].includes(s)) return 'badge-yellow';
-  if (['License Renewal Needed','Inspection Due'].includes(s)) return 'badge-purple';
-  if (['Auto-pay','Outstanding Balance'].includes(s)) return 'badge-blue';
-  if (['Current','Cleared','Active','Superseded'].includes(s)) return 'badge-green';
+  if (!s) return 'badge-gray';
+  const sl = s.toLowerCase().trim();
+  // Red — critical / bad
+  if (['reinstatement required','no active insurance','filing required','revoked',
+       'unpaid','overdue','invoice unpaid'].includes(sl)) return 'badge-red';
+  // Yellow — warning / upcoming (before green to prevent 'active — monitor' matching 'active')
+  if (['active — monitor for renewal','active — monitor','renew soon','registration only',
+       'filing needed','renovations','needs action','upcoming'].includes(sl) ||
+      sl.includes('monitor')) return 'badge-yellow';
+  // Green — good standing
+  if (['active','licensed','paid','cleared','valid','good standing','superseded'].includes(sl) ||
+      sl.includes('current')) return 'badge-green';
+  // Orange — needs attention / unconfirmed
+  if (['filing unconfirmed','verify status','verify with csc','verify — cm','verify — am',
+       'decision needed'].includes(sl) || sl.startsWith('verify') ||
+      sl.startsWith('payment plan')) return 'badge-orange';
   return 'badge-gray';
 }
 function priDotClass(s) {
-  if (s==='Reinstatement Required') return 'pri-red';
-  if (['Filing Needed','Tax Due','Invoice Due','Verify with Dallas'].includes(s)) return 'pri-yellow';
-  if (['License Renewal Needed','Inspection Due'].includes(s)) return 'pri-purple';
-  if (['Outstanding Balance','Auto-pay'].includes(s)) return 'pri-blue';
-  if (['Current','Cleared','Active','Superseded'].includes(s)) return 'pri-green';
+  if (!s) return 'pri-gray';
+  const sl = s.toLowerCase().trim();
+  // Red — critical
+  if (['reinstatement required','no active insurance','filing required','revoked',
+       'unpaid','overdue','invoice unpaid'].includes(sl)) return 'pri-red';
+  // Yellow — warning / upcoming
+  if (['active — monitor for renewal','active — monitor','renew soon','registration only',
+       'filing needed','renovations','needs action','upcoming'].includes(sl) ||
+      sl.includes('monitor')) return 'pri-yellow';
+  // Green — good
+  if (['active','licensed','paid','cleared','valid','good standing','superseded'].includes(sl) ||
+      sl.includes('current')) return 'pri-green';
+  // Orange — needs attention
+  if (['filing unconfirmed','verify status','verify with csc','verify — cm','verify — am',
+       'decision needed'].includes(sl) || sl.startsWith('verify') ||
+      sl.startsWith('payment plan')) return 'pri-orange';
   return 'pri-gray';
 }
 function rowClass(r) {
@@ -699,14 +722,14 @@ function renderTable() {
   document.getElementById('row-count').textContent=rows.length+' items';
   document.getElementById('tbody').innerHTML=rows.map(r=>`
     <tr class="data-row ${rowClass(r)}${activeRow===r.id?' active':''}" id="row-${r.id}" onclick="toggleRow('${r.id}')">
-      <td><span class="pri-dot ${priDotClass(r.health)}"></span></td>
+      <td><span class="pri-dot ${priDotClass(r.status)}"></span></td>
       <td class="col-entity">
         <div class="entity-name">${['LLC Filing','Registered Agent'].includes(r.category)?r.entity:(r.address&&r.address!=='Entity-level'?r.address:r.entity)}</div>
         <div class="entity-sub">${['LLC Filing','Registered Agent'].includes(r.category)?r.portfolio+' · '+r.address:r.entity+(r.unit?' — Unit '+r.unit:'')}</div>
       </td>
       <td style="font-size:12px;font-weight:600;color:#475569;text-align:center">${r.unit||'—'}</td>
       <td style="font-size:12px;color:#64748b;text-align:center">${r.category}</td>
-      <td style="text-align:center"><span class="badge ${statusBadgeClass(r.health)}">${r.health}</span></td>
+      <td style="text-align:center"><span class="badge ${statusBadgeClass(r.status)}">${r.status}</span></td>
       <td style="font-size:12px;color:#64748b;text-align:center">${fmtDate(r.due_date)}${daysHtml(r)}</td>
       <td style="font-size:12px;font-weight:600;color:#b91c1c;text-align:center">${r.amount&&(parseFloat((r.amount||'').replace(/[$,]/g,''))||0)>0?fmtAmt(r.amount):''}</td>
       <td>${commBadgeHtml(r.comm_status, r.id)}</td>
@@ -756,13 +779,13 @@ function openPanel(r) {
   document.getElementById('dp-entity').textContent=_isEntityCat?r.entity:(r.address&&r.address!=='Entity-level'?r.address:r.entity);
   document.getElementById('dp-sub').textContent=_isEntityCat?(r.portfolio+' · '+r.address):(r.entity+' · '+r.portfolio+' · '+r.category+(r.unit?' — Unit '+r.unit:''));
   const sb=document.getElementById('dp-status-badge');
-  sb.textContent=r.health; sb.className='badge '+statusBadgeClass(r.health);
+  sb.textContent=r.status; sb.className='badge '+statusBadgeClass(r.status);
   const n=daysUntil(r.due_date), db=document.getElementById('dp-days-badge');
   if (n!==null&&isFlagged(r)) {
     db.textContent=n<0?'Overdue '+Math.abs(n)+'d':n+'d until due';
     db.className='days-badge '+(n<0?'days-overdue':n<=30?'days-urgent':'days-ok');
   } else db.textContent=r.due_date?fmtDate(r.due_date):'';
-  document.getElementById('dp-source').textContent=r.status||'—';
+  document.getElementById('dp-source').textContent=r.source_status||'—';
   document.getElementById('dp-amount').textContent=r.amount?fmtAmt(r.amount):'—';
   const respEl=document.getElementById('dp-responsible');
   const CONTACTS={
@@ -796,10 +819,12 @@ function openPanel(r) {
   } else {
     notesSection.style.display='none';
   }
-  // Action required — show link from LINKS tab if available, else text
+  // Action required — show link if URL, text if instruction, else default
   const actionEl=document.getElementById('dp-action');
-  if (r.action_url) {
+  if (r.action_url && r.action_url.startsWith('http')) {
     actionEl.innerHTML=`<a href="${r.action_url}" target="_blank" style="color:#2563eb;font-weight:500">Open action portal →</a>`;
+  } else if (r.action_url) {
+    actionEl.textContent=r.action_url;
   } else if (r.action_required) {
     actionEl.textContent=r.action_required;
   } else {
@@ -818,7 +843,7 @@ function openPanel(r) {
   // portals
   const pDiv=document.getElementById('dp-portals'), links=[];
   if (r.portal_url) links.push([r.portal_url,'🌐','Go to portal →']);
-  if (r.action_url) links.push([r.action_url, r.action_url.includes('drive.google')?'🗂️':'🌐', r.action_url.includes('drive.google')?'View source file →':'Go to portal →']);
+  if (r.action_url && r.action_url.startsWith('http')) links.push([r.action_url, r.action_url.includes('drive.google')?'🗂️':'🌐', r.action_url.includes('drive.google')?'View source file →':'Go to portal →']);
   if (r.source_doc && r.source_doc !== r.action_url) links.push([r.source_doc,'🗂️','View source file →']);
   if (links.length) {
     document.getElementById('dp-portals-section').style.display='';
