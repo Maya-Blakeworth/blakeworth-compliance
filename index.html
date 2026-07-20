@@ -937,9 +937,19 @@ function terminalLabel(category) {
   return map[category] || 'Cleared';
 }
 
+let LINKS_BY_CATEGORY = {};
+function loadLinks() {
+  if (!window.CONFIG || !CONFIG.LINKS_CSV) return;
+  fetch(CONFIG.LINKS_CSV).then(r=>r.text()).then(t=>{
+    const rows = parseCSV(t);
+    rows.forEach(row => {
+      const cat = (row['Category'] || '').trim();
+      if (cat) LINKS_BY_CATEGORY[cat] = row;
+    });
+  }).catch(()=>{});
+}
 function draftEmail() {
   const r=DATA.find(x=>x.id===activeRow); if (!r) return;
-  // Resolve contact
   const CONTACTS_LOCAL={
     'Dallas Basha':    {name:'Dallas Basha',email:'dallas@blakeworth.com'},
     'Steve Riegger':   {name:'Steve Riegger',email:'propertymanager@americanmanage.com'},
@@ -952,28 +962,96 @@ function draftEmail() {
     'Tom French':      {name:'Tom French',email:'tom.french.qugq@statefarm.com'},
     'Zachary Basha':   {name:'Zachary Basha',email:''},
   };
-  const ct = CONTACTS_LOCAL[r.responsible] || {};
-  const toEmail = ct.email || '';
-  const firstName = ct.name ? ct.name.split(' ')[0] : (r.responsible || 'Team');
-  const sourceLink = r.source_doc ? `\nSource document: ${r.source_doc}\n` : '';
-  const amtLine = r.amount && parseFloat(r.amount) > 0 ? `\nAmount: ${fmtAmt(r.amount)}` : '';
-  const dueLine = r.due_date ? `\nDue date: ${fmtDate(r.due_date)}` : '';
-  const subj = encodeURIComponent(`Action Required: ${r.entity} — ${r.category}`);
-  const body = encodeURIComponent(
-    `Hi ${firstName},\n\nThese are the items that need your attention. Could you please assist us with the information below?\n\n` +
-    `————————————————————\n` +
-    `Entity / Property: ${r.entity}${r.address && r.address !== 'Entity-level' ? ' — ' + r.address : ''}${r.unit ? ', ' + r.unit : ''}\n` +
-    `Category: ${r.category}\n` +
-    `Current status: ${r.status}${dueLine}${amtLine}\n` +
-    `\nAction needed:\n${r.action_required || 'Please review and advise.'}${sourceLink}\n` +
-    `————————————————————\n\n` +
-    `Thank you,\nMaya Miyazaki\nManager – Real Estate Operations\nBlakeworth Management\nmaya@blakeworth.com | +1 (202) 919-7788`
-  );
-  const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1${toEmail ? '&to=' + encodeURIComponent(toEmail) : ''}&su=${subj}&body=${body}`;
-  window.open(gmailUrl, '_blank');
-}
+  const ct=CONTACTS_LOCAL[r.responsible]||{};
+  const toEmail=ct.email||'';
+  const firstName=ct.name?ct.name.split(' ')[0]:(r.responsible||'Team');
+  const subj=`Action Required: ${r.entity} — ${r.category}`;
 
-// ── instructions modal ────────────────────────────────────────────────────────
+  // Look up Links tab entry by category
+  const lk=LINKS_BY_CATEGORY[r.category]||{};
+  let actionHtml='', actionText='';
+  if (lk.Label||lk.URL) {
+    const lbl=lk.Label||'Link'; const url=lk.URL||'#';
+    actionHtml+=`<a href="${url}" style="color:#1a73e8">${lbl}</a>`;
+    actionText+=`${lbl}: ${url}`;
+  }
+  if (lk['Log in email']||lk.Password) {
+    const cred=[lk['Log in email']?'Login: '+lk['Log in email']:'', lk.Password?'Password: '+lk.Password:''].filter(Boolean).join(' | ');
+    actionHtml+=`<br>${cred}`;
+    actionText+=`
+${cred}`;
+  }
+  if (lk.Note) { actionHtml+=`<br>${lk.Note}`; actionText+=`
+${lk.Note}`; }
+  if (!actionHtml) { actionHtml=r.action_required||'Please review and advise.'; actionText=r.action_required||'Please review and advise.'; }
+  const srcHtml=r.source_doc?`<br>Source document: <a href="${r.source_doc}" style="color:#1a73e8">${r.source_doc}</a>`:'';
+  const srcText=r.source_doc?`
+Source document: ${r.source_doc}`:'';
+  const entityLine=r.entity+(r.address&&r.address!=='Entity-level'?' — '+r.address:'')+(r.unit?', '+r.unit:'');
+  const dueTd=r.due_date?`<tr><td style="padding:3px 0;width:140px;color:#666;font-size:13px">Due date:</td><td style="padding:3px 0">${fmtDate(r.due_date)}</td></tr>`:'';
+  const amtTd=r.amount&&parseFloat(r.amount)>0?`<tr><td style="padding:3px 0;color:#666;font-size:13px">Amount:</td><td style="padding:3px 0">${fmtAmt(r.amount)}</td></tr>`:'';
+  const div='<hr style="border:none;border-top:1px solid #e0e0e0;margin:14px 0">';
+
+  const htmlBody=`<div style="font-family:Arial,sans-serif;font-size:14px;color:#222;max-width:600px;line-height:1.5">
+<p>Hi ${firstName},</p>
+<p>This needs your attention. Could you please assist us with the information below?</p>
+${div}
+<table style="border-collapse:collapse;width:100%">
+  <tr><td style="padding:3px 0;width:140px;color:#666;font-size:13px">Entity / Property:</td><td style="padding:3px 0;font-weight:600">${entityLine}</td></tr>
+  <tr><td style="padding:3px 0;color:#666;font-size:13px">Category:</td><td style="padding:3px 0">${r.category}</td></tr>
+  <tr><td style="padding:3px 0;color:#666;font-size:13px">Current status:</td><td style="padding:3px 0">${r.status}</td></tr>
+  ${dueTd}${amtTd}
+</table>
+<p style="margin:12px 0 4px"><strong>Action needed:</strong></p>
+<p style="margin:0 0 6px;line-height:1.7">${actionHtml}${srcHtml}</p>
+${div}
+<p style="margin:12px 0 0">Thank you,<br><strong>Maya Miyazaki</strong><br>Manager – Real Estate Operations<br>Blakeworth Management<br>maya@blakeworth.com | +1 (202) 919-7788</p>
+</div>`;
+
+  // Try ClipboardItem (HTML) + plain text fallback
+  const plainLines=[
+    `Hi ${firstName},
+`,
+    'This needs your attention. Could you please assist us with the information below?',
+    '
+————————————————————',
+    `Entity / Property: ${entityLine}`,
+    `Category: ${r.category}`,
+    `Current status: ${r.status}`,
+    r.due_date?`Due date: ${fmtDate(r.due_date)}`:'',
+    r.amount&&parseFloat(r.amount)>0?`Amount: ${fmtAmt(r.amount)}`:'',
+    `
+Action needed:
+${actionText}${srcText}`,
+    '
+————————————————————
+',
+    'Thank you,
+Maya Miyazaki
+Manager – Real Estate Operations
+Blakeworth Management
+maya@blakeworth.com | +1 (202) 919-7788'
+  ].filter(Boolean).join('
+');
+
+  // Copy HTML to clipboard (requires user gesture, which the button click provides)
+  navigator.clipboard.write([
+    new ClipboardItem({
+      'text/html': new Blob([htmlBody], {type:'text/html'}),
+      'text/plain': new Blob([plainLines], {type:'text/plain'})
+    })
+  ]).then(()=>{
+    // Show toast
+    let t=document.getElementById('_emailToast');
+    if (!t) { t=document.createElement('div'); t.id='_emailToast'; t.style.cssText='position:fixed;bottom:28px;right:28px;background:#1a73e8;color:#fff;padding:12px 20px;border-radius:8px;font:600 13px/1.4 Arial,sans-serif;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,.25);transition:opacity .4s'; document.body.appendChild(t); }
+    t.textContent='✅ Rich email copied — open Gmail compose and press Ctrl+V';
+    t.style.opacity='1';
+    setTimeout(()=>{t.style.opacity='0';},5000);
+  }).catch(()=>{});
+
+  const gmailUrl=`https://mail.google.com/mail/?view=cm&fs=1${toEmail?'&to='+encodeURIComponent(toEmail):''}&su=${encodeURIComponent(subj)}&body=${encodeURIComponent(plainLines)}`;
+  window.open(gmailUrl,'_blank');
+}
 function openInstructions() { document.getElementById('instr-modal').classList.add('open'); }
 function closeInstructions(e) {
   if (!e||e.target===document.getElementById('instr-modal')) document.getElementById('instr-modal').classList.remove('open');
@@ -981,6 +1059,7 @@ function closeInstructions(e) {
 
 // ── init ──────────────────────────────────────────────────────────────────────
 loadData();
+loadLinks();
 
 
 // ─── INSURANCE DATA ───────────────────────────────────────────────────────
