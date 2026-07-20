@@ -127,23 +127,74 @@ HLD-DE-008,HOLDING,Entity-level,,"Pinedale LP, LLC",LLC Filing,07/12/2026,Filing
 Partner – Business Operations
 dallas@blakeworth.com
 +1 (202) 375-0652",CSC portal — Cease Good Standing as of 07/12/2026. Delaware franchise tax outstanding. Dallas to confirm payment. DE File 10139442. Separate CSC account.,Filing Required,7/14/2026,,
-CSC-003,JHU,Entity-level,,"University Pkwy, LLC",Registered Agent,,Cleared,Invoice #84864561 — not confirmed paid or unpaid,$108.90,Maya,CSC Invoice #84864561 — Paid via ACH on 2/14/2026. ,Cleared,7/14/2026,,
-CSC-RA-16,HOLDING,Entity-level,,"Pinedale LP, LLC — CSC Account 8516082",Registered Agent,,,Separate CSC Account #8516082 — NOT confirmed paid,$348.08,Maya,"Pinedale LP, LLC — CSC Account 8516082 (separate from main 8362966). $348.08 overdue (annual renewal $123.75 + File Direct $217.80 + finance charge $6.53). NOT on the 07/01/2026 ACH payment list. Dallas to verify with CSC directly.",,7/14/2026,,
-CSC-RA-01,HOLDING,Entity-level,,"Blakeworth Management, LLC",Registered Agent,02/09/2026,Cleared,Paid 07/01/2026 — ACH — Receipt EC-9750-9261727974,$108.90,Maya,CSC Invoice #84768023 — Paid via ACH on 07/01/2026. Receipt: EC-9750-9261727974. Confirmed via CSC payment portal 07/14/2026.,Cleared,7/14/2026,,
-CSC-RA-02,JHU,Entity-level,,"3119 N Calvert, LLC",Registered Agent,03/16/2026,Overdue,CSC Invoice #84862328 — Unpaid as of 07/14/2026,$108.90,Maya,"CSC Statutory Representation — Maryland. Invoice #84862328, invoiced 2/14/2026, due 3/16/2026. $108.90 unpaid — Account #8362966.",Overdue,7/14/2026,,
-CSC-RA-03,JHU,Entity-level,,"Woodrow Apartments, LLC",Registered Agent,03/16/2026,Overdue,CSC Invoice #84863305 — Unpaid as of 07/14/2026,$108.90,Maya,"CSC Statutory Representation — Maryland. Invoice #84863305, invoiced 2/14/2026, due 3/16/2026. $108.90 unpaid — Account #8362966.",Overdue,7/14/2026,,
-CSC-RA-04,JHU,Entity-level,,"Woodrow GP, LLC",Registered Agent,03/16/2026,Overdue,CSC Invoice #84864316 — Unpaid as of 07/14/2026,$108.90,Maya,CSC acct 8362966 (Dallas Basha). Invoice 84864316 confirmed via PDF 7/13/2026. State: MD. Service period ends 3/31/2027.,Overdue,7/14/2026,,
-CSC-RA-05,JHU,Entity-level,,"University GP, LLC",Registered Agent,03/16/2026,Overdue,CSC Invoice #84863349 — Unpaid as of 07/14/2026,$108.90,Maya,"CSC Statutory Representation — Maryland. Invoice #84863349, invoiced 2/14/2026, due 3/16/2026. $108.90 unpaid — Account #8362966.",Overdue,7/14/2026,,
-CSC-RA-06,HOLDING,Entity-level,,"Basha Enterprises, LLC",Registered Agent,06/08/2026,Cleared,Paid 07/01/2026 — ACH — Receipt EC-1006-9261727982,$123.75,Maya,CSC Invoice #85135047 — Paid via ACH on 07/01/2026. ,Cleared,7/14/2026,,
-CSC-RA-07,SLP,Entity-level,,"Montclair Ave, LLC",Registered Agent,06/08/2026,Cleared,Paid 07/01/2026 — ACH — Receipt EC-1685-9261727980,$123.75,Maya,CSC Invoice #85135344 — Paid via ACH on 07/01/2026. ,Cleared,7/14/2026,,
-CSC-RA-08,SLP,Entity-level,,"13 W Morton St, LLC",Registered Agent,06/08/2026,Cleared,Paid 07/01/2026 — ACH — Receipt EC-4389-9261727962,$123.75,Maya,CSC Invoice #85137903 — Paid via ACH on 07/01/2026.,Cleared,7/14/2026,,
-CSC-RA-09,SLP,Entity-level,,"505 Thomas St, LLC",Registered Agent,06/08/2026,Cleared,Paid 07/01/2026 — ACH — Receipt EC-7577-9261727969,$123.75,Maya,CSC Invoice #85137917 — Paid via ACH on 07/01/2026. ,Cleared,7/14/2026,,
-CSC-RA-10,HOLDING,Entity-level,,"THG Portland, LLC",Registered Agent,06/08/2026,Overdue,CSC Invoice #85138147 — Unpaid as of 07/14/2026,$247.50,Maya,"CSC Statutory Representation — Delaware. Invoice #85138147, invoiced 5/9/2026, due 6/8/2026. $247.50 unpaid — 36 days overdue. ENTITY IS CANCELLED (see LLC_FILING — HLD-DE-007). Dallas to decide: (1) pay invoice to maintain CSC as registered agent, or (2) cancel CSC RA service since formal reinstatement is required regardless. Account #8362966.",Overdue,7/14/2026,,
-CSC-RA-11,SLP,Entity-level,,"101 S 3rd St, LLC",Registered Agent,06/08/2026,Cleared,Paid 07/01/2026 — ACH — Receipt EC-5285-9261727967,$123.75,Maya,CSC Invoice #85138479 — Paid via ACH on 07/01/2026. ,Cleared,7/14/2026,,
-CSC-RA-10,SLP,Entity-level,,"2529 E 4th St, LLC",Registered Agent,06/08/2026,Cleared,Paid 07/01/2026 — ACH — Receipt EC-4386-9261727965,$123.75,Maya,CSC Invoice #85138731 — Paid via ACH on 07/01/2026. ,Cleared,7/14/2026,,
-CSC-RA-13,SLP,Entity-level,,"Pierce St, LLC",Registered Agent,06/08/2026,Cleared,Paid 07/01/2026 — ACH — Receipt EC-9119-9261727991,$123.75,Maya,CSC Invoice #85139221 — Paid via ACH on 07/01/2026. ,Cleared,7/14/2026,,
-CSC-RA-14,HOLDING,Entity-level,,"DCSK GP, LLC",Registered Agent,06/08/2026,Overdue,CSC Invoice #85139386 — Unpaid as of 07/14/2026,$123.75,Maya,CSC Invoice ##85139386 — Paid via ACH on 07/01/2026. ,Overdue,7/14/2026,https://drive.google.com/file/d/1Gurx02Se7_E3qB7DdSLCRecanTSvSvPE/view,
-CSC-RA-15,SLP,Entity-level,,"114 W 4th St, LLC",Registered Agent,06/08/2026,Cleared,Paid 07/01/2026 — ACH — Receipt EC-3568-9261727964,$123.75,Maya,CSC Invoice #85139391 — Paid via ACH on 07/01/2026. ,Cleared,7/14/2026,,
+CSC-003,JHU,Entity-level,,"University Pkwy, LLC",Registered Agent,,Cleared,Invoice #84864561 — not confirmed paid or unpaid,$108.90,"Dallas Basha
+Partner – Business Operations
+dallas@blakeworth.com
++1 (202) 375-0652",CSC Invoice #84864561 — Paid via ACH on 2/14/2026. ,Cleared,7/14/2026,,
+CSC-RA-16,HOLDING,Entity-level,,"Pinedale LP, LLC — CSC Account 8516082",Registered Agent,,,Separate CSC Account #8516082 — NOT confirmed paid,$348.08,"Dallas Basha
+Partner – Business Operations
+dallas@blakeworth.com
++1 (202) 375-0652","Pinedale LP, LLC — CSC Account 8516082 (separate from main 8362966). $348.08 overdue (annual renewal $123.75 + File Direct $217.80 + finance charge $6.53). NOT on the 07/01/2026 ACH payment list. Dallas to verify with CSC directly.",,7/14/2026,,
+CSC-RA-01,HOLDING,Entity-level,,"Blakeworth Management, LLC",Registered Agent,02/09/2026,Cleared,Paid 07/01/2026 — ACH — Receipt EC-9750-9261727974,$108.90,"Dallas Basha
+Partner – Business Operations
+dallas@blakeworth.com
++1 (202) 375-0652",CSC Invoice #84768023 — Paid via ACH on 07/01/2026. Receipt: EC-9750-9261727974. Confirmed via CSC payment portal 07/14/2026.,Cleared,7/14/2026,,
+CSC-RA-02,JHU,Entity-level,,"3119 N Calvert, LLC",Registered Agent,03/16/2026,Overdue,CSC Invoice #84862328 — Unpaid as of 07/14/2026,$108.90,"Dallas Basha
+Partner – Business Operations
+dallas@blakeworth.com
++1 (202) 375-0652","CSC Statutory Representation — Maryland. Invoice #84862328, invoiced 2/14/2026, due 3/16/2026. $108.90 unpaid — Account #8362966.",Overdue,7/14/2026,,
+CSC-RA-03,JHU,Entity-level,,"Woodrow Apartments, LLC",Registered Agent,03/16/2026,Overdue,CSC Invoice #84863305 — Unpaid as of 07/14/2026,$108.90,"Dallas Basha
+Partner – Business Operations
+dallas@blakeworth.com
++1 (202) 375-0652","CSC Statutory Representation — Maryland. Invoice #84863305, invoiced 2/14/2026, due 3/16/2026. $108.90 unpaid — Account #8362966.",Overdue,7/14/2026,,
+CSC-RA-04,JHU,Entity-level,,"Woodrow GP, LLC",Registered Agent,03/16/2026,Overdue,CSC Invoice #84864316 — Unpaid as of 07/14/2026,$108.90,"Dallas Basha
+Partner – Business Operations
+dallas@blakeworth.com
++1 (202) 375-0652",CSC acct 8362966 (Dallas Basha). Invoice 84864316 confirmed via PDF 7/13/2026. State: MD. Service period ends 3/31/2027.,Overdue,7/14/2026,,
+CSC-RA-05,JHU,Entity-level,,"University GP, LLC",Registered Agent,03/16/2026,Overdue,CSC Invoice #84863349 — Unpaid as of 07/14/2026,$108.90,"Dallas Basha
+Partner – Business Operations
+dallas@blakeworth.com
++1 (202) 375-0652","CSC Statutory Representation — Maryland. Invoice #84863349, invoiced 2/14/2026, due 3/16/2026. $108.90 unpaid — Account #8362966.",Overdue,7/14/2026,,
+CSC-RA-06,HOLDING,Entity-level,,"Basha Enterprises, LLC",Registered Agent,06/08/2026,Cleared,Paid 07/01/2026 — ACH — Receipt EC-1006-9261727982,$123.75,"Dallas Basha
+Partner – Business Operations
+dallas@blakeworth.com
++1 (202) 375-0652",CSC Invoice #85135047 — Paid via ACH on 07/01/2026. ,Cleared,7/14/2026,,
+CSC-RA-07,SLP,Entity-level,,"Montclair Ave, LLC",Registered Agent,06/08/2026,Cleared,Paid 07/01/2026 — ACH — Receipt EC-1685-9261727980,$123.75,"Dallas Basha
+Partner – Business Operations
+dallas@blakeworth.com
++1 (202) 375-0652",CSC Invoice #85135344 — Paid via ACH on 07/01/2026. ,Cleared,7/14/2026,,
+CSC-RA-08,SLP,Entity-level,,"13 W Morton St, LLC",Registered Agent,06/08/2026,Cleared,Paid 07/01/2026 — ACH — Receipt EC-4389-9261727962,$123.75,"Dallas Basha
+Partner – Business Operations
+dallas@blakeworth.com
++1 (202) 375-0652",CSC Invoice #85137903 — Paid via ACH on 07/01/2026.,Cleared,7/14/2026,,
+CSC-RA-09,SLP,Entity-level,,"505 Thomas St, LLC",Registered Agent,06/08/2026,Cleared,Paid 07/01/2026 — ACH — Receipt EC-7577-9261727969,$123.75,"Dallas Basha
+Partner – Business Operations
+dallas@blakeworth.com
++1 (202) 375-0652",CSC Invoice #85137917 — Paid via ACH on 07/01/2026. ,Cleared,7/14/2026,,
+CSC-RA-10,HOLDING,Entity-level,,"THG Portland, LLC",Registered Agent,06/08/2026,Overdue,CSC Invoice #85138147 — Unpaid as of 07/14/2026,$247.50,"Dallas Basha
+Partner – Business Operations
+dallas@blakeworth.com
++1 (202) 375-0652","CSC Statutory Representation — Delaware. Invoice #85138147, invoiced 5/9/2026, due 6/8/2026. $247.50 unpaid — 36 days overdue. ENTITY IS CANCELLED (see LLC_FILING — HLD-DE-007). Dallas to decide: (1) pay invoice to maintain CSC as registered agent, or (2) cancel CSC RA service since formal reinstatement is required regardless. Account #8362966.",Overdue,7/14/2026,,
+CSC-RA-11,SLP,Entity-level,,"101 S 3rd St, LLC",Registered Agent,06/08/2026,Cleared,Paid 07/01/2026 — ACH — Receipt EC-5285-9261727967,$123.75,"Dallas Basha
+Partner – Business Operations
+dallas@blakeworth.com
++1 (202) 375-0652",CSC Invoice #85138479 — Paid via ACH on 07/01/2026. ,Cleared,7/14/2026,,
+CSC-RA-10,SLP,Entity-level,,"2529 E 4th St, LLC",Registered Agent,06/08/2026,Cleared,Paid 07/01/2026 — ACH — Receipt EC-4386-9261727965,$123.75,"Dallas Basha
+Partner – Business Operations
+dallas@blakeworth.com
++1 (202) 375-0652",CSC Invoice #85138731 — Paid via ACH on 07/01/2026. ,Cleared,7/14/2026,,
+CSC-RA-13,SLP,Entity-level,,"Pierce St, LLC",Registered Agent,06/08/2026,Cleared,Paid 07/01/2026 — ACH — Receipt EC-9119-9261727991,$123.75,"Dallas Basha
+Partner – Business Operations
+dallas@blakeworth.com
++1 (202) 375-0652",CSC Invoice #85139221 — Paid via ACH on 07/01/2026. ,Cleared,7/14/2026,,
+CSC-RA-14,HOLDING,Entity-level,,"DCSK GP, LLC",Registered Agent,06/08/2026,Overdue,CSC Invoice #85139386 — Unpaid as of 07/14/2026,$123.75,"Dallas Basha
+Partner – Business Operations
+dallas@blakeworth.com
++1 (202) 375-0652",CSC Invoice ##85139386 — Paid via ACH on 07/01/2026. ,Overdue,7/14/2026,https://drive.google.com/file/d/1Gurx02Se7_E3qB7DdSLCRecanTSvSvPE/view,
+CSC-RA-15,SLP,Entity-level,,"114 W 4th St, LLC",Registered Agent,06/08/2026,Cleared,Paid 07/01/2026 — ACH — Receipt EC-3568-9261727964,$123.75,"Dallas Basha
+Partner – Business Operations
+dallas@blakeworth.com
++1 (202) 375-0652",CSC Invoice #85139391 — Paid via ACH on 07/01/2026. ,Cleared,7/14/2026,,
 DC-TAX-001,DC,3538 6th St NW,,"3538 6th St Nw, LLC",Property Tax,09/15/2026,Current,Paid — $0 due,$0.00,"Ramonia Hines 
 Bluejay Property Management
 Property Manager, DC Portfolio
@@ -489,7 +540,6 @@ JHU-Violation-003,JHU,2920 Saint Paul St,,"Saint Paul St, LLC",Violation,07/24/2
 President, Canton Management Company
 patweaver@cantonmanagement.com
 410-342-2205 ext 226","Baltimore City DHCD citations for high grass and weeds: #57547473 (violation date 07/24/25, balance $300) and #57506404 (violation date 06/23/25, balance $300). Combined outstanding balance $600.",Open Violation,,,
-JHU-Violation-004,JHU,3119 N Calvert St,,"3119 N Calvert St, LLC",Violation,,Cleared,,,,,Cleared,,,
 JHU-Violation-005,JHU,232 E University Pkwy,,"University Pkwy, LLC",Violation,05/30/2025,Violation,"Environmental citations — high grass/weeds and bulk trash, 3 open balances",$450.00,"Zachary Basha
 Partner, University Pkwy, LLC
 +12023043035","Baltimore City DHCD citations: #57489858 (high grass and weeds, violation date 05/30/25, $150), #57448920 (bulk trash, violation date 04/25/25, $150), #57448912 (high grass and weeds, violation date 04/25/25, $150). Combined outstanding balance $450.",Open Violation,,,
@@ -497,35 +547,6 @@ JHU-Violation-006,JHU,300 E University Pkwy,,"Abell St, LLC",Violation,11/03/202
 Property Manager, American Management
 propertymanager@americanmanage.com
 410.366.2100 ext 107","Baltimore City DHCD citations: #57685869 (failed to abate unsafe structure notice and order, violation date 11/03/25, balance $2,000) and #57640435 (failed to obtain rental dwelling license, violation date 09/30/25, balance $1,015; ECB hearing requested, scheduled 03/09/26, status LU). Combined outstanding balance $3,015. Rental license #173602 for this property was also revoked by DHCD — new license required immediately.",Open Violation,,,
-JHU-Violation-007,JHU,304 E University Pkwy,,"3000 N Calvert St, LLC",Violation,,Cleared,,,,,Cleared,7/20/2026,,
-JHU-Violation-008,JHU,3401 Guilford Terr,,"Guilford Apartments, LLC",Violation,,Cleared,,,,,Cleared,7/20/2026,,
-JHU-Violation-009,JHU,300 E 30th St,,"Woodrow Apartments, LLC",Violation,,Cleared,,,,,Cleared,7/20/2026,,
-JHU-Violation-010,JHU,219 W 29th St,,"Abell St, LLC",Violation,,Cleared,,,,,Cleared,7/20/2026,,
-SLP-Violation-001,SLP,114 W 4th St,,"114 W 4TH ST, LLC",Violation,,,,,,,,,,
-SLP-Violation-002,SLP,13 W Morton St,,"13 W MORTON ST, LLC",Violation,,,,,,,,,,
-SLP-Violation-003,SLP,316 E 5th St,,PIERCE ST LLC,Violation,,,,,,,,,,
-SLP-Violation-004,SLP,422 Pierce St,,2529 E 4TH ST LLC,Violation,,,,,,,,,,
-SLP-Violation-005,SLP,424 Pierce St,,2529 E 4TH ST LLC,Violation,,,,,,,,,,
-SLP-Violation-006,SLP,428 Montclair Ave,,2529 E 4TH ST LLC,Violation,,,,,,,,,,
-SLP-Violation-007,SLP,430 Montclair Ave,,2529 E 4TH ST LLC,Violation,,,,,,,,,,
-SLP-Violation-008,SLP,462 Carlton Ave,,2529 E 4TH ST LLC,Violation,,,,,,,,,,
-SLP-Violation-009,SLP,505 Thomas St,,505 THOMAS ST LLC,Violation,,,,,,,,,,
-SLP-Violation-010,SLP,508 Selfridge St,,2529 E 4TH ST LLC,Violation,,,,,,,,,,
-SLP-Violation-011,SLP,510 East Packer Ave,,2529 E 4TH ST LLC,Violation,,,,,,,,,,
-SLP-Violation-012,SLP,526 E 5th St,,PIERCE ST LLC,Violation,,,,,,,,,,
-SLP-Violation-013,SLP,527 E Packer Ave,,PIERCE ST LLC,Violation,,,,,,,,,,
-SLP-Violation-014,SLP,528 E 5th St,,PIERCE ST LLC,Violation,,,,,,,,,,
-SLP-Violation-015,SLP,571 Hillside Ave,,505 THOMAS ST LLC,Violation,,,,,,,,,,
-SLP-Violation-016,SLP,608 Pierce St,,PACKER AVE LLC,Violation,,,,,,,,,,
-SLP-Violation-017,SLP,610 Pierce St,,PACKER AVE LLC,Violation,,,,,,,,,,
-SLP-Violation-018,SLP,612 Pierce St,,PIERCE ST LLC,Violation,,,,,,,,,,
-SLP-Violation-019,SLP,614 Pierce St,,PIERCE ST LLC,Violation,,,,,,,,,,
-SLP-Violation-020,SLP,616 Pierce St,,PIERCE ST LLC,Violation,,,,,,,,,,
-SLP-Violation-021,SLP,618 Pierce St,,PIERCE ST LLC,Violation,,,,,,,,,,
-SLP-Violation-022,SLP,620 Pierce St,,PIERCE ST LLC,Violation,,,,,,,,,,
-SLP-Violation-023,SLP,621 Parkhill St,,2529 E 4TH ST LLC,Violation,,,,,,,,,,
-SLP-Violation-024,SLP,623 Parkhill St,,2529 E 4TH ST LLC,Violation,,,,,,,,,,
-SLP-Violation-025,SLP,573 Hillside Ave,,505 THOMAS ST LLC,Violation,,,,,,,,,,
 JHU-INS-001,JHU,219 W 29TH ST,,"ABELL ST, LLC",INSURANCE,02/18/2027,Active,"Direct Email - Lily, Statefarm Agent. ","$2,238.00","Rhea Baker / Lily
 Agent, Statefarm-Baltimore
 lily.balbi.vabyjt@statefarm.com
