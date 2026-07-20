@@ -13,9 +13,9 @@ jobs:
       - name: Fetch CSV data from Google Sheets
         run: |
           mkdir -p data
-          curl -sL "https://docs.google.com/spreadsheets/d/1e5vJd30ZMxj7WTQW__B4QDrwYYh0xMluAmsuRlakYHs/gviz/tq?tqx=out:csv&gid=1135568484" -o data/master.csv
-          curl -sL "https://docs.google.com/spreadsheets/d/1e5vJd30ZMxj7WTQW__B4QDrwYYh0xMluAmsuRlakYHs/gviz/tq?tqx=out:csv&gid=672067850" -o data/docs.csv
-          curl -sL "https://docs.google.com/spreadsheets/d/1e5vJd30ZMxj7WTQW__B4QDrwYYh0xMluAmsuRlakYHs/gviz/tq?tqx=out:csv&gid=367798854" -o data/links.csv
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vQNae-sHgBR0y3X1VUQlOwl-gQsR8D9GqB6SS79Nd_5eFqpXp4V9G5GD-Zmhth22TBfsnZU5nUVGFyf/pub?gid=1135568484&single=true&output=csv" -o data/master.csv
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vQNae-sHgBR0y3X1VUQlOwl-gQsR8D9GqB6SS79Nd_5eFqpXp4V9G5GD-Zmhth22TBfsnZU5nUVGFyf/pub?gid=672067850&single=true&output=csv" -o data/docs.csv
+          curl -sL "https://docs.google.com/spreadsheets/d/e/2PACX-1vQNae-sHgBR0y3X1VUQlOwl-gQsR8D9GqB6SS79Nd_5eFqpXp4V9G5GD-Zmhth22TBfsnZU5nUVGFyf/pub?gid=367798854&single=true&output=csv" -o data/links.csv
           echo "Rows:" && wc -l data/*.csv
       - name: Commit updated data
         run: |
