@@ -507,10 +507,10 @@ function parseCSV(text) {
 async function loadData() {
   const loader = document.getElementById('data-loader');
   try {
-    const resp = await fetch(CONFIG.STATUS_WRITE_URL + '?tab=MASTER');
+    const resp = await fetch(window.CONFIG.MASTER_CSV_URL);
     if (!resp.ok) throw new Error('HTTP ' + resp.status);
-    const rows = await resp.json();
-    DATA = rows.filter(r => ['JHU','SLP','HOLDING','DC'].includes(r.portfolio) && r.category);
+    const text = await resp.text();
+    DATA = parseCSV(text).filter(r => ['JHU','SLP','HOLDING','DC'].includes(r.portfolio) && r.category);
     if (loader) loader.remove();
     loadState();
     updateStats();
@@ -939,8 +939,9 @@ function terminalLabel(category) {
 
 let LINKS_BY_CATEGORY = {};
 function loadLinks() {
-  if (!window.CONFIG || !CONFIG.STATUS_WRITE_URL) return;
-  fetch(CONFIG.STATUS_WRITE_URL + '?tab=LINKS').then(r=>r.json()).then(rows=>{
+  if (!window.CONFIG || !CONFIG.LINKS_CSV_URL) return;
+  fetch(CONFIG.LINKS_CSV_URL).then(r=>r.text()).then(t=>{
+    const rows = parseCSV(t);
     rows.forEach(row => {
       const cat = (row['Category'] || '').trim();
       if (cat) LINKS_BY_CATEGORY[cat] = row;
