@@ -1,0 +1,26 @@
+name: Refresh compliance data
+on:
+  schedule:
+    - cron: '0 */4 * * *'
+  workflow_dispatch:
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch CSV data from Google Sheets
+        run: |
+          mkdir -p data
+          curl -sL "https://docs.google.com/spreadsheets/d/1e5vJd30ZMxj7WTQW__B4QDrwYYh0xMluAmsuRlakYHs/gviz/tq?tqx=out:csv&gid=1135568484" -o data/master.csv
+          curl -sL "https://docs.google.com/spreadsheets/d/1e5vJd30ZMxj7WTQW__B4QDrwYYh0xMluAmsuRlakYHs/gviz/tq?tqx=out:csv&gid=672067850" -o data/docs.csv
+          curl -sL "https://docs.google.com/spreadsheets/d/1e5vJd30ZMxj7WTQW__B4QDrwYYh0xMluAmsuRlakYHs/gviz/tq?tqx=out:csv&gid=367798854" -o data/links.csv
+          echo "Rows:" && wc -l data/*.csv
+      - name: Commit updated data
+        run: |
+          git config user.email "action@github.com"
+          git config user.name "GitHub Action"
+          git add data/
+          git diff --staged --quiet || git commit -m "chore: refresh compliance data $(date -u '+%Y-%m-%d %H:%M UTC')"
+          git push
