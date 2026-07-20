@@ -1013,8 +1013,7 @@ ${div}
     `Hi ${firstName},
 `,
     'This needs your attention. Could you please assist us with the information below?',
-    '
-————————————————————',
+    '————————————————————',
     `Entity / Property: ${entityLine}`,
     `Category: ${r.category}`,
     `Current status: ${r.status}`,
@@ -1023,16 +1022,9 @@ ${div}
     `
 Action needed:
 ${actionText}${srcText}`,
-    '
-————————————————————
-',
-    'Thank you,
-Maya Miyazaki
-Manager – Real Estate Operations
-Blakeworth Management
-maya@blakeworth.com | +1 (202) 919-7788'
-  ].filter(Boolean).join('
-');
+    '————————————————————',
+    `Thank you,\nMaya Miyazaki\nManager – Real Estate Operations\nBlakeworth Management\nmaya@blakeworth.com | +1 (202) 919-7788`
+  ].filter(Boolean).join('\n');
 
   // Copy HTML to clipboard (requires user gesture, which the button click provides)
   navigator.clipboard.write([
