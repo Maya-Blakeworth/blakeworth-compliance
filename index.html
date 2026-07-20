@@ -19,7 +19,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-siz
 .topbar-btn:hover{background:#334155;color:#f8fafc}
 
 /* LAYOUT */
-.layout{display:flex;flex:1;overflow:hidden}
+.layout{display:flex;flex:1;overflow:hidden}h
 
 /* SIDEBAR */
 .sidebar{width:168px;background:#fff;border-right:1px solid #e2e8f0;display:flex;flex-direction:column;overflow:hidden;flex-shrink:0}
@@ -955,40 +955,19 @@ function draftEmail() {
   const ct = CONTACTS_LOCAL[r.responsible] || {};
   const toEmail = ct.email || '';
   const firstName = ct.name ? ct.name.split(' ')[0] : (r.responsible || 'Team');
-  const sourceLink = r.source_doc ? `\
-Source document: ${r.source_doc}\
-` : '';
-  const amtLine = r.amount && parseFloat(r.amount) > 0 ? `\
-Amount: ${fmtAmt(r.amount)}` : '';
-  const dueLine = r.due_date ? `\
-Due date: ${fmtDate(r.due_date)}` : '';
+  const sourceLink = r.source_doc ? `\nSource document: ${r.source_doc}\n` : '';
+  const amtLine = r.amount && parseFloat(r.amount) > 0 ? `\nAmount: ${fmtAmt(r.amount)}` : '';
+  const dueLine = r.due_date ? `\nDue date: ${fmtDate(r.due_date)}` : '';
   const subj = encodeURIComponent(`Action Required: ${r.entity} — ${r.category}`);
   const body = encodeURIComponent(
-    `Hi ${firstName},\
-\
-These are the items that need your attention. Could you please assist us with the information below?\
-\
-` +
-    `————————————————————\
-` +
-    `Entity / Property: ${r.entity}${r.address && r.address !== 'Entity-level' ? ' — ' + r.address : ''}${r.unit ? ', ' + r.unit : ''}\
-` +
-    `Category: ${r.category}\
-` +
-    `Current status: ${r.status}${dueLine}${amtLine}\
-` +
-    `\
-Action needed:\
-${r.action_required || 'Please review and advise.'}${sourceLink}\
-` +
-    `————————————————————\
-\
-` +
-    `Thank you,\
-Maya Miyazaki\
-Manager – Real Estate Operations\
-Blakeworth Management\
-maya@blakeworth.com | +1 (202) 919-7788`
+    `Hi ${firstName},\n\nThese are the items that need your attention. Could you please assist us with the information below?\n\n` +
+    `————————————————————\n` +
+    `Entity / Property: ${r.entity}${r.address && r.address !== 'Entity-level' ? ' — ' + r.address : ''}${r.unit ? ', ' + r.unit : ''}\n` +
+    `Category: ${r.category}\n` +
+    `Current status: ${r.status}${dueLine}${amtLine}\n` +
+    `\nAction needed:\n${r.action_required || 'Please review and advise.'}${sourceLink}\n` +
+    `————————————————————\n\n` +
+    `Thank you,\nMaya Miyazaki\nManager – Real Estate Operations\nBlakeworth Management\nmaya@blakeworth.com | +1 (202) 919-7788`
   );
   const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1${toEmail ? '&to=' + encodeURIComponent(toEmail) : ''}&su=${subj}&body=${body}`;
   window.open(gmailUrl, '_blank');
