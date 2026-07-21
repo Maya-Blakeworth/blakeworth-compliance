@@ -74,7 +74,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-siz
 
 /* TOOLBAR */
 .toolbar{padding:8px 16px;background:#fff;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;gap:8px;flex-shrink:0}
-.toolbar-label{font-size:12px;color:#94a3b8;margin-right:4px}
+.toolbar-label{font-size:12px;color:#94a3b8;margin-right:4px}h
 .pill{padding:4px 12px;border-radius:20px;border:1px solid #e2e8f0;background:#fff;font-size:12px;color:#64748b;cursor:pointer;font-weight:500;transition:all .15s}
 .pill:hover{border-color:#cbd5e1;color:#334155}
 .pill.active{background:#1e293b;color:#fff;border-color:#1e293b}
@@ -1136,31 +1136,54 @@ loadDocs();
 
 // ─── INSURANCE DATA ───────────────────────────────────────────────────────
 const INS_DATA = [
+  // ─── SLP Portfolio (Tom French · State Farm Bethlehem · 610-725-8700) ────
   {
-    llc: "PIERCE ST LLC", agent: "Tom French", phone: "610-725-8700",
+    llc: "2529 E 4TH ST, LLC", agent: "Tom French", phone: "610-725-8700",
     properties: [
-      { addr: "527 E Packer Ave, Bethlehem PA",  annual: 879,  renewal: "Sep 5",  status: "current" },
-      { addr: "620 Pierce St, Bethlehem PA",     annual: 1272, renewal: "Sep 5",  status: "current" },
-      { addr: "618 Pierce St, Bethlehem PA",     annual: 1272, renewal: "Sep 5",  status: "current" },
-      { addr: "612 Pierce St, Bethlehem PA",     annual: 923,  renewal: "Sep 5",  status: "current" },
-      { addr: "616 Pierce St, Bethlehem PA",     annual: 769,  renewal: "Jul 1",  status: "current" },
-      { addr: "614 Pierce St, Bethlehem PA",     annual: 769,  renewal: "Jul 1",  status: "current" },
-      { addr: "316 E 5th St, Bethlehem PA",      annual: 594,  renewal: "Dec 3",  status: "current" },
-      { addr: "528 E 5th St, Bethlehem PA",      annual: 696,  renewal: "Dec 29", status: "current" },
-      { addr: "526 E 5th St, Bethlehem PA",      annual: 670,  renewal: "Dec 29", status: "current" },
+      { addr: "510 E Packer Ave, Bethlehem PA",     annual: 618,  renewal: "Mar 5",  status: "current" },
+      { addr: "428 Montclair Ave, Bethlehem PA",    annual: 618,  renewal: "Mar 5",  status: "current" },
+      { addr: "508 Selfridge St, Bethlehem PA",     annual: 618,  renewal: "Mar 5",  status: "current" },
+      { addr: "430 Montclair Ave, Bethlehem PA",    annual: 618,  renewal: "Mar 5",  status: "current" },
+      { addr: "462 Carlton Ave, Bethlehem PA",      annual: 664,  renewal: "Mar 5",  status: "current" },
+      { addr: "623 Parkhill St, Bethlehem PA",      annual: 551,  renewal: "May 3",  status: "current" },
+      { addr: "621 Parkhill St, Bethlehem PA",      annual: 573,  renewal: "Mar 5",  status: "current" },
+      { addr: "422-424 Pierce St, Bethlehem PA",    annual: 3053, renewal: "Apr 30", status: "current" },
     ]
   },
   {
-    llc: "114 W 4TH ST LLC", agent: "Tom French", phone: "610-725-8700",
+    llc: "PIERCE ST, LLC", agent: "Tom French", phone: "610-725-8700",
     properties: [
-      { addr: "114 W 4th St, Bethlehem PA", annual: 1314, renewal: "Jun 7", status: "current" },
+      { addr: "527 E Packer Ave, Bethlehem PA",     annual: 857,  renewal: "Sep 5",  status: "current" },
+      { addr: "612 Pierce St, Bethlehem PA",        annual: 898,  renewal: "Sep 5",  status: "current" },
+      { addr: "618 Pierce St, Bethlehem PA",        annual: 1237, renewal: "Sep 5",  status: "current" },
+      { addr: "620 Pierce St, Bethlehem PA",        annual: 1237, renewal: "Sep 5",  status: "current" },
+      { addr: "614 Pierce St, Bethlehem PA",        annual: 756,  renewal: "Jul 1",  status: "current" },
+      { addr: "616 Pierce St, Bethlehem PA",        annual: 756,  renewal: "Jul 1",  status: "current" },
+      { addr: "316 E 5th St, Bethlehem PA",         annual: 583,  renewal: "Dec 3",  status: "current" },
+      { addr: "526 E 5th St, Bethlehem PA",         annual: 653,  renewal: "Dec 29", status: "current" },
+      { addr: "528 E 5th St, Bethlehem PA",         annual: 696,  renewal: "Dec 29", status: "current" },
     ]
   },
   {
-    llc: "3538 6TH ST NW LLC", agent: "Rhea Baker RICP®", phone: "703-847-6880",
+    llc: "PACKER AVE, LLC", agent: "Tom French", phone: "610-725-8700",
     properties: [
-      { addr: "3538 6th St NW, Washington DC", annual: null, renewal: "—", status: "pastdue",
-        note: "⚠️ $195 past due — contact Rhea Baker (703-847-6880)" },
+      { addr: "608 Pierce St, Bethlehem PA",        annual: 2743, renewal: "Dec 30", status: "current" },
+      { addr: "610 Pierce St, Bethlehem PA",        annual: 705,  renewal: "Dec 30", status: "current" },
+    ]
+  },
+  {
+    llc: "505 THOMAS ST, LLC", agent: "Tom French", phone: "610-725-8700",
+    properties: [
+      { addr: "505 Thomas St, Bethlehem PA",        annual: 2895, renewal: "Jun 27", status: "current" },
+      { addr: "571 Hillside Ave, Bethlehem PA",     annual: 690,  renewal: "Jun 27", status: "current" },
+    ]
+  },
+  // ─── JHU Portfolio (Rhea Baker RICP® · State Farm Baltimore · 703-847-6880) ─
+  {
+    llc: "ABELL ST, LLC", agent: "Rhea Baker RICP®", phone: "703-847-6880",
+    properties: [
+      { addr: "219 W 29th St, Baltimore MD",        annual: 2238, renewal: "Feb 18", status: "current" },
+      { addr: "328 E 33rd St, Baltimore MD",        annual: 1839, renewal: "Mar 13", status: "current" },
     ]
   },
   {
@@ -1172,20 +1195,32 @@ const INS_DATA = [
     ]
   },
   {
-    llc: "ABELL ST, LLC", agent: "Rhea Baker RICP®", phone: "703-847-6880",
+    llc: "3119 N CALVERT ST, LLC", agent: "Rhea Baker RICP®", phone: "703-847-6880",
     properties: [
-      { addr: "328 E 33rd St, Baltimore MD",  annual: 1839, renewal: "Mar 13", status: "current" },
-      { addr: "219 W 29th St, Baltimore MD",  annual: null, renewal: "Feb 18", status: "current",
-        note: "Annual premium TBD — confirm with Rhea Baker (703-847-6880)" },
+      { addr: "3119 N Calvert St, Baltimore MD",    annual: 1538, renewal: "Apr 17", status: "current" },
+    ]
+  },
+  {
+    llc: "2529 SAINT PAUL ST, LLC", agent: "Fran Moore — Heller Kowitz", phone: "443-501-0178",
+    properties: [
+      { addr: "2920 Saint Paul St, Baltimore MD",   annual: 5751, renewal: "Apr 4",  status: "current" },
+    ]
+  },
+  // ─── DC Portfolio ─────────────────────────────────────────────────────────
+  {
+    llc: "3538 6TH ST NW LLC", agent: "Rhea Baker RICP®", phone: "703-847-6880",
+    properties: [
+      { addr: "3538 6th St NW, Washington DC", annual: null, renewal: "—", status: "pastdue",
+        note: "⚠️ $195 past due — contact Rhea Baker (703-847-6880)" },
     ]
   },
 ];
 
 const INS_PENDING = [
-  "2529 E 4th St LLC","3106 N Calvert LLC",
-  "505 Thomas St LLC","Calvert St LLC","Fairview St LLC",
+  "114 W 4th St LLC","3106 N Calvert LLC",
+  "Calvert St LLC","Fairview St LLC",
   "Hillside Ave 621.5 LLC","Lehigh Properties LLC","Lehigh+Loriot LLC",
-  "Loriot Properties LLC","Montclair Ave LLC","Packer Ave LLC"
+  "Loriot Properties LLC","Montclair Ave LLC"
 ];
 
 function renderInsurance() {
