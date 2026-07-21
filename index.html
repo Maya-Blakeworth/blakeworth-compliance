@@ -1,0 +1,1416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blakeworth Compliance</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13px;background:#f1f5f9;color:#0f172a;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+
+/* TOP BAR */
+.topbar{background:#1e293b;color:#fff;height:48px;display:flex;align-items:center;padding:0 20px;gap:24px;flex-shrink:0;z-index:100}
+.topbar .logo{font-size:15px;font-weight:700;letter-spacing:.3px;color:#f8fafc;margin-right:auto}
+.stat{display:flex;align-items:center;gap:6px;font-size:12px;color:#cbd5e1;cursor:default}
+.stat .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.stat .val{color:#f8fafc;font-weight:600}
+.dot-red{background:#ef4444}.dot-amber{background:#f59e0b}.dot-blue{background:#3b82f6}
+.topbar-btn{padding:5px 12px;border-radius:5px;border:1px solid #334155;background:transparent;color:#94a3b8;font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;margin-left:8px}
+.topbar-btn:hover{background:#334155;color:#f8fafc}
+
+/* LAYOUT */
+.layout{display:flex;flex:1;overflow:hidden}hh
+
+/* SIDEBAR */
+.sidebar{width:168px;background:#fff;border-right:1px solid #e2e8f0;display:flex;flex-direction:column;overflow:hidden;flex-shrink:0}
+.sidebar-top{padding:10px 8px 6px}
+.all-items{padding:7px 10px;border-radius:6px;cursor:pointer;font-weight:600;font-size:12px;color:#475569;display:flex;align-items:center;justify-content:space-between}
+.all-items.active,.all-items:hover{background:#f1f5f9;color:#0f172a}
+.all-badge{background:#ef4444;color:#fff;border-radius:10px;padding:1px 6px;font-size:10px;font-weight:700}
+.sidebar-divider{height:1px;background:#f1f5f9;margin:4px 0}
+.port-group{}
+.port-header{padding:7px 10px;font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.6px;cursor:pointer;display:flex;align-items:center;gap:4px;user-select:none}
+.port-header:hover{color:#64748b}
+.port-chevron{font-size:10px;transition:transform .15s;display:inline-block}
+.port-group:not(.expanded) .port-chevron{transform:rotate(-90deg)}
+.port-group:not(.expanded) .port-cats{display:none}
+.port-badge{margin-left:auto;background:#fef2f2;color:#b91c1c;border-radius:10px;padding:1px 6px;font-size:10px;font-weight:700}
+.cat-item{padding:5px 10px 5px 18px;cursor:pointer;border-radius:6px;font-size:12px;color:#475569;display:flex;align-items:center;justify-content:space-between;margin:1px 4px}
+.cat-item:hover,.cat-item.active{background:#f1f5f9;color:#0f172a}
+.cat-badge{background:#fef2f2;color:#b91c1c;border-radius:10px;padding:1px 5px;font-size:10px;font-weight:600}.cat-badge-ok{background:#16a34a;color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:9px;margin-left:auto;flex-shrink:0}
+.sidebar-nav{flex:1;overflow-y:auto;min-height:0}
+.sidebar-bottom{padding:10px 8px;border-top:1px solid #f1f5f9}
+.instr-btn{width:100%;padding:7px 10px;border-radius:6px;border:1px solid #e2e8f0;background:#f8fafc;color:#475569;font-size:11px;font-weight:600;cursor:pointer;text-align:left;display:flex;align-items:center;gap:6px}
+.instr-btn:hover{background:#f1f5f9;color:#1e293b}
+
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+
+/* OVERVIEW */
+.overview{background:#f8fafc;border-bottom:1px solid #e2e8f0;padding:12px 16px;flex-shrink:0}
+.ov-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.ov-title{font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px}
+.ov-summary{font-size:11px;color:#94a3b8}
+.ov-cards{display:flex;gap:10px}
+.ov-card{flex:1;border-radius:8px;padding:11px 13px;cursor:pointer;transition:filter .15s,transform .1s;min-width:0;border-left:4px solid transparent}
+.ov-card:hover{filter:brightness(.96);transform:translateY(-1px)}
+.ov-card-jhu{background:#fdf2f2;border-left-color:#b91c1c}
+.ov-card-slp{background:#eff6ff;border-left-color:#2563eb}
+.ov-card-holding{background:#fffbeb;border-left-color:#d97706}
+.ov-card-dc{background:#faf5ff;border-left-color:#7c3aed}
+.ov-port{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;margin-bottom:5px}
+.ov-card-jhu .ov-port{color:#991b1b}
+.ov-card-slp .ov-port{color:#1d4ed8}
+.ov-card-holding .ov-port{color:#b45309}
+.ov-card-dc .ov-port{color:#6d28d9}
+.ov-flagged{font-size:20px;font-weight:800;color:#0f172a;line-height:1}
+.ov-flagged span{font-size:11px;font-weight:500;color:#64748b}
+.ov-amt{font-size:12px;font-weight:700;margin-top:3px}
+.ov-card-jhu .ov-amt{color:#b91c1c}
+.ov-card-slp .ov-amt{color:#1d4ed8}
+.ov-card-holding .ov-amt{color:#b45309}
+.ov-card-dc .ov-amt{color:#6d28d9}
+.ov-total{font-size:10px;color:#94a3b8;margin-top:2px}
+
+/* TOOLBAR */
+.toolbar{padding:8px 16px;background:#fff;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;gap:8px;flex-shrink:0}
+.toolbar-label{font-size:12px;color:#94a3b8;margin-right:4px}h
+.pill{padding:4px 12px;border-radius:20px;border:1px solid #e2e8f0;background:#fff;font-size:12px;color:#64748b;cursor:pointer;font-weight:500;transition:all .15s}
+.pill:hover{border-color:#cbd5e1;color:#334155}
+.pill.active{background:#1e293b;color:#fff;border-color:#1e293b}
+.row-count{margin-left:auto;font-size:11px;color:#94a3b8}
+
+/* TABLE */
+.table-wrap{flex:1;overflow-y:auto}
+table{width:100%;border-collapse:collapse}
+th{padding:9px 12px;text-align:center;font-size:11px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.4px;border-bottom:2px solid #e2e8f0;background:#f8fafc;position:sticky;top:0;z-index:10;border-top:1px solid #e2e8f0}
+th.col-entity{text-align:left}
+tr.data-row{border-bottom:1px solid #f1f5f9;cursor:pointer;transition:background .1s}
+tr.data-row:hover{background:#f8fafc}
+tr.data-row.active{background:#eff6ff}
+tr.data-row.muted{opacity:.72}
+tr.data-row.critical{background:#fff8f8}
+tr.data-row.warning{background:#fffdf0}
+td{padding:9px 12px;vertical-align:middle;text-align:center}
+td.col-entity{text-align:left}
+
+/* priority dot */
+.pri-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;display:inline-block}
+.pri-red{background:#ef4444}.pri-yellow{background:#f59e0b}.pri-purple{background:#9333ea}
+.pri-blue{background:#3b82f6}.pri-green{background:#22c55e}.pri-gray{background:#cbd5e1}.pri-orange{background:#f97316}
+
+/* entity cell */
+.entity-name{font-weight:600;color:#0f172a;font-size:13px}
+.entity-sub{font-size:11px;color:#94a3b8;margin-top:1px}
+
+/* badges */
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;white-space:nowrap}
+.badge-red{background:#fef2f2;color:#b91c1c}.badge-yellow{background:#fefce8;color:#854d0e}
+.badge-purple{background:#faf5ff;color:#6b21a8}.badge-blue{background:#eff6ff;color:#1d4ed8}
+.badge-green{background:#f0fdf4;color:#15803d}.badge-gray{background:#f8fafc;color:#64748b}.badge-orange{background:#fff7ed;color:#c2410c}
+
+/* comm badge */
+.comm-badge{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:500;border:1px solid;white-space:nowrap}
+.comm-unstarted{background:#f8fafc;color:#94a3b8;border-color:#e2e8f0}
+.comm-notified{background:#eff6ff;color:#2563eb;border-color:#bfdbfe}
+.comm-acknowledged{background:#f0fdf4;color:#16a34a;border-color:#bbf7d0}
+.comm-select{font-size:10px;font-weight:500;border-radius:4px;border:1px solid #e2e8f0;padding:2px 4px;background:#f8fafc;color:#475569;cursor:pointer;max-width:130px}
+.comm-pending{background:#fefce8;color:#92400e;border-color:#fde68a}
+.comm-cleared{background:#f0fdf4;color:#15803d;border-color:#86efac}
+
+/* days badge */
+.days-badge{font-size:11px;font-weight:600;white-space:nowrap;display:block;margin-top:2px}
+.days-overdue{color:#b91c1c}.days-urgent{color:#d97706}.days-ok{color:#94a3b8}
+
+/* DETAIL PANEL */
+.detail-panel{width:0;background:#fff;border-left:1px solid #e2e8f0;display:flex;flex-direction:column;overflow:hidden;transition:width .2s ease;flex-shrink:0}
+.detail-panel.open{width:292px}
+.dp-header{background:#1e293b;color:#fff;padding:14px 16px;flex-shrink:0}
+.dp-close{float:right;cursor:pointer;color:#94a3b8;font-size:16px;line-height:1;margin-left:8px}
+.dp-close:hover{color:#fff}
+.dp-entity{font-size:15px;font-weight:700;color:#f8fafc;margin-bottom:3px;padding-right:20px}
+.dp-sub{font-size:11px;color:#94a3b8}
+.dp-body{flex:1;overflow-y:auto;padding:14px 16px}
+.dp-section{margin-bottom:16px}
+.dp-section-title{font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px}
+.dp-field{margin-bottom:8px}
+.dp-label{font-size:10px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-bottom:2px}
+.dp-value{font-size:12px;color:#1e293b;font-weight:500;line-height:1.4}
+.dp-value.amount{font-size:15px;font-weight:700;color:#b91c1c}
+.dp-value a{color:#2563eb;text-decoration:none;font-size:11px}
+.dp-value a:hover{text-decoration:underline}
+.dp-box{background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:10px;font-size:12px;color:#334155;line-height:1.5;white-space:pre-wrap}
+.dp-btn{display:block;width:100%;padding:7px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;text-align:center;margin-bottom:6px;border:none;transition:background .15s}
+.dp-btn-primary{background:#1e293b;color:#fff}.dp-btn-primary:hover{background:#0f172a}
+.dp-btn-secondary{background:#f1f5f9;color:#475569;border:1px solid #e2e8f0}.dp-btn-secondary:hover{background:#e2e8f0}
+
+/* comm flow */
+.comm-flow{display:flex;gap:0;margin-bottom:4px}
+.cf-step{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;position:relative}
+.cf-step:not(:last-child)::after{content:'';position:absolute;top:9px;left:50%;width:100%;height:2px;background:#e2e8f0;z-index:0}
+.cf-dot{width:18px;height:18px;border-radius:50%;border:2px solid #e2e8f0;background:#fff;z-index:1;transition:all .15s;display:flex;align-items:center;justify-content:center;font-size:8px;color:#fff}
+.cf-dot.done{background:#22c55e;border-color:#22c55e}.cf-dot.current{background:#3b82f6;border-color:#3b82f6}
+.cf-label{font-size:9px;color:#94a3b8;text-align:center;line-height:1.2}
+.cf-step.done .cf-label{color:#15803d}.cf-step.current .cf-label{color:#1d4ed8;font-weight:600}
+
+/* log */
+.activity-log{margin-top:8px}
+.log-entry{font-size:11px;color:#64748b;padding:4px 0;border-bottom:1px solid #f1f5f9}
+.log-entry:last-child{border-bottom:none}
+.log-date{color:#94a3b8;font-size:10px}
+.log-form{margin-top:8px;display:flex;gap:6px}
+.log-input{flex:1;padding:5px 8px;border:1px solid #e2e8f0;border-radius:5px;font-size:11px;color:#334155}
+.log-submit{padding:5px 10px;background:#1e293b;color:#fff;border:none;border-radius:5px;font-size:11px;cursor:pointer;font-weight:600}
+
+/* portal links */
+.portal-link{display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:6px;margin-bottom:4px;text-decoration:none;font-size:12px;font-weight:600;transition:background .1s}
+.portal-link.link-portal{background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8}
+.portal-link.link-portal:hover{background:#dbeafe}
+.portal-link.link-source{background:#f0fdf4;border:1px solid #bbf7d0;color:#15803d}
+.portal-link.link-source:hover{background:#dcfce7}
+.de-file-chip{display:inline-flex;align-items:center;margin-top:4px;padding:4px 10px;background:#f0fdf4;border:1px solid #86efac;border-radius:6px;font-size:11px;font-weight:600;color:#15803d;cursor:pointer;user-select:none;transition:background .15s}
+.de-file-chip:hover{background:#dcfce7}
+.portal-link .pl-icon{font-size:13px}
+
+/* RA rows */
+.ra-row{display:flex;justify-content:space-between;font-size:11px;padding:3px 0;border-bottom:1px solid #f8fafc}
+.ra-key{color:#94a3b8}.ra-val{color:#334155;font-weight:500;text-align:right;max-width:160px;word-break:break-word}
+
+/* INSTRUCTIONS MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.5);z-index:1000;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:10px;width:680px;max-width:95vw;max-height:85vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.modal-header{background:#1e293b;color:#fff;padding:16px 20px;border-radius:10px 10px 0 0;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.modal-title{font-size:15px;font-weight:700;color:#f8fafc}
+.modal-close{cursor:pointer;color:#94a3b8;font-size:20px;line-height:1}.modal-close:hover{color:#fff}
+.modal-body{flex:1;overflow-y:auto;padding:20px;font-size:12px;line-height:1.7;color:#334155}
+.modal-body br{display:block;margin:1px 0}
+/* EMAIL PREVIEW MODAL */
+.email-modal-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.65);z-index:2000;align-items:center;justify-content:center;padding:20px}
+.email-modal-overlay.open{display:flex}
+.email-modal{background:#fff;border-radius:12px;width:640px;max-width:96vw;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 24px 80px rgba(0,0,0,.3)}
+.email-modal-header{background:#1e293b;color:#fff;padding:14px 20px;border-radius:12px 12px 0 0;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.email-modal-title{font-size:14px;font-weight:700;color:#f8fafc;display:flex;align-items:center;gap:8px}
+.email-modal-close{cursor:pointer;color:#94a3b8;font-size:22px;line-height:1;padding:2px 8px;border-radius:4px}.email-modal-close:hover{color:#fff;background:rgba(255,255,255,.12)}
+.email-meta-strip{padding:12px 20px;border-bottom:1px solid #e2e8f0;background:#f8fafc;flex-shrink:0}
+.email-meta-row{display:flex;align-items:baseline;gap:8px;font-size:12px;padding:2px 0}
+.email-meta-lbl{color:#94a3b8;font-weight:700;text-transform:uppercase;font-size:10px;letter-spacing:.5px;min-width:44px;flex-shrink:0}
+.email-meta-val{color:#0f172a;font-weight:500}
+.email-meta-subj{color:#0f172a;font-weight:700;font-size:13px}
+.email-preview-scroll{flex:1;overflow-y:auto;padding:20px;background:#f1f5f9}
+.email-preview-card{background:#fff;border-radius:8px;padding:28px 32px;box-shadow:0 2px 8px rgba(0,0,0,.07)}
+.email-modal-footer{padding:12px 20px;border-top:1px solid #e2e8f0;display:flex;align-items:center;gap:10px;flex-shrink:0;background:#fff;border-radius:0 0 12px 12px}
+.email-modal-hint{font-size:11px;color:#94a3b8;flex:1;line-height:1.4}
+.em-btn{padding:8px 16px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;border:none;display:inline-flex;align-items:center;gap:5px;transition:opacity .15s}
+.em-btn:hover{opacity:.85}
+.em-btn-copy{background:#1e293b;color:#fff}
+.em-btn-copy.copied{background:#16a34a}
+.em-btn-gmail{background:#1a73e8;color:#fff}
+
+
+/* INSURANCE PANEL */
+.ins-nav-btn{width:100%;padding:7px 10px;border-radius:6px;border:1px solid #e2e8f0;background:#f8fafc;color:#475569;font-size:11px;font-weight:600;cursor:pointer;text-align:left;display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.ins-nav-btn:hover{background:#fffbeb;color:#92400e;border-color:#fde68a}
+.ins-nav-btn.active{background:#fffbeb;color:#92400e;border-color:#fde68a}
+.ins-panel{display:none;flex:1;overflow-y:auto;padding:16px}
+.ins-panel.visible{display:block}
+.ins-summary-bar{display:flex;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.ins-kpi{background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:10px 14px;min-width:130px}
+.ins-kpi-label{font-size:10px;color:#94a3b8;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+.ins-kpi-val{font-size:18px;font-weight:800;color:#0f172a}
+.ins-kpi-sub{font-size:10px;color:#94a3b8;margin-top:2px}
+.ins-kpi.alert{border-color:#fca5a5}
+.ins-kpi.alert .ins-kpi-val{color:#b91c1c}
+.ins-group{background:#fff;border:1px solid #e2e8f0;border-radius:10px;margin-bottom:10px;overflow:hidden}
+.ins-group-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#f8fafc;border-bottom:1px solid #e2e8f0}
+.ins-group-name{font-size:12px;font-weight:700;color:#0f172a}
+.ins-group-agent{font-size:11px;color:#64748b}
+.ins-table{width:100%;border-collapse:collapse}
+.ins-table th{font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;padding:6px 14px;text-align:left;background:#f8fafc}
+.ins-table th:last-child,.ins-table td:last-child{text-align:center}
+.ins-table td{font-size:11px;color:#334155;padding:8px 14px;border-top:1px solid #f1f5f9}
+.ins-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:9px;font-weight:700;text-transform:uppercase}
+.ins-badge.current{background:#f0fdf4;color:#15803d}
+.ins-badge.pastdue{background:#fef2f2;color:#b91c1c}
+.ins-badge.pending{background:#fefce8;color:#92400e}
+.ins-badge.upcoming{background:#fff7ed;color:#c2410c}
+.ins-pending-note{font-size:10px;color:#94a3b8;font-style:italic;padding:8px 14px;border-top:1px solid #f1f5f9}
+</style>
+<script src="config.js?v=36"></script>
+</head>
+<body>
+<div id="data-loader" style="position:fixed;inset:0;background:#0f172a;display:flex;align-items:center;justify-content:center;z-index:9999;color:#94a3b8;font-family:sans-serif;font-size:14px;">
+  Loading compliance data…
+</div>
+
+<!-- TOP BAR -->
+<header class="topbar">
+  <div class="logo">Blakeworth Compliance</div>
+  <div class="stat"><span class="dot dot-red"></span><span class="val" id="stat-flagged">—</span>&nbsp;flagged</div>
+  <div class="stat"><span class="dot dot-amber"></span>$<span class="val" id="stat-outstanding">—</span>&nbsp;outstanding</div>
+  <div class="stat"><span class="dot dot-blue"></span><span class="val" id="stat-awaiting">—</span>&nbsp;awaiting reply</div>
+</header>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <div class="all-items active" id="nav-all" onclick="filterBy(null,null)">
+        All items <span class="all-badge" id="all-badge">—</span>
+      </div>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-nav">
+        <div class="port-group expanded" id="pg-JHU">
+          <div class="port-header" onclick="togglePort('JHU')">
+            <span class="port-chevron">▾</span>JHU<span class="port-badge">29</span>
+          </div>
+          <div class="port-cats"><div class="cat-item" data-portfolio="JHU" data-category="Lead Certification" onclick="filterBy('JHU','Lead Certification')">Lead Certification<span class="cat-badge">19</span></div><div class="cat-item" data-portfolio="JHU" data-category="LLC Filing" onclick="filterBy('JHU','LLC Filing')">LLC Filing<span class="cat-badge">5</span></div><div class="cat-item" data-portfolio="JHU" data-category="Rental License" onclick="filterBy('JHU','Rental License')">Rental License<span class="cat-badge">4</span></div><div class="cat-item" data-portfolio="JHU" data-category="Property Tax" onclick="filterBy('JHU','Property Tax')">Property Tax<span class="cat-badge">1</span></div>
+<div class="cat-item" data-portfolio="JHU" data-category="Registered Agent" onclick="filterBy('JHU','Registered Agent')">Registered Agent<span class="cat-badge">5</span></div></div>
+        </div>
+        <div class="port-group expanded" id="pg-SLP">
+          <div class="port-header" onclick="togglePort('SLP')">
+            <span class="port-chevron">▾</span>SLP<span class="port-badge">19</span>
+          </div>
+          <div class="port-cats"><div class="cat-item" data-portfolio="SLP" data-category="Rental License" onclick="filterBy('SLP','Rental License')">Rental License<span class="cat-badge">10</span></div><div class="cat-item" data-portfolio="SLP" data-category="LLC Filing" onclick="filterBy('SLP','LLC Filing')">LLC Filing<span class="cat-badge">8</span></div><div class="cat-item" data-portfolio="SLP" data-category="Utility" onclick="filterBy('SLP','Utility')">Utility<span class="cat-badge">1</span></div></div>
+        </div>
+        <div class="port-group expanded" id="pg-HOLDING">
+          <div class="port-header" onclick="togglePort('HOLDING')">
+            <span class="port-chevron">▾</span>HOLDING<span class="port-badge">9</span>
+          </div>
+          <div class="port-cats"><div class="cat-item" data-portfolio="HOLDING" data-category="LLC Filing" onclick="filterBy('HOLDING','LLC Filing')">LLC Filing<span class="cat-badge">8</span></div><div class="cat-item" data-portfolio="HOLDING" data-category="Registered Agent" onclick="filterBy('HOLDING','Registered Agent')">Registered Agent<span class="cat-badge">3</span></div></div>
+        </div>
+        <div class="port-group expanded" id="pg-DC">
+          <div class="port-header" onclick="togglePort('DC')">
+            <span class="port-chevron">▾</span>DC<span class="port-badge">2</span>
+          </div>
+          <div class="port-cats"><div class="cat-item" data-portfolio="DC" data-category="LLC Filing" onclick="filterBy('DC','LLC Filing')">LLC Filing<span class="cat-badge">1</span></div><div class="cat-item" data-portfolio="DC" data-category="Rental License" onclick="filterBy('DC','Rental License')">Rental License<span class="cat-badge">1</span></div></div>
+        </div>
+    </div>
+    <div class="sidebar-bottom">
+      <button class="ins-nav-btn" id="nav-insurance" onclick="showInsuranceView()">🛡️ Insurance</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- OVERVIEW -->
+    <div class="overview" id="overview-section">
+      <div class="ov-header">
+        <span class="ov-title">Portfolio Overview</span>
+        <span class="ov-summary">59 flagged · $54,854 outstanding</span>
+      </div>
+      <div class="ov-cards">
+
+  <div class="ov-card ov-card-jhu" id="ovc-JHU" onclick="filterBy('JHU',null)">
+    <div class="ov-port">JHU</div>
+    <div class="ov-flagged">29 <span>flagged</span></div>
+    <div class="ov-amt">$47,869</div>
+    <div class="ov-total">91 total items</div>
+  </div>
+  <div class="ov-card ov-card-slp" id="ovc-SLP" onclick="filterBy('SLP',null)">
+    <div class="ov-port">SLP</div>
+    <div class="ov-flagged">19 <span>flagged</span></div>
+    <div class="ov-amt">$1,476</div>
+    <div class="ov-total">36 total items</div>
+  </div>
+  <div class="ov-card ov-card-holding" id="ovc-HOLDING" onclick="filterBy('HOLDING',null)">
+    <div class="ov-port">Holding</div>
+    <div class="ov-flagged">9 <span>flagged</span></div>
+    <div class="ov-amt">$5,208</div>
+    <div class="ov-total">9 total items</div>
+  </div>
+  <div class="ov-card ov-card-dc" id="ovc-DC" onclick="filterBy('DC',null)">
+    <div class="ov-port">DC</div>
+    <div class="ov-flagged">2 <span>flagged</span></div>
+    <div class="ov-amt">$300</div>
+    <div class="ov-total">3 total items</div>
+  </div>
+      </div>
+    </div>
+
+    <!-- TOOLBAR -->
+    <div class="toolbar">
+      <span class="toolbar-label">Show:</span>
+      <button class="pill active" onclick="setFilter('all',this)">All</button>
+      <button class="pill" onclick="setFilter('flagged',this)">Flagged</button>
+      <button class="pill" onclick="setFilter('current',this)">Current / Active</button>
+      <button class="pill" onclick="setFilter('cleared',this)">Cleared</button>
+      <span class="row-count" id="row-count"></span>
+    </div>
+
+    <!-- TABLE -->
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:22px"></th>
+            <th class="col-entity">Entity / Property</th>
+            <th style="width:52px">Unit</th>
+            <th>Category</th>
+            <th>Status</th>
+            <th>Due</th>
+            <th>Amount</th>
+            <th>Comm</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+
+  <!-- INSURANCE PANEL -->
+  <div class="ins-panel" id="ins-panel">
+    <div id="ins-stats" class="ins-summary-bar"></div>
+    <div id="ins-groups"></div>
+  </div>
+
+  </main>
+
+  <!-- DETAIL PANEL -->
+  <aside class="detail-panel" id="detail-panel">
+    <div class="dp-header">
+      <span class="dp-close" onclick="closePanel()">×</span>
+      <div class="dp-entity" id="dp-entity">—</div>
+      <div class="dp-sub" id="dp-sub">—</div>
+    </div>
+    <div class="dp-body">
+      <div class="dp-section">
+        <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+          <span id="dp-status-badge" class="badge">—</span>
+          <span id="dp-days-badge" class="days-badge" style="display:inline-block;margin-top:3px">—</span>
+        </div>
+        <div class="dp-field"><div class="dp-label">Portal says</div><div class="dp-value" id="dp-source"></div></div>
+        <div class="dp-field"><div class="dp-label">Amount due</div><div class="dp-value amount" id="dp-amount"></div></div>
+        <div class="dp-field"><div class="dp-label">Responsible</div><div class="dp-value" id="dp-responsible"></div><div id="dp-contact" style="margin-top:4px;font-size:11px;color:#475569;line-height:1.6"></div></div>
+      </div>
+      <div class="dp-section" id="dp-links-section" style="display:none">
+        <div class="dp-section-title">Links</div>
+        <div id="dp-links"></div>
+      </div>
+      <div class="dp-section" id="dp-notes-section">
+        <div class="dp-section-title">Notes</div>
+        <div class="dp-box" id="dp-notes">—</div>
+      </div>
+      <div class="dp-section" id="dp-ra-section">
+        <div class="dp-section-title">RA &amp; Entity</div>
+        <div id="dp-ra"></div>
+      </div>
+      <div class="dp-section" id="dp-action-link-section" style="display:none">
+        <div class="dp-section-title">Action link</div>
+        <div id="dp-action-link"></div>
+      </div>
+      <div class="dp-section">
+        <div class="dp-section-title">Action required</div>
+        <div class="dp-box" id="dp-action">—</div>
+      </div>
+      <div class="dp-section">
+        <button class="dp-btn dp-btn-primary" onclick="cycleCommStatus()">Update status →</button>
+        <button class="dp-btn dp-btn-secondary" onclick="draftEmail()">✉ Draft email</button>
+      </div>
+      <div class="dp-section">
+        <div class="dp-section-title">Comm flow</div>
+        <div class="comm-flow" id="dp-comm-flow"></div>
+      </div>
+      <div class="dp-section">
+        <div class="dp-section-title">Activity log</div>
+        <div class="activity-log" id="dp-log"></div>
+        <div class="log-form">
+          <input class="log-input" id="log-input" placeholder="Add note…" onkeydown="if(event.key==='Enter')addLog()">
+          <button class="log-submit" onclick="addLog()">Log</button>
+        </div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+
+<script>
+let DATA = [];
+
+// ── CSV loader ──────────────────────────────────────────────────────────────
+function parseCSVRow(line) {
+  const result = []; let cur = ''; let inQ = false;
+  for (let i = 0; i < line.length; i++) {
+    if (line[i] === '"') {
+      if (inQ && line[i+1] === '"') { cur += '"'; i++; } else inQ = !inQ;
+    } else if (line[i] === ',' && !inQ) { result.push(cur); cur = ''; }
+    else cur += line[i];
+  }
+  result.push(cur);
+  return result;
+}
+
+function splitCSVLines(text) {
+  // Split on newlines OUTSIDE quoted fields (handles multi-line cell values)
+  const lines = []; let cur = '', inQ = false;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (ch === '"') { if (inQ && text[i+1] === '"') { cur += '"'; i++; } else inQ = !inQ; cur += ch; }
+    else if ((ch === '\n' || ch === '\r') && !inQ) {
+      if (ch === '\r' && text[i+1] === '\n') i++;
+      if (cur.trim()) lines.push(cur);
+      cur = '';
+    } else cur += ch;
+  }
+  if (cur.trim()) lines.push(cur);
+  return lines;
+}
+
+function parseCSV(text) {
+  const rows = splitCSVLines(text);
+  if (rows.length < 2) return [];
+  const hdrs = parseCSVRow(rows[0]).map(h => h.replace(/^\uFEFF/, '').trim());
+  const idx = h => hdrs.indexOf(h);
+  return rows.slice(1).map(line => {
+    const v = parseCSVRow(line);
+    const g = (h, fallback='') => (v[idx(h)] || fallback).trim();
+    if (!g('Row_ID')) return null;
+    return {
+      id:               g('Row_ID'),
+      portfolio:        g('Portfolio'),
+      address:          g('Property_Address'),
+      unit:             g('Unit'),
+      entity:           g('LLC_Entity'),
+      category:         g('Category'),
+      due_date:         g('Due_Date'),
+      health:           g('Health'),
+      status:           g('Status') || g('Health'),
+      source_status:    g('Source_Status'),
+      amount:           g('Billed_Amount'),
+      responsible:      g('Responsible'),
+      notes:            g('Notes'),
+      action_required:  g('Action_Required'),
+      action_url:       g('Action_URL'),
+      source_doc:       g('Source_Doc'),
+      registered_agent: g('Registered_Agent'),
+      ra_account:       g('RA_Account'),
+      csc_status:       g('CSC_Status'),
+      csc_thru:         g('CSC_Thru'),
+      state:            g('State'),
+      entity_id:        g('Entity_ID'),
+      comm_status:      'Unstarted',
+    };
+  }).filter(Boolean);
+}
+
+async function loadData() {
+  const loader = document.getElementById('data-loader');
+  try {
+    const resp = await fetch(window.CONFIG.MASTER_CSV_URL);
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const text = await resp.text();
+    DATA = parseCSV(text).filter(r => ['JHU','SLP','HOLDING','DC'].includes(r.portfolio) && r.category);
+    if (loader) loader.remove();
+    loadState();
+    updateStats();
+    renderSidebar();
+    renderTable();
+  } catch(e) {
+    console.error('Failed to load compliance data:', e);
+    if (loader) loader.innerHTML = '<div style="color:#f87171;padding:20px">⚠️ Failed to load data. Check network or sheet publish settings.<br><small>' + e.message + '</small></div>';
+  }
+}
+
+
+// ── state ────────────────────────────────────────────────────────────────────
+let activeRow = null;
+let filterStatus = 'all';
+let filterPortfolio = null;
+let filterCategory = null;
+const logs = {};
+
+// ── localStorage ─────────────────────────────────────────────────────────────
+const STORAGE_KEY = 'blakeworth_compliance_v1';
+function saveState() {
+  const state = {comm:{}, logs:{}};
+  DATA.forEach(r => { if (r.comm_status && r.comm_status !== 'Unstarted') state.comm[r.id] = r.comm_status; });
+  Object.keys(logs).forEach(id => { if (logs[id]?.length) state.logs[id] = logs[id]; });
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+}
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    const state = JSON.parse(raw);
+    if (state.comm) Object.entries(state.comm).forEach(([id,cs]) => {
+      const r = DATA.find(x=>x.id===id); if (r) r.comm_status = cs;
+    });
+    if (state.logs) Object.entries(state.logs).forEach(([id,entries]) => { logs[id] = entries; });
+  } catch(e) {}
+}
+
+// ── status helpers ────────────────────────────────────────────────────────────
+const FLAGGED_SET = new Set(['Filing Needed','Reinstatement Required','Tax Due','Invoice Due','License Renewal Needed','Outstanding Balance','Verify with Dallas','Inspection Due','TBD','Needs action','Needs Action','Overdue','Expired','Revoked','Not Paid','Unpaid','Action Required','Past Due','Violation','Open Violation']);
+const isFlagged = r => FLAGGED_SET.has(r.health) || FLAGGED_SET.has(r.status) || r.health === '-' || r.health === '' || (r.status && /revok|not paid|not confirm|unpaid|overdue|expired|action required|needs action|violation/i.test(r.status));
+const isCurrent = r => ['Current','Auto-pay','Active'].includes(r.health);
+const isCleared = r => ['Cleared','Superseded'].includes(r.health);
+
+function statusBadgeClass(s) {
+  if (!s) return 'badge-gray';
+  const sl = s.toLowerCase().trim();
+  // Red — critical / bad
+  if (['reinstatement required','no active insurance','filing required','revoked',
+       'unpaid','overdue','invoice unpaid','open violation','violation'].includes(sl)) return 'badge-red';
+  // Yellow — warning / upcoming (before green to prevent 'active — monitor' matching 'active')
+  if (['active — monitor for renewal','active — monitor','renew soon','registration only',
+       'filing needed','renovations','needs action','upcoming'].includes(sl) ||
+      sl.includes('monitor')) return 'badge-yellow';
+  // Green — good standing
+  if (['active','licensed','paid','cleared','valid','good standing','superseded'].includes(sl) ||
+      sl.includes('current')) return 'badge-green';
+  // Orange — needs attention / unconfirmed
+  if (['filing unconfirmed','verify status','verify with csc','verify — cm','verify — am',
+       'decision needed'].includes(sl) || sl.startsWith('verify') ||
+      sl.startsWith('payment plan')) return 'badge-orange';
+  return 'badge-gray';
+}
+function priDotClass(s) {
+  if (!s) return 'pri-gray';
+  const sl = s.toLowerCase().trim();
+  // Red — critical
+  if (['reinstatement required','no active insurance','filing required','revoked',
+       'unpaid','overdue','invoice unpaid','open violation','violation'].includes(sl)) return 'pri-red';
+  // Yellow — warning / upcoming
+  if (['active — monitor for renewal','active — monitor','renew soon','registration only',
+       'filing needed','renovations','needs action','upcoming'].includes(sl) ||
+      sl.includes('monitor')) return 'pri-yellow';
+  // Green — good
+  if (['active','licensed','paid','cleared','valid','good standing','superseded'].includes(sl) ||
+      sl.includes('current')) return 'pri-green';
+  // Orange — needs attention
+  if (['filing unconfirmed','verify status','verify with csc','verify — cm','verify — am',
+       'decision needed'].includes(sl) || sl.startsWith('verify') ||
+      sl.startsWith('payment plan')) return 'pri-orange';
+  return 'pri-gray';
+}
+function rowClass(r) {
+  const c=[];
+  if (r.status==='Reinstatement Required') c.push('critical');
+  else if (isFlagged(r)) c.push('warning');
+  if (isCurrent(r)||isCleared(r)) c.push('muted');
+  return c.join(' ');
+}
+function daysUntil(d) {
+  if (!d) return null;
+  const dt=new Date(d), today=new Date(); today.setHours(0,0,0,0);
+  return Math.round((dt-today)/86400000);
+}
+function daysHtml(r) {
+  if (isCleared(r)||isCurrent(r)) return '';
+  const n=daysUntil(r.due_date); if (n===null) return '';
+  if (n<0) return `<span class="days-badge days-overdue">Overdue ${Math.abs(n)}d</span>`;
+  if (n<=30) return `<span class="days-badge days-urgent">${n}d</span>`;
+  return `<span class="days-badge days-ok">${n}d</span>`;
+}
+function commBadgeHtml(cs, rowId) {
+  const steps = ['Unstarted','Notified','Acknowledged','Pending Verification','Cleared'];
+  return `<select class="comm-select" onchange="setCommById('${rowId}',this.value)" onclick="event.stopPropagation()">${steps.map(s=>`<option${s===cs?' selected':''}>${s}</option>`).join('')}</select>`;
+}
+function setCommById(id, newS) {
+  const r = DATA.find(x=>x.id===id); if (!r) return;
+  const old = r.comm_status;
+  if (old === newS) return;
+  r.comm_status = newS;
+  const ts = new Date().toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'2-digit',minute:'2-digit'});
+  if (!logs[r.id]) logs[r.id] = [];
+  logs[r.id].push({date:ts, text:`Status changed: ${old} → ${newS}`});
+  saveState(); updateStats(); renderSidebar(); renderTable();
+}
+function fmtDate(d) {
+  if (!d) return '—';
+  return new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+}
+function fmtAmt(a) {
+  if (!a) return '';
+  const n = parseFloat(String(a).replace(/[$,]/g,''));
+  if (isNaN(n)) return '';
+  return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+
+// ── stats ─────────────────────────────────────────────────────────────────────
+function updateStats() {
+  const fl=DATA.filter(isFlagged);
+  document.getElementById('stat-flagged').textContent=fl.length;
+  const out=fl.reduce((s,r)=>s+(parseFloat((r.amount||'').replace(/[$,]/g,''))||0),0);
+  document.getElementById('stat-outstanding').textContent=out.toLocaleString('en-US',{maximumFractionDigits:0});
+  document.getElementById('stat-awaiting').textContent=DATA.filter(r=>r.comm_status==='Notified').length;
+  document.getElementById('all-badge').textContent=fl.length;
+}
+
+// ── filter & render ───────────────────────────────────────────────────────────
+function statusPriority(r) {
+  if (r.status === 'Reinstatement Required') return 0;
+  if (isFlagged(r)) return 1;
+  if (isCurrent(r)) return 2;
+  if (isCleared(r)) return 3;
+  return 2;
+}
+function visibleRows() {
+  const rows = DATA.filter(r=>{
+    if (filterPortfolio && r.portfolio!==filterPortfolio) return false;
+    if (filterCategory && r.category!==filterCategory) return false;
+    if (filterStatus==='flagged' && !isFlagged(r)) return false;
+    if (filterStatus==='current' && !isCurrent(r)) return false;
+    if (filterStatus==='cleared' && !isCleared(r)) return false;
+    return true;
+  });
+  rows.sort((a,b) => {
+    const pa = statusPriority(a), pb = statusPriority(b);
+    if (pa !== pb) return pa - pb;
+    // Among same priority: most overdue first
+    const da = daysUntil(a.due_date) ?? 9999;
+    const db = daysUntil(b.due_date) ?? 9999;
+    return da - db;
+  });
+  return rows;
+}
+
+// ── dynamic sidebar ──────────────────────────────────────────────────────────
+function renderSidebar() {
+  // Preferred display order for categories
+  const CAT_ORDER = ['LLC Filing','Rental License','Property Tax','Lead Certification','Utility','MDE','Inspection'];
+  const byPortCat = {};
+  const byPort = {};
+  DATA.forEach(r => {
+    const port = r.portfolio;
+    const cat = r.category;
+    if (!byPortCat[port]) byPortCat[port] = {};
+    if (!byPortCat[port][cat]) byPortCat[port][cat] = {total:0,flagged:0};
+    byPortCat[port][cat].total++;
+    if (isFlagged(r)) byPortCat[port][cat].flagged++;
+    if (!byPort[port]) byPort[port] = {total:0,flagged:0};
+    byPort[port].total++;
+    if (isFlagged(r)) byPort[port].flagged++;
+  });
+  ['JHU','SLP','HOLDING','DC'].forEach(port => {
+    const pg = document.getElementById('pg-'+port);
+    if (!pg) return;
+    const pd = byPort[port]||{total:0,flagged:0};
+    const badge = pg.querySelector('.port-badge');
+    if (badge) badge.textContent = pd.flagged > 0 ? pd.flagged : '✓';
+    const catContainer = pg.querySelector('.port-cats');
+    if (!catContainer) return;
+    const cats = byPortCat[port]||{};
+    // Sort categories in preferred order
+    const sortedCats = Object.keys(cats).filter(cat => cat !== 'INSURANCE').sort((a,b) => {
+      const ai = CAT_ORDER.indexOf(a); const bi = CAT_ORDER.indexOf(b);
+      return (ai===-1?99:ai) - (bi===-1?99:bi);
+    });
+    catContainer.innerHTML = sortedCats.map(cat => {
+      const c = cats[cat];
+      const allOk = c.flagged === 0;
+      const badgeText = allOk ? '✓' : c.flagged;
+      const badgeClass = allOk ? 'cat-badge-ok' : 'cat-badge';
+      const CAT_LABELS = {'INSURANCE':'Insurance','LLC':'LLC','LLC Filing':'LLC Filing'};
+      const catLabel = CAT_LABELS[cat] || cat;
+      return `<div class="cat-item" data-portfolio="${port}" data-category="${cat}" onclick="filterBy('${port}','${cat}')">${catLabel}<span class="${badgeClass}">${badgeText}</span></div>`;
+    }).join('');
+  });
+  // Update ov-card summary counts
+  ['JHU','SLP','HOLDING','DC'].forEach(port => {
+    const el = document.getElementById('ovc-' + port);
+    if (!el) return;
+    const pd = byPort[port]||{total:0,flagged:0};
+    const amtTotal = DATA.filter(r=>r.portfolio===port&&r.amount&&isFlagged(r))
+      .reduce((s,r)=>s+(parseFloat((r.amount||'').replace(/[$,]/g,''))||0),0);
+    const fEl = el.querySelector('.ov-flagged');
+    if (fEl) fEl.innerHTML = (pd.flagged > 0 ? pd.flagged : '<span style="color:#16a34a">✓</span>') + ' <span>' + (pd.flagged > 0 ? 'flagged' : 'all clear') + '</span>';
+    const tEl = el.querySelector('.ov-total');
+    if (tEl) tEl.textContent = pd.total + ' total items';
+    const aEl = el.querySelector('.ov-amt');
+    if (aEl) aEl.textContent = amtTotal > 0 ? '$' + amtTotal.toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:0}) : '';
+  });
+}
+
+function renderTable() {
+  const rows=visibleRows();
+  document.getElementById('row-count').textContent=rows.length+' items';
+  document.getElementById('tbody').innerHTML=rows.map(r=>`
+    <tr class="data-row ${rowClass(r)}${activeRow===r.id?' active':''}" id="row-${r.id}" onclick="toggleRow('${r.id}')">
+      <td><span class="pri-dot ${priDotClass(r.status)}"></span></td>
+      <td class="col-entity">
+        <div class="entity-name">${['LLC Filing','Registered Agent'].includes(r.category)?r.entity:(r.address&&r.address!=='Entity-level'?r.address:r.entity)}</div>
+        <div class="entity-sub">${['LLC Filing','Registered Agent'].includes(r.category)?r.portfolio+' · '+r.address:r.entity+(r.unit?' — Unit '+r.unit:'')}</div>
+      </td>
+      <td style="font-size:12px;font-weight:600;color:#475569;text-align:center">${r.unit||'—'}</td>
+      <td style="font-size:12px;color:#64748b;text-align:center">${r.category}</td>
+      <td style="text-align:center"><span class="badge ${statusBadgeClass(r.status)}">${r.status}</span></td>
+      <td style="font-size:12px;color:#64748b;text-align:center">${fmtDate(r.due_date)}${daysHtml(r)}</td>
+      <td style="font-size:12px;font-weight:600;color:#b91c1c;text-align:center">${r.amount&&(parseFloat((r.amount||'').replace(/[$,]/g,''))||0)>0?fmtAmt(r.amount):''}</td>
+      <td>${commBadgeHtml(r.comm_status, r.id)}</td>
+    </tr>`).join('');
+}
+
+// ── nav ───────────────────────────────────────────────────────────────────────
+function filterBy(port,cat) {
+  if (typeof hideInsuranceView === 'function') hideInsuranceView();
+  filterPortfolio=port; filterCategory=cat;
+  document.querySelectorAll('.cat-item').forEach(el=>el.classList.remove('active'));
+  document.getElementById('nav-all').classList.toggle('active',!port);
+  if (port&&cat) {
+    const el=document.querySelector(`.cat-item[data-portfolio="${port}"][data-category="${cat}"]`);
+    if (el) el.classList.add('active');
+  }
+  renderSidebar();
+  renderTable();
+}
+function togglePort(p) { document.getElementById('pg-'+p).classList.toggle('expanded'); }
+function setFilter(f,btn) {
+  filterStatus=f;
+  document.querySelectorAll('.pill').forEach(el=>el.classList.remove('active'));
+  btn.classList.add('active');
+  renderTable();
+}
+
+// ── overview ──────────────────────────────────────────────────────────────────
+function toggleOverview() {
+  document.getElementById('overview-section').classList.toggle('collapsed');
+  const ch=document.getElementById('ov-chevron');
+  ch.style.transform=document.getElementById('overview-section').classList.contains('collapsed')?'rotate(-90deg)':'rotate(0deg)';
+}
+
+// ── detail panel ─────────────────────────────────────────────────────────────
+const COMM_STEPS=['Unstarted','Notified','Acknowledged','Pending Verification','Cleared'];
+function toggleRow(id) {
+  if (activeRow===id) { closePanel(); return; }
+  activeRow=id;
+  document.querySelectorAll('.data-row').forEach(el=>el.classList.remove('active'));
+  document.getElementById('row-'+id)?.classList.add('active');
+  const r=DATA.find(x=>x.id===id); if (r) openPanel(r);
+}
+function openPanel(r) {
+  document.getElementById('detail-panel').classList.add('open');
+  const _isEntityCat=['LLC Filing','Registered Agent'].includes(r.category);
+  document.getElementById('dp-entity').textContent=_isEntityCat?r.entity:(r.address&&r.address!=='Entity-level'?r.address:r.entity);
+  document.getElementById('dp-sub').textContent=_isEntityCat?(r.portfolio+' · '+r.address):(r.entity+' · '+r.portfolio+' · '+r.category+(r.unit?' — Unit '+r.unit:''));
+  const sb=document.getElementById('dp-status-badge');
+  sb.textContent=r.status; sb.className='badge '+statusBadgeClass(r.status);
+  const n=daysUntil(r.due_date), db=document.getElementById('dp-days-badge');
+  if (n!==null&&isFlagged(r)) {
+    db.textContent=n<0?'Overdue '+Math.abs(n)+'d':n+'d until due';
+    db.className='days-badge '+(n<0?'days-overdue':n<=30?'days-urgent':'days-ok');
+  } else db.textContent=r.due_date?fmtDate(r.due_date):'';
+  document.getElementById('dp-source').textContent=r.source_status||'—';
+  document.getElementById('dp-amount').textContent=r.amount?fmtAmt(r.amount):'—';
+  const respEl=document.getElementById('dp-responsible');
+  const ctDiv=document.getElementById('dp-contact');
+  respEl.textContent='';
+  if (r.responsible) {
+    // Parse multi-line responsible field: name, title, email, phone
+    const lines = r.responsible.split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
+    const isEmail = s => s.includes('@') && s.includes('.');
+    const rows = lines.map((l,i) => {
+      if (i===0) return `<div style="font-size:12px;font-weight:500;color:#1e293b;margin-bottom:2px">${l}</div>`;
+      if (isEmail(l)) return `<div style="font-size:11px;margin-top:5px"><a href="mailto:${l}" style="color:#2563eb;text-decoration:none">✉&nbsp;${l}</a></div>`;
+      if (i===1) return `<div style="font-size:11px;color:#64748b;margin-bottom:4px">${l}</div>`;
+      return `<div style="font-size:11px;color:#64748b;margin-top:2px">✆&nbsp;${l}</div>`;
+    }).join('');
+    ctDiv.innerHTML = `<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:10px 12px;margin-top:6px">${rows}</div>`;
+  } else {
+    ctDiv.innerHTML='<span style="color:#94a3b8">—</span>';
+  }
+  // Notes (hide section if empty)
+  const notesSection = document.getElementById('dp-notes-section');
+  if (r.notes) {
+    document.getElementById('dp-notes').textContent=r.notes;
+    notesSection.style.display='';
+  } else {
+    notesSection.style.display='none';
+  }
+  // Action required — text only (URLs are in Action link section above)
+  const actionEl=document.getElementById('dp-action');
+  const lkPanel=LINKS_BY_CATEGORY[linksKey(r.portfolio, r.category)]||{};
+  if (r.action_required) {
+    actionEl.textContent=r.action_required;
+  } else if (lkPanel.Note) {
+    actionEl.textContent=lkPanel.Note;
+  } else {
+    actionEl.textContent='No action required.';
+  }
+  // comm flow
+  const stepIdx=COMM_STEPS.indexOf(r.comm_status);
+  document.getElementById('dp-comm-flow').innerHTML=COMM_STEPS.map((s,i)=>{
+    const cls=i<stepIdx?'done':i===stepIdx?'current':'';
+    const label = (i === COMM_STEPS.length - 1) ? terminalLabel(r.category) : s;
+    return `<div class="cf-step ${cls}" onclick="setCommStep(${i})">
+      <div class="cf-dot ${i<stepIdx?'done':i===stepIdx?'current':''}">${i<stepIdx?'✓':''}</div>
+      <div class="cf-label">${label}</div></div>`;
+  }).join('');
+  renderLog(r.id);
+  // Links — DOCS tab files for this row, fallback to MASTER source_doc
+  const linksSec=document.getElementById('dp-links-section');
+  const linksEl=document.getElementById('dp-links');
+  const docFiles=DOCS_BY_ROW[r.id]||[];
+  let allFiles=docFiles.slice();
+  if (!allFiles.length && r.source_doc) {
+    r.source_doc.split('|').map(u=>u.trim()).filter(u=>u.startsWith('http')).forEach((url,i,arr)=>{
+      allFiles.push({label:arr.length>1?`view file #${i+1}`:'view file',url});
+    });
+  }
+  if (allFiles.length) {
+    linksSec.style.display='';
+    if (allFiles.length===1) {
+      linksEl.innerHTML=`<a href="${allFiles[0].url}" target="_blank" style="color:#2563eb;font-weight:500;text-decoration:none">🗂️ view file</a>`;
+    } else {
+      linksEl.innerHTML=allFiles.map((f,i)=>`<a href="${f.url}" target="_blank" style="color:#2563eb;font-weight:500;text-decoration:none">🗂️ view file #${i+1}</a>`).join(' <span style="color:#94a3b8;margin:0 4px">|</span> ');
+    }
+  } else {
+    linksSec.style.display='none';
+  }
+  // Action link — MASTER portal_url first, then MASTER action_url if URL, then LINKS tab URL
+  const actionLinkSec=document.getElementById('dp-action-link-section');
+  const actionLinkEl=document.getElementById('dp-action-link');
+  const portalUrl=r.portal_url||(r.action_url&&r.action_url.startsWith('http')?r.action_url:'')||(lkPanel.URL&&lkPanel.URL.startsWith('http')?lkPanel.URL:'');
+  const portalLabel=r.portal_url?(r.portal_label||lkPanel.Label||'Go to portal'):(r.action_url&&r.action_url.startsWith('http'))?(lkPanel.Label||'Go to portal'):(lkPanel.Label||'Go to portal');
+  if (portalUrl) {
+    actionLinkSec.style.display='';
+    let chip='';
+    if (r.de_file_num) chip=`<span class="de-file-chip" style="margin-left:8px" title="Click to copy" onclick="navigator.clipboard.writeText('${r.de_file_num}');this.textContent='✓ Copied!';setTimeout(()=>this.textContent='File # ${r.de_file_num} 📋',1200)">File # ${r.de_file_num} 📋</span>`;
+    actionLinkEl.innerHTML=`<a href="${portalUrl}" target="_blank" style="color:#2563eb;font-weight:500;text-decoration:none">🌐 ${portalLabel}</a>${chip}`;
+  } else {
+    // No portal URL — still show DE file chip if present
+    if (r.de_file_num) {
+      actionLinkSec.style.display='';
+      actionLinkEl.innerHTML=`<span class="de-file-chip" title="Click to copy" onclick="navigator.clipboard.writeText('${r.de_file_num}');this.textContent='✓ Copied!';setTimeout(()=>this.textContent='File # ${r.de_file_num} 📋',1200)">File # ${r.de_file_num} 📋</span>`;
+    } else {
+      actionLinkSec.style.display='none';
+    }
+  }
+  // RA
+  if (r.registered_agent||r.ra_account||r.csc_status) {
+    document.getElementById('dp-ra-section').style.display='';
+    document.getElementById('dp-ra').innerHTML=[
+      ['Agent',r.registered_agent],['Account',r.ra_account],
+      ['CSC Status',r.csc_status],['CSC Thru',r.csc_thru],
+      ['State',r.state],['Entity ID',r.entity_id],
+    ].filter(([,v])=>v).map(([k,v])=>`<div class="ra-row"><span class="ra-key">${k}</span><span class="ra-val">${v}</span></div>`).join('');
+  } else document.getElementById('dp-ra-section').style.display='none';
+}
+function closePanel() {
+  activeRow=null;
+  document.getElementById('detail-panel').classList.remove('open');
+  document.querySelectorAll('.data-row').forEach(el=>el.classList.remove('active'));
+}
+document.addEventListener('click',e=>{
+  const panel=document.getElementById('detail-panel');
+  if (panel.classList.contains('open')&&!panel.contains(e.target)&&!e.target.closest('.data-row')&&!e.target.closest('.modal-overlay')) closePanel();
+});
+
+// ── comm flow ─────────────────────────────────────────────────────────────────
+function setCommStep(i) {
+  if (!activeRow) return;
+  const r=DATA.find(x=>x.id===activeRow); if (!r) return;
+  const old=r.comm_status, newS=COMM_STEPS[i];
+  if (old===newS) return;
+  r.comm_status=newS;
+  const ts=new Date().toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'2-digit',minute:'2-digit'});
+  if (!logs[r.id]) logs[r.id]=[];
+  logs[r.id].push({date:ts,text:`Status changed: ${old} → ${newS}`});
+  saveState(); openPanel(r); renderTable(); updateStats();
+}
+function cycleCommStatus() {
+  if (!activeRow) return;
+  const r=DATA.find(x=>x.id===activeRow);
+  setCommStep(Math.min(COMM_STEPS.indexOf(r.comm_status)+1,COMM_STEPS.length-1));
+}
+
+// ── log ───────────────────────────────────────────────────────────────────────
+function renderLog(id) {
+  const entries=logs[id]||[];
+  document.getElementById('dp-log').innerHTML=entries.length
+    ?entries.slice().reverse().map(e=>`<div class="log-entry"><span class="log-date">${e.date} — </span>${e.text}</div>`).join('')
+    :'<div style="font-size:11px;color:#94a3b8">No activity yet.</div>';
+}
+function addLog() {
+  if (!activeRow) return;
+  const input=document.getElementById('log-input'), txt=input.value.trim(); if (!txt) return;
+  if (!logs[activeRow]) logs[activeRow]=[];
+  const ts=new Date().toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'2-digit',minute:'2-digit'});
+  logs[activeRow].push({date:ts,text:txt});
+  input.value=''; renderLog(activeRow); saveState();
+}
+
+// ── draft email ───────────────────────────────────────────────────────────────
+function terminalLabel(category) {
+  const map = {
+    'LLC Filing': 'Good Standing',
+    'Registered Agent': 'Good Standing',
+    'Property Tax': 'Paid',
+    'Utility': 'Paid',
+    'Rental License': 'Licensed',
+    'Lead Certification': 'Certified',
+    'MDE': 'Certified',
+    'Inspection': 'Passed',
+    'Citation': 'Cleared',
+  };
+  return map[category] || 'Cleared';
+}
+
+// Generic CSV parser (for LINKS/DOCS tabs — different schema from MASTER)
+function parseGenericCSV(text) {
+  const lines = splitCSVLines(text);
+  if (lines.length < 2) return [];
+  const hdrs = parseCSVRow(lines[0]).map(h => h.replace(/^﻿/, '').trim());
+  return lines.slice(1).map(line => {
+    const vals = parseCSVRow(line);
+    const obj = {};
+    hdrs.forEach((h, i) => { obj[h] = (vals[i] || '').trim(); });
+    return obj;
+  }).filter(obj => Object.values(obj).some(v => v));
+}
+
+// Compound key: portfolio + category → e.g. "JHU-LLC", "DC-TAX"
+function linksKey(portfolio, category) {
+  const p_str = (portfolio || '');
+  const c_str = (category || '');
+  const portMap = {'JHU':'JHU','SLP':'SLP','DC':'DC','HOLDING':'HLD'};
+  const catMap = {
+    'LLC Filing':    {'JHU':'LLC','SLP':'LLC','DC':'LLC','HOLDING':'DE'},
+    'Property Tax':  {'JHU':'TAX','SLP':'TAX','DC':'TAX','HOLDING':'TAX'},
+    'Rental License':{'JHU':'LIC','SLP':'LIC','DC':'LIC','HOLDING':'LIC'},
+    'Violation':     {'JHU':'Violation','SLP':'Violation','DC':'Violation','HOLDING':'Violation'},
+  };
+  const p = portMap[p_str] || p_str;
+  const codes = catMap[c_str];
+  const code = codes ? (codes[p_str] || codes['JHU'] || c_str.replace(/\s+/g,'').slice(0,3).toUpperCase()) : c_str.replace(/\s+/g,'').slice(0,3).toUpperCase();
+  return p + '-' + code;
+}
+
+let LINKS_BY_CATEGORY = {};
+function loadLinks() {
+  if (!window.CONFIG || !CONFIG.LINKS_CSV_URL) return;
+  fetch(CONFIG.LINKS_CSV_URL).then(r=>r.text()).then(t=>{
+    const rows = parseGenericCSV(t);
+    rows.forEach(row => {
+      const cat = (row['Category'] || '').trim();
+      if (cat) LINKS_BY_CATEGORY[cat] = row;
+    });
+    // Re-render panel if it was opened before LINKS data arrived (race condition fix)
+    if (activeRow) {
+      const row = DATA.find(x => x.id === activeRow);
+      if (row) openPanel(row);
+    }
+  }).catch(()=>{});
+}
+let DOCS_BY_ROW = {};
+function loadDocs() {
+  if (!window.CONFIG || !CONFIG.DOCS_CSV_URL) return;
+  fetch(CONFIG.DOCS_CSV_URL).then(r=>r.text()).then(t=>{
+    const rows = parseGenericCSV(t);
+    rows.forEach(row => {
+      const id = (row['Linked_Row_IDs'] || '').trim();
+      const url = (row['Source_Doc'] || '').trim();
+      if (id && url && url.startsWith('http')) {
+        if (!DOCS_BY_ROW[id]) DOCS_BY_ROW[id] = [];
+        DOCS_BY_ROW[id].push({ label: (row['Label'] || '').trim(), url });
+      }
+    });
+    // Re-render panel if it was opened before DOCS data arrived
+    if (activeRow) {
+      const row = DATA.find(x => x.id === activeRow);
+      if (row) openPanel(row);
+    }
+  }).catch(()=>{});
+}
+function terminalLabel(category) {
+  const map = {
+    'LLC Filing': 'Good Standing',
+    'Registered Agent': 'Good Standing',
+    'Property Tax': 'Paid',
+    'Utility': 'Paid',
+    'Rental License': 'Licensed',
+    'Lead Certification': 'Certified',
+    'MDE': 'Certified',
+    'Inspection': 'Passed',
+    'Citation': 'Cleared',
+  };
+  return map[category] || 'Cleared';
+}
+
+// ── email preview modal state ──────────────────────────────────────────────────
+let _emailDraft = {};
+
+function draftEmail() {
+  const r=DATA.find(x=>x.id===activeRow); if (!r) return;
+  const CONTACTS_LOCAL={
+    'Dallas Basha':    {name:'Dallas Basha',email:'dallas@blakeworth.com'},
+    'Steve Riegger':   {name:'Steve Riegger',email:'propertymanager@americanmanage.com'},
+    'Marjorie Feehan Roberts': {name:'Marjorie Feehan Roberts',email:'marjorie@4frontmgmt.com'},
+    'Maya':            {name:'Maya Miyazaki',email:'maya@blakeworth.com'},
+    'Ramonia Hines':   {name:'Ramonia Hines',email:''},
+    'Fran Moore':      {name:'Fran Moore',email:'fran@hellerkowitz.com'},
+    'Patricia Weaver': {name:'Patricia Weaver',email:'patweaver@cantonmanagement.com'},
+    'Rhea Baker / Lily': {name:'Rhea Baker / Lily',email:'lily.balbi.vabyjt@statefarm.com'},
+    'Jesse Uhlman':    {name:'Jesse Uhlman',email:'jesse-uhlman@mdpins.com'},
+    'Tom French':      {name:'Tom French',email:'tom.french.qugq@statefarm.com'},
+    'Zachary Basha':   {name:'Zachary Basha',email:''},
+  };
+  const ct=CONTACTS_LOCAL[r.responsible]||{};
+  const toEmail=ct.email||'';
+  const toName=ct.name||r.responsible||'';
+  const firstName=toName?toName.split(' ')[0]:'Team';
+  const addrLabel=(r.address&&r.address!=='Entity-level')?r.address:r.entity;
+  const subj=`${addrLabel} — ${r.status}`;
+
+  const lk=LINKS_BY_CATEGORY[linksKey(r.portfolio, r.category)]||{};
+  let actionHtml='', actionText='';
+  if (lk.Label||lk.URL) {
+    const lbl=lk.Label||'Link'; const url=lk.URL||'#';
+    actionHtml+=`<a href="${url}" style="color:#1a73e8;text-decoration:none;font-weight:600">${lbl}</a>`;
+    actionText+=`${lbl}: ${url}`;
+  }
+  if (lk['Log in email']||lk.Password) {
+    const cred=[lk['Log in email']?'Login: '+lk['Log in email']:'', lk.Password?'Password: '+lk.Password:''].filter(Boolean).join('  ·  ');
+    actionHtml+=`<br><span style="font-size:12px;color:#64748b">${cred}</span>`;
+    actionText+=`\n${cred}`;
+  }
+  if (lk.Note) {
+    actionHtml+=`<br><span style="font-size:12px;color:#64748b;font-style:italic">${lk.Note}</span>`;
+    actionText+=`\n${lk.Note}`;
+  }
+  if (!actionHtml) { actionHtml=r.action_required||'Please review the item and advise on next steps.'; actionText=r.action_required||'Please review the item and advise on next steps.'; }
+
+  const srcHtml=r.source_doc?`<p style="margin:8px 0 0;font-size:13px">📎 <a href="${r.source_doc}" style="color:#1a73e8;text-decoration:none">View source document →</a></p>`:'';
+  const srcText=r.source_doc?`\nSource document: ${r.source_doc}`:'';
+  const entityLine=r.entity+(r.address&&r.address!=='Entity-level'?' — '+r.address:'')+(r.unit?', '+r.unit:'');
+
+  const sevBg={'Critical':'#fef2f2','Serious':'#fff7ed','Routine':'#f1f5f9','Current':'#f0fdf4'}[r.severity]||'#f1f5f9';
+  const sevFg={'Critical':'#b91c1c','Serious':'#c2410c','Routine':'#475569','Current':'#15803d'}[r.severity]||'#475569';
+
+  const amtChip=r.amount&&parseFloat(r.amount)>0
+    ?`<span style="display:inline-block;background:#fef2f2;color:#b91c1c;border-radius:4px;padding:2px 9px;font-size:12px;font-weight:700;margin-left:8px;vertical-align:middle">${fmtAmt(r.amount)} due</span>`
+    :'';
+  const dueLine=r.due_date?`<div style="margin-top:6px;font-size:12px;color:#64748b">📅 Due: <strong style="color:#0f172a">${fmtDate(r.due_date)}</strong></div>`:'';
+
+  const htmlBody=`<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:14px;color:#0f172a;max-width:580px;line-height:1.65">
+
+<p style="margin:0 0 18px">Hi ${firstName},</p>
+
+<p style="margin:0 0 18px;color:#334155">There is a compliance item at the property below that needs to be resolved. Could you please take care of this and confirm once it's been addressed?</p>
+
+<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:16px 20px;margin:0 0 20px">
+  <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#94a3b8;margin-bottom:6px">${r.portfolio||''} Portfolio · ${r.category||''}</div>
+  <div style="font-size:16px;font-weight:700;color:#0f172a;margin-bottom:6px">${entityLine}${amtChip}</div>
+  <span style="display:inline-block;background:${sevBg};color:${sevFg};border-radius:4px;padding:2px 9px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px">${r.status||''}</span>
+  ${dueLine}
+</div>
+
+<div style="margin:0 0 20px">
+  <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#94a3b8;margin-bottom:8px">Action Needed</div>
+  <div style="color:#1e293b;line-height:1.75">${actionHtml}</div>
+  ${srcHtml}
+</div>
+
+<hr style="border:none;border-top:1px solid #e2e8f0;margin:20px 0">
+
+<p style="margin:0 0 18px;color:#334155">If anything comes up or you need anything on our end, please don't hesitate to reach out — Dallas is cc'd on this as well. Thank you so much for handling this.</p>
+
+<div style="padding-top:14px;border-top:1px solid #e2e8f0">
+  <div style="font-weight:700;font-size:14px;color:#0f172a">Maya Miyazaki</div>
+  <div style="font-size:12px;color:#64748b;margin-top:2px">Manager – Real Estate Operations · Blakeworth Management</div>
+  <div style="font-size:12px;margin-top:4px"><a href="mailto:maya@blakeworth.com" style="color:#1a73e8;text-decoration:none">maya@blakeworth.com</a> &nbsp;·&nbsp; +1 (202) 919-7788</div>
+</div>
+
+</div>`;
+
+  const plainText=[
+    `Hi ${firstName},`,
+    '',
+    "There is a compliance item at the property below that needs to be resolved. Could you please take care of this and confirm once it's been addressed?",
+    '',
+    `── ${r.portfolio||''} Portfolio · ${r.category||''} ──────────────`,
+    entityLine,
+    `Status: ${r.status||''}`,
+    r.due_date?`Due: ${fmtDate(r.due_date)}`:'',
+    r.amount&&parseFloat(r.amount)>0?`Amount due: ${fmtAmt(r.amount)}`:'',
+    '',
+    'Action Needed:',
+    actionText+(srcText||''),
+    '──────────────────────────────────────────',
+    '',
+    "If anything comes up or you need anything on our end, please don't hesitate to reach out — Dallas is cc'd on this as well. Thank you so much for handling this.",
+    '',
+    'Maya Miyazaki',
+    'Manager – Real Estate Operations · Blakeworth Management',
+    'maya@blakeworth.com | +1 (202) 919-7788'
+  ].filter(s=>s!==null&&s!==undefined).join('\n');
+
+  _emailDraft = { htmlBody, plainText, subj, toEmail, toName };
+
+  document.getElementById('email-meta-strip').innerHTML=`
+    <div class="email-meta-row"><span class="email-meta-lbl">To</span><span class="email-meta-val">${toName}${toEmail?' &lt;'+toEmail+'&gt;':' (no email on file)'}</span></div>
+    <div class="email-meta-row" style="margin-top:4px"><span class="email-meta-lbl">Subj</span><span class="email-meta-subj">${subj}</span></div>`;
+
+  document.getElementById('email-preview-card').innerHTML=htmlBody;
+
+  const btn=document.getElementById('em-copy-btn');
+  btn.textContent='📋 Copy email';
+  btn.className='em-btn em-btn-copy';
+
+  document.getElementById('email-preview-modal').classList.add('open');
+}
+
+function closeEmailModal(e) {
+  if (!e||e.target===document.getElementById('email-preview-modal')) {
+    document.getElementById('email-preview-modal').classList.remove('open');
+  }
+}
+
+function copyEmailFromModal() {
+  const {htmlBody, plainText} = _emailDraft;
+  if (!htmlBody) return;
+  navigator.clipboard.write([
+    new ClipboardItem({
+      'text/html': new Blob([htmlBody],{type:'text/html'}),
+      'text/plain': new Blob([plainText],{type:'text/plain'})
+    })
+  ]).then(()=>{
+    const btn=document.getElementById('em-copy-btn');
+    btn.textContent='✅ Copied!';
+    btn.className='em-btn em-btn-copy copied';
+    setTimeout(()=>{ btn.textContent='📋 Copy email'; btn.className='em-btn em-btn-copy'; },3000);
+  }).catch(()=>{
+    navigator.clipboard.writeText(plainText).then(()=>{
+      const btn=document.getElementById('em-copy-btn');
+      btn.textContent='✅ Copied (text)';
+      btn.className='em-btn em-btn-copy copied';
+      setTimeout(()=>{ btn.textContent='📋 Copy email'; btn.className='em-btn em-btn-copy'; },3000);
+    });
+  });
+}
+
+function openGmailFromModal() {
+  const {subj, toEmail} = _emailDraft;
+  const gmailUrl=`https://mail.google.com/mail/?view=cm&fs=1${toEmail?'&to='+encodeURIComponent(toEmail):''}&su=${encodeURIComponent(subj)}`;
+  window.open(gmailUrl,'_blank');
+}
+
+// ── init ──────────────────────────────────────────────────────────────────────
+loadData();
+loadLinks();
+loadDocs();
+
+
+// ─── INSURANCE DATA ───────────────────────────────────────────────────────
+const INS_DATA = [
+  // ─── SLP Portfolio (Tom French · State Farm Bethlehem) ────────────────────
+  {
+    llc: "2529 E 4TH ST, LLC", agent: "Tom French", firm: "State Farm Bethlehem",
+    phone: "610-725-8700", email: "tom.french.qugq@statefarm.com",
+    properties: [
+      { addr: "510 E Packer Ave, Bethlehem PA",     annual: 618,  renewal: "Mar 5",  status: "current" },
+      { addr: "428 Montclair Ave, Bethlehem PA",    annual: 618,  renewal: "Mar 5",  status: "current" },
+      { addr: "508 Selfridge St, Bethlehem PA",     annual: 618,  renewal: "Mar 5",  status: "current" },
+      { addr: "430 Montclair Ave, Bethlehem PA",    annual: 618,  renewal: "Mar 5",  status: "current" },
+      { addr: "462 Carlton Ave, Bethlehem PA",      annual: 664,  renewal: "Mar 5",  status: "current" },
+      { addr: "623 Parkhill St, Bethlehem PA",      annual: 551,  renewal: "May 3",  status: "current" },
+      { addr: "621 Parkhill St, Bethlehem PA",      annual: 573,  renewal: "Mar 5",  status: "current" },
+      { addr: "422-424 Pierce St, Bethlehem PA",    annual: 3053, renewal: "Apr 30", status: "current" },
+    ]
+  },
+  {
+    llc: "PIERCE ST, LLC", agent: "Tom French", firm: "State Farm Bethlehem",
+    phone: "610-725-8700", email: "tom.french.qugq@statefarm.com",
+    properties: [
+      { addr: "527 E Packer Ave, Bethlehem PA",     annual: 857,  renewal: "Sep 5",  status: "current" },
+      { addr: "612 Pierce St, Bethlehem PA",        annual: 898,  renewal: "Sep 5",  status: "current" },
+      { addr: "618 Pierce St, Bethlehem PA",        annual: 1237, renewal: "Sep 5",  status: "current" },
+      { addr: "620 Pierce St, Bethlehem PA",        annual: 1237, renewal: "Sep 5",  status: "current" },
+      { addr: "614 Pierce St, Bethlehem PA",        annual: 756,  renewal: "Jul 1",  status: "current" },
+      { addr: "616 Pierce St, Bethlehem PA",        annual: 756,  renewal: "Jul 1",  status: "current" },
+      { addr: "316 E 5th St, Bethlehem PA",         annual: 583,  renewal: "Dec 3",  status: "current" },
+      { addr: "526 E 5th St, Bethlehem PA",         annual: 653,  renewal: "Dec 29", status: "current" },
+      { addr: "528 E 5th St, Bethlehem PA",         annual: 696,  renewal: "Dec 29", status: "current" },
+    ]
+  },
+  {
+    llc: "PACKER AVE, LLC", agent: "Tom French", firm: "State Farm Bethlehem",
+    phone: "610-725-8700", email: "tom.french.qugq@statefarm.com",
+    properties: [
+      { addr: "608 Pierce St, Bethlehem PA",        annual: 2743, renewal: "Dec 30", status: "current" },
+      { addr: "610 Pierce St, Bethlehem PA",        annual: 705,  renewal: "Dec 30", status: "current" },
+    ]
+  },
+  {
+    llc: "505 THOMAS ST, LLC", agent: "Tom French", firm: "State Farm Bethlehem",
+    phone: "610-725-8700", email: "tom.french.qugq@statefarm.com",
+    properties: [
+      { addr: "505 Thomas St, Bethlehem PA",        annual: 2895, renewal: "Jun 27", status: "current" },
+      { addr: "571 Hillside Ave, Bethlehem PA",     annual: 690,  renewal: "Jun 27", status: "current" },
+    ]
+  },
+  // ─── JHU Portfolio ────────────────────────────────────────────────────────
+  {
+    llc: "ABELL ST, LLC", agent: "Rhea Baker / Lily", firm: "State Farm Baltimore",
+    phone: "703-847-6880", email: "lily.balbi.vabyjt@statefarm.com",
+    properties: [
+      { addr: "219 W 29th St, Baltimore MD",        annual: 2238, renewal: "Feb 18", status: "current" },
+      { addr: "328 E 33rd St, Baltimore MD",        annual: 1839, renewal: "Mar 13", status: "current" },
+      { addr: "300 E University Pkwy, Baltimore MD", annual: null, renewal: "—",     status: "pending",
+        note: "No active insurance — contact Rhea Baker / Lily to set up policy" },
+    ]
+  },
+  {
+    llc: "3000 N CALVERT ST, LLC", agent: "Rhea Baker / Lily", firm: "State Farm Baltimore",
+    phone: "703-847-6880", email: "lily.balbi.vabyjt@statefarm.com",
+    properties: [
+      { addr: "304 E University Pkwy, Baltimore MD", annual: null, renewal: "Oct 13",
+        status: "upcoming",
+        note: "⚠️ Policy 90-EX-F480-2 renews Oct 13 2026 — contact Rhea Baker / Lily to renew. Premium TBD." },
+    ]
+  },
+  {
+    llc: "3119 N CALVERT ST, LLC", agent: "Rhea Baker / Lily", firm: "State Farm Baltimore",
+    phone: "703-847-6880", email: "lily.balbi.vabyjt@statefarm.com",
+    properties: [
+      { addr: "3119 N Calvert St, Baltimore MD",    annual: 1538, renewal: "Apr 17", status: "current" },
+    ]
+  },
+  {
+    llc: "UNIVERSITY PKWY, LLC", agent: "Rhea Baker / Lily", firm: "State Farm Baltimore",
+    phone: "703-847-6880", email: "lily.balbi.vabyjt@statefarm.com",
+    properties: [
+      { addr: "232 E University Pkwy, Baltimore MD", annual: null, renewal: "—",     status: "pending",
+        note: "No active insurance — contact Rhea Baker / Lily to set up policy" },
+    ]
+  },
+  {
+    llc: "WOODROW APARTMENTS, LLC", agent: "Jesse Uhlman", firm: "KIG/MDP Insurance",
+    phone: "443-974-7482", email: "jesse-uhlman@mdpins.com",
+    properties: [
+      { addr: "300 E 30th St (Woodrow Apartments), Baltimore MD", annual: null, renewal: "—", status: "pending",
+        note: "No active insurance — contact Jesse Uhlman to set up policy" },
+    ]
+  },
+  {
+    llc: "GUILFORD APARTMENTS, LLC", agent: "Jesse Uhlman", firm: "KIG/MDP Insurance",
+    phone: "443-974-7482", email: "jesse-uhlman@mdpins.com",
+    properties: [
+      { addr: "3401 Guilford Terr (Guilford Apartments), Baltimore MD", annual: null, renewal: "—", status: "pending",
+        note: "No active insurance — contact Jesse Uhlman to set up policy" },
+    ]
+  },
+  {
+    llc: "2529 SAINT PAUL ST, LLC", agent: "Fran Moore", firm: "Heller Kowitz Insurance Advisors",
+    phone: "443-501-0178", email: "fran@hellerkowitz.com",
+    properties: [
+      { addr: "2920 Saint Paul St, Baltimore MD",   annual: 5751, renewal: "Apr 4",  status: "current" },
+    ]
+  },
+  // ─── DC Portfolio ─────────────────────────────────────────────────────────
+  {
+    llc: "3538 6TH ST NW LLC", agent: "Rhea Baker / Lily", firm: "State Farm Baltimore",
+    phone: "703-847-6880", email: "lily.balbi.vabyjt@statefarm.com",
+    properties: [
+      { addr: "3538 6th St NW, Washington DC", annual: null, renewal: "—", status: "pastdue", pastDue: 195,
+        note: "⚠️ $195 past due — contact Rhea Baker / Lily (lily.balbi.vabyjt@statefarm.com)" },
+    ]
+  },
+];
+
+const INS_PENDING = [];
+
+function renderInsStats() {
+  const el = document.getElementById('ins-stats');
+  if (!el) return;
+  let annualTotal = 0, confirmedCount = 0, pastDueTotal = 0;
+  const pastDueAddrs = [], pendingProps = [];
+  INS_DATA.forEach(grp => {
+    grp.properties.forEach(p => {
+      if (p.annual) { annualTotal += p.annual; confirmedCount++; }
+      if (p.status === 'pastdue') { pastDueTotal += (p.pastDue || 0); pastDueAddrs.push(p.addr.split(',')[0]); }
+      if (!p.annual || p.status === 'pending' || p.status === 'upcoming') pendingProps.push(p);
+    });
+  });
+  const monthly = annualTotal ? Math.round(annualTotal / 12) : 0;
+  const pastDueHtml = pastDueTotal > 0
+    ? `<div class="ins-kpi alert"><div class="ins-kpi-label">Past Due</div><div class="ins-kpi-val">⚠️ $${pastDueTotal.toLocaleString()}</div><div class="ins-kpi-sub">${pastDueAddrs[0]||''}</div></div>`
+    : '';
+  el.innerHTML = `
+    <div class="ins-kpi">
+      <div class="ins-kpi-label">Annual Premium</div>
+      <div class="ins-kpi-val">$${annualTotal.toLocaleString()}</div>
+      <div class="ins-kpi-sub">${confirmedCount} propert${confirmedCount===1?'y':'ies'} confirmed</div>
+    </div>
+    <div class="ins-kpi">
+      <div class="ins-kpi-label">Monthly</div>
+      <div class="ins-kpi-val">$${monthly.toLocaleString()}</div>
+      <div class="ins-kpi-sub">avg per month</div>
+    </div>
+    ${pastDueHtml}
+    <div class="ins-kpi">
+      <div class="ins-kpi-label">Pending Review</div>
+      <div class="ins-kpi-val">${pendingProps.length} propert${pendingProps.length===1?'y':'ies'}</div>
+      <div class="ins-kpi-sub">agent follow-up needed</div>
+    </div>`;
+}
+
+function renderInsurance() {
+  const el = document.getElementById('ins-groups');
+  if (!el) return;
+  let html = '';
+
+  INS_DATA.forEach(grp => {
+    const subtotal = grp.properties.reduce((s, p) => s + (p.annual || 0), 0);
+    const emailLink = grp.email ? ` · <a href="mailto:${grp.email}" style="color:#2563eb;text-decoration:none">${grp.email}</a>` : '';
+    html += '<div class="ins-group">';
+    html += '<div class="ins-group-header">';
+    html += '<div><div class="ins-group-name">' + grp.llc + '</div>';
+    html += '<div class="ins-group-agent">' + grp.agent + (grp.firm ? ' · ' + grp.firm : '') + ' · ' + grp.phone + emailLink + '</div></div>';
+    if (subtotal) html += '<div style="font-size:12px;font-weight:700;color:#0f172a">$' + subtotal.toLocaleString() + '/yr</div>';
+    html += '</div>';
+    html += '<table class="ins-table"><thead><tr>';
+    html += '<th style="text-align:left">Property</th><th style="text-align:center">Annual Premium</th><th style="text-align:center">Monthly Cost</th><th style="text-align:center">Renewal Date</th><th style="text-align:center">Status</th>';
+    html += '</tr></thead><tbody>';
+    grp.properties.forEach(p => {
+      const mo = p.annual ? '$' + Math.round(p.annual/12).toLocaleString() : '—';
+      const ann = p.annual ? '$' + p.annual.toLocaleString() : '—';
+      html += '<tr>';
+      html += '<td>' + p.addr + (p.note ? '<br><span style="font-size:10px;color:#b91c1c">' + p.note + '</span>' : '') + '</td>';
+      html += '<td style="text-align:center">' + ann + '</td>';
+      html += '<td style="text-align:center">' + mo + '</td>';
+      html += '<td style="text-align:center">' + p.renewal + '</td>';
+      html += '<td style="text-align:center"><span class="ins-badge ' + p.status + '">' + p.status.charAt(0).toUpperCase()+p.status.slice(1).replace('pastdue','Past Due') + '</span></td>';
+      html += '</tr>';
+    });
+    html += '</tbody></table></div>';
+  });
+
+  el.innerHTML = html;
+}
+
+function showInsuranceView() {
+  hideInsuranceView(); // reset first in case already open
+  document.querySelectorAll('.overview, .toolbar, .table-wrap').forEach(el => el.style.display = 'none');
+  document.getElementById('ins-panel').classList.add('visible');
+  document.querySelectorAll('.all-items, .cat-item, .port-header').forEach(el => el.classList.remove('active'));
+  document.getElementById('nav-insurance').classList.add('active');
+  closePanel && closePanel();
+  renderInsurance();
+  renderInsStats();
+}
+</script>
+
+<!-- EMAIL PREVIEW MODAL -->
+<div class="email-modal-overlay" id="email-preview-modal" onclick="closeEmailModal(event)">
+  <div class="email-modal">
+    <div class="email-modal-header">
+      <span class="email-modal-title">✉ Email Draft Preview</span>
+      <span class="email-modal-close" onclick="closeEmailModal(null)">×</span>
+    </div>
+    <div class="email-meta-strip" id="email-meta-strip"></div>
+    <div class="email-preview-scroll">
+      <div class="email-preview-card" id="email-preview-card"></div>
+    </div>
+    <div class="email-modal-footer">
+      <span class="email-modal-hint">Copy the email, then paste into Gmail compose — Ctrl+V preserves full formatting.</span>
+      <button class="em-btn em-btn-copy" id="em-copy-btn" onclick="copyEmailFromModal()">📋 Copy email</button>
+      <button class="em-btn em-btn-gmail" onclick="openGmailFromModal()">Open Gmail →</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>
