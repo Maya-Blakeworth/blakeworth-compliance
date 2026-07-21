@@ -19,7 +19,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-siz
 .topbar-btn:hover{background:#334155;color:#f8fafc}
 
 /* LAYOUT */
-.layout{display:flex;flex:1;overflow:hidden}h
+.layout{display:flex;flex:1;overflow:hidden}hh
 
 /* SIDEBAR */
 .sidebar{width:168px;background:#fff;border-right:1px solid #e2e8f0;display:flex;flex-direction:column;overflow:hidden;flex-shrink:0}
@@ -707,7 +707,7 @@ function renderSidebar() {
     if (!catContainer) return;
     const cats = byPortCat[port]||{};
     // Sort categories in preferred order
-    const sortedCats = Object.keys(cats).sort((a,b) => {
+    const sortedCats = Object.keys(cats).filter(cat => cat !== 'INSURANCE').sort((a,b) => {
       const ai = CAT_ORDER.indexOf(a); const bi = CAT_ORDER.indexOf(b);
       return (ai===-1?99:ai) - (bi===-1?99:bi);
     });
