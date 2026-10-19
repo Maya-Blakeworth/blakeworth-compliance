@@ -293,13 +293,14 @@ dallas@blakeworth.com
 CSC-RA-14,HOLDING,Entity-level,,"DCSK GP, LLC",Registered Agent,06/08/2026,Overdue,CSC Invoice #85139386 — Unpaid as of 07/14/2026,$123.75,"Dallas Basha
 Partner – Business Operations
 dallas@blakeworth.com
-+1 (202) 375-0652",CSC Invoice ##85139386 — Paid via ACH on 07/01/2026. ,Overdue,7/14/2026,,
++1 (202) 375-0652","CSC Invoice #85139386, Delaware statutory representation ($495 less 75% discount). Invoiced 5/9/2026, due 6/8/2026. NOT paid: CSC still listed it open on 8/11, 8/23 and 10/18/2026.",Overdue,7/14/2026,,
 CSC-RA-15,SLP,Entity-level,,"114 W 4th St, LLC",Registered Agent,06/08/2026,Cleared,Paid 07/01/2026 — ACH — Receipt EC-3568-9261727964,$123.75,"Dallas Basha
 Partner – Business Operations
 dallas@blakeworth.com
 +1 (202) 375-0652",CSC Invoice #85139391 — Paid via ACH on 07/01/2026. ,Cleared,7/14/2026,,
-CSC-RA-17,JHU,Entity-level,,"Abell St, LLC",Registered Agent,10/12/2026,Overdue,"CSC Invoice #85467229, unpaid as of 10/18/2026",$562.00,Dallas Basha,"Found in CSC open invoices 10/18/2026. Invoiced 9/12/2026, due 10/12/2026. Account 8362966. Confirm what it covers.",Overdue,,,
-CSC-RA-18,SLP,Entity-level,,"Packer Ave, LLC",Registered Agent,10/12/2026,Overdue,"CSC Invoice #85468103, unpaid as of 10/18/2026",$108.90,Dallas Basha,"Found in CSC open invoices 10/18/2026. Invoiced 9/12/2026, due 10/12/2026, order 116457.0011. Account 8362966.",Overdue,,,
+CSC-RA-17,JHU,Entity-level,,"Abell St, LLC",Registered Agent,10/12/2026,Overdue,"CSC Invoice #85467229, unpaid as of 10/18/2026",$562.00,Dallas Basha,"CSC Invoice #85467229, Maryland statutory representation billed at full $562 with no discount (other entities get 75 to 78% off). Invoiced 9/12/2026, due 10/12/2026. Account 8362966. Ask CSC whether the discount was missed.",Overdue,,,
+CSC-RA-18,SLP,Entity-level,,"Packer Ave, LLC",Registered Agent,10/12/2026,Overdue,"CSC Invoice #85468103, unpaid as of 10/18/2026",$108.90,Dallas Basha,"CSC Invoice #85468103, Pennsylvania statutory representation ($495 less 78% discount). Invoiced 9/12/2026, due 10/12/2026, reference 116457.0011. Account 8362966.",Overdue,,,
+CSC-RA-19,HOLDING,Entity-level,,"Basha Enterprises, LLC",Service of Process,10/04/2026,Overdue,"CSC Invoice #87121388099, unpaid as of 10/19/2026",$37.00,Dallas Basha,"CSC service of process and litigation management fee for August 2026. Invoiced 9/4/2026, due 10/4/2026. Account 8362966.",Overdue,,,
 DC-TAX-001,DC,3538 6th St NW,,"3538 6th St Nw, LLC",Property Tax,09/15/2026,Current,Paid — $0 due,$0.00,"Ramonia Hines 
 Bluejay Property Management
 Property Manager, DC Portfolio
@@ -1016,7 +1017,7 @@ tom.french.qugq@statefarm.com
 • Deductible: 1.00%
 • Premium: $705.00
 • Mortgagee: UNIVEST BANK AND TRUST CO",Active,7/15/2025,,
-SLP-INS-017,SLP,571 HILLSIDE AVE,,"505 THOMAS ST, LLC",INSURANCE,06/27/2027,Active,Statefarm Account,$690.00,"Tom French
+SLP-INS-017,SLP,571 HILLSIDE AVE,,"505 THOMAS ST, LLC",INSURANCE,6/27/2027,Active,Statefarm Account,$690.00,"Tom French
 Agent, Statefarm-Bethlehem
 tom.french.qugq@statefarm.com
 610-725-8700","• Policy Number: 98-E1-E188-9
@@ -1038,7 +1039,7 @@ tom.french.qugq@statefarm.com
 • Deductible: $5,000
 • Premium: $2,895.00
 • Mortgagee: AMERICAN BANK",Active,7/15/2025,,
-SLP-INS-021,SLP,621 PARKHILL ST,,2529 E 4TH ST LLC,INSURANCE,3/5/2027,Active,Statefarm Account,$573.00,"Tom French
+SLP-INS-021,SLP,621 PARKHILL ST,,2529 E 4TH ST LLC,INSURANCE,03/05/2027,Active,Statefarm Account,$573.00,"Tom French
 Agent, Statefarm-Bethlehem
 tom.french.qugq@statefarm.com
 610-725-8700","• Policy Number: 98-E7-A389-4
