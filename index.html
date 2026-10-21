@@ -914,7 +914,7 @@ function openPanel(r) {
   } else if (lkPanel.Note) {
     actionEl.textContent=lkPanel.Note;
   } else {
-    actionEl.textContent='No action required.';
+    actionEl.textContent=(r.flag&&r.flag!=='OK')?(r.flag+' — see Notes above.'):'No action required.';
   }
   // comm flow
   const stepIdx=COMM_STEPS.indexOf(r.comm_status);
@@ -930,7 +930,7 @@ function openPanel(r) {
   const linksSec=document.getElementById('dp-links-section');
   const linksEl=document.getElementById('dp-links');
   const docFiles=DOCS_BY_ROW[r.id]||[];
-  let allFiles=docFiles.slice();
+  let allFiles=[]; docFiles.forEach(f=>String(f.url||'').split('|').map(u=>u.trim()).filter(u=>u.startsWith('http')).forEach(u=>allFiles.push({label:f.label,url:u})));
   if (!allFiles.length && r.source_doc) {
     r.source_doc.split('|').map(u=>u.trim()).filter(u=>u.startsWith('http')).forEach((url,i,arr)=>{
       allFiles.push({label:arr.length>1?`view file #${i+1}`:'view file',url});
