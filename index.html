@@ -1398,87 +1398,82 @@ const INS_DATA = [
 
 const INS_PENDING = [];
 
+function _esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function _num(s){return parseFloat(String(s||'').replace(/[$,]/g,''))||0;}
+function _money(n){return n?'$'+n.toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:2}):'—';}
+function _rowDocs(r){
+const out=[];
+(DOCS_BY_ROW[r.id]||[]).forEach(function(f){String(f.url||'').split('|').map(function(u){return u.trim();}).filter(function(u){return u.indexOf('http')===0;}).forEach(function(u){out.push(u);});});
+if(!out.length&&r.source_doc){String(r.source_doc).split('|').map(function(u){return u.trim();}).filter(function(u){return u.indexOf('http')===0;}).forEach(function(u){out.push(u);});}
+return out.filter(function(u,i){return out.indexOf(u)===i;});
+}
+function _docLinks(r){
+const d=_rowDocs(r);
+if(!d.length) return '<span style="color:#b91c1c;font-size:11px;font-weight:600">No file on record</span>';
+return d.map(function(u,i){return '<a href="'+_esc(u)+'" target="_blank" style="color:#2563eb;font-size:12px;text-decoration:none;font-weight:600">📄 View'+(d.length>1?' '+(i+1):'')+'</a>';}).join(' &nbsp;');
+}
+function _flagBadge(f){
+const v=(f||'').toUpperCase();
+const cls=v==='OK'?'current':v==='DUE SOON'?'upcoming':v==='OVERDUE'?'pastdue':'pending';
+return '<span class="ins-badge '+cls+'">'+_esc(f||'—')+'</span>';
+}
+function _contact(r){
+const lines=String(r.responsible||'').split(/\r?\n/).map(function(l){return l.trim();}).filter(Boolean);
+const email=lines.filter(function(l){return l.indexOf('@')>0;})[0]||'';
+const rest=lines.filter(function(l){return l!==email;});
+return _esc(rest.join(' · '))+(email?' · <a href="mailto:'+_esc(email)+'" style="color:#2563eb;text-decoration:none">'+_esc(email)+'</a>':'');
+}
+function _insRows(){return DATA.filter(function(r){return (r.category||'').toUpperCase()==='INSURANCE';});}
+
 function renderInsStats() {
-  const el = document.getElementById('ins-stats');
-  if (!el) return;
-  let annualTotal = 0, confirmedCount = 0, pastDueTotal = 0;
-  const pastDueAddrs = [], pendingProps = [];
-  INS_DATA.forEach(grp => {
-    grp.properties.forEach(p => {
-      if (p.annual) { annualTotal += p.annual; confirmedCount++; }
-      if (p.status === 'pastdue') { pastDueTotal += (p.pastDue || 0); pastDueAddrs.push(p.addr.split(',')[0]); }
-      if (!p.annual || p.status === 'pending' || p.status === 'upcoming') pendingProps.push(p);
-    });
-  });
-  const monthly = annualTotal ? Math.round(annualTotal / 12) : 0;
-  const pastDueHtml = pastDueTotal > 0
-    ? `<div class="ins-kpi alert"><div class="ins-kpi-label">Past Due</div><div class="ins-kpi-val">⚠️ $${pastDueTotal.toLocaleString()}</div><div class="ins-kpi-sub">${pastDueAddrs[0]||''}</div></div>`
-    : '';
-  el.innerHTML = `
-    <div class="ins-kpi">
-      <div class="ins-kpi-label">Annual Premium</div>
-      <div class="ins-kpi-val">$${annualTotal.toLocaleString()}</div>
-      <div class="ins-kpi-sub">${confirmedCount} propert${confirmedCount===1?'y':'ies'} confirmed</div>
-    </div>
-    <div class="ins-kpi">
-      <div class="ins-kpi-label">Monthly</div>
-      <div class="ins-kpi-val">$${monthly.toLocaleString()}</div>
-      <div class="ins-kpi-sub">avg per month</div>
-    </div>
-    ${pastDueHtml}
-    <div class="ins-kpi">
-      <div class="ins-kpi-label">Pending Review</div>
-      <div class="ins-kpi-val">${pendingProps.length} propert${pendingProps.length===1?'y':'ies'}</div>
-      <div class="ins-kpi-sub">agent follow-up needed</div>
-    </div>`;
+const el = document.getElementById('ins-stats');
+if (!el) return;
+const rows=_insRows();
+let annual=0, active=0; const attn=[], soon=[];
+rows.forEach(function(r){
+const f=(r.flag||'').toUpperCase();
+if (f==='OK'||f==='DUE SOON'){ annual+=_num(r.amount); active++; }
+if (f!=='OK') attn.push(r);
+if (f==='DUE SOON') soon.push(r);
+});
+el.innerHTML =
+'<div class="ins-kpi"><div class="ins-kpi-label">Annual Premium</div><div class="ins-kpi-val">'+_money(Math.round(annual))+'</div><div class="ins-kpi-sub">'+active+' active polic'+(active===1?'y':'ies')+' (from sheet)</div></div>'+
+'<div class="ins-kpi"><div class="ins-kpi-label">Monthly</div><div class="ins-kpi-val">'+_money(Math.round(annual/12))+'</div><div class="ins-kpi-sub">avg per month</div></div>'+
+'<div class="ins-kpi'+(attn.length?' alert':'')+'"><div class="ins-kpi-label">Needs Attention</div><div class="ins-kpi-val">'+attn.length+'</div><div class="ins-kpi-sub">'+_esc(attn.map(function(r){return (r.address||'').split(',')[0];}).slice(0,3).join(', '))+'</div></div>'+
+'<div class="ins-kpi"><div class="ins-kpi-label">Renewing ≤ 60 days</div><div class="ins-kpi-val">'+soon.length+'</div><div class="ins-kpi-sub">'+_esc(soon.map(function(r){return (r.address||'').split(',')[0];}).slice(0,3).join(', '))+'</div></div>';
 }
 
-function renewalWithYear(str) {
-  if (!str || str === '—') return str;
-  // Parse "Mon D" or "Mon DD" (e.g. "Mar 5", "Dec 29")
-  const parsed = new Date(str + ' 2000'); // arbitrary year to parse month+day
-  if (isNaN(parsed)) return str;
-  const now = new Date();
-  const thisYear = now.getFullYear();
-  // Try this year first
-  const candidate = new Date(str + ' ' + thisYear);
-  // If still in the future (or today), show this year; otherwise next year
-  const year = candidate >= new Date(now.getFullYear(), now.getMonth(), now.getDate()) ? thisYear : thisYear + 1;
-  return str + ' ' + year;
-}
+function renewalWithYear(str) { return str ? fmtDate(str) : '—'; }
 
 function renderInsurance() {
-  const el = document.getElementById('ins-groups');
-  if (!el) return;
-  let html = '';
-
-  INS_DATA.forEach(grp => {
-    const subtotal = grp.properties.reduce((s, p) => s + (p.annual || 0), 0);
-    const emailLink = grp.email ? ` · <a href="mailto:${grp.email}" style="color:#2563eb;text-decoration:none">${grp.email}</a>` : '';
-    html += '<div class="ins-group">';
-    html += '<div class="ins-group-header">';
-    html += '<div><div class="ins-group-name">' + grp.llc + '</div>';
-    html += '<div class="ins-group-agent">' + grp.agent + (grp.firm ? ' · ' + grp.firm : '') + ' · ' + grp.phone + emailLink + '</div></div>';
-    if (subtotal) html += '<div style="font-size:12px;font-weight:700;color:#0f172a">$' + subtotal.toLocaleString() + '/yr</div>';
-    html += '</div>';
-    html += '<table class="ins-table"><thead><tr>';
-    html += '<th style="text-align:left">Property</th><th style="text-align:center">Annual Premium</th><th style="text-align:center">Monthly Cost</th><th style="text-align:center">Renewal Date</th><th style="text-align:center">Status</th>';
-    html += '</tr></thead><tbody>';
-    grp.properties.forEach(p => {
-      const mo = p.annual ? '$' + Math.round(p.annual/12).toLocaleString() : '—';
-      const ann = p.annual ? '$' + p.annual.toLocaleString() : '—';
-      html += '<tr>';
-      html += '<td>' + p.addr + (p.note ? '<br><span style="font-size:10px;color:#b91c1c">' + p.note + '</span>' : '') + '</td>';
-      html += '<td style="text-align:center">' + ann + '</td>';
-      html += '<td style="text-align:center">' + mo + '</td>';
-      html += '<td style="text-align:center">' + renewalWithYear(p.renewal) + '</td>';
-      html += '<td style="text-align:center"><span class="ins-badge ' + p.status + '">' + p.status.charAt(0).toUpperCase()+p.status.slice(1).replace('pastdue','Past Due') + '</span></td>';
-      html += '</tr>';
-    });
-    html += '</tbody></table></div>';
-  });
-
-  el.innerHTML = html;
+const el = document.getElementById('ins-groups');
+if (!el) return;
+const groups={}; const order=[];
+_insRows().forEach(function(r){
+const k=(r.entity||'—').toUpperCase().replace(/\s+/g,' ').trim();
+if(!groups[k]){groups[k]=[];order.push(k);}
+groups[k].push(r);
+});
+let html='<div style="font-size:11px;color:#64748b;margin-bottom:8px">Live from the Blakeworth_Compliance sheet (INSURANCE tab). Update the sheet and this view follows.</div>';
+order.forEach(function(k){
+const rows=groups[k];
+const subtotal=rows.reduce(function(s,r){const f=(r.flag||'').toUpperCase();return s+((f==='OK'||f==='DUE SOON')?_num(r.amount):0);},0);
+html+='<div class="ins-group"><div class="ins-group-header"><div><div class="ins-group-name">'+_esc(k)+'</div><div class="ins-group-agent">'+_contact(rows[0])+'</div></div>';
+if(subtotal) html+='<div style="font-size:12px;font-weight:700;color:#0f172a">'+_money(subtotal)+'/yr</div>';
+html+='</div><table class="ins-table"><thead><tr><th style="text-align:left">Property</th><th style="text-align:center">Annual Premium</th><th style="text-align:center">Expires</th><th style="text-align:center">Status</th><th style="text-align:center">Last Verified</th><th style="text-align:center">Source Doc</th></tr></thead><tbody>';
+rows.forEach(function(r){
+const first=String(r.notes||'').split(/\r?\n/)[0].replace(/^•\s*/,'');
+const f=(r.flag||'').toUpperCase();
+html+='<tr><td><div style="font-weight:600">'+_esc(r.address)+'</div>'+(first?'<div style="font-size:10px;color:#64748b">'+_esc(first)+'</div>':'')+(f!=='OK'?'<div style="font-size:10px;color:#b91c1c">'+_esc(r.status)+(r.source_status?' — '+_esc(r.source_status):'')+'</div>':'')+'</td>';
+html+='<td style="text-align:center">'+(_num(r.amount)?fmtAmt(r.amount):'—')+'</td>';
+html+='<td style="text-align:center">'+renewalWithYear(r.due_date)+'</td>';
+html+='<td style="text-align:center">'+_flagBadge(r.flag)+'</td>';
+html+='<td style="text-align:center;font-size:11px;color:#64748b">'+_esc(r.last_verified||'—')+'</td>';
+html+='<td style="text-align:center">'+_docLinks(r)+'</td></tr>';
+});
+html+='</tbody></table></div>';
+});
+el.innerHTML = html;
 }
 
 function hideInsuranceView() {
@@ -1543,86 +1538,40 @@ function loadTaxFiling() {
 }
 
 function renderTaxFiling() {
-  const container = document.getElementById('tax-groups');
-  const statsBar   = document.getElementById('tax-stats');
-  if (!container) return;
-
-  if (!TAX_DATA.length) {
-    container.innerHTML = '<p style="color:#666;padding:20px;text-align:center">No tax data loaded yet — check back shortly.</p>';
-    statsBar.innerHTML = '';
-    return;
-  }
-
-  // KPI counts
-  const paid     = TAX_DATA.filter(r => _taxBadge(r.Status, r.Health) === 'filed').length;
-  const overdue  = TAX_DATA.filter(r => _taxBadge(r.Status, r.Health) === 'overdue').length;
-  const plan     = TAX_DATA.filter(r => _taxBadge(r.Status, r.Health) === 'extended').length;
-  const pending  = TAX_DATA.filter(r => _taxBadge(r.Status, r.Health) === 'pending').length;
-  const total    = TAX_DATA.length;
-
-  statsBar.innerHTML = `
-    <div class="ins-stat"><span class="ins-stat-num">${total}</span><span class="ins-stat-label">Properties</span></div>
-    <div class="ins-stat"><span class="ins-stat-num" style="color:#34c77a">${paid}</span><span class="ins-stat-label">Paid / Current</span></div>
-    <div class="ins-stat"><span class="ins-stat-num" style="color:#e05555">${overdue}</span><span class="ins-stat-label">Overdue</span></div>
-    <div class="ins-stat"><span class="ins-stat-num" style="color:#9b7ee8">${plan}</span><span class="ins-stat-label">Payment Plan</span></div>
-    <div class="ins-stat"><span class="ins-stat-num" style="color:#e0b030">${pending}</span><span class="ins-stat-label">Pending</span></div>
-  `;
-
-  // Group by Portfolio order: JHU → SLP → DC → HOLDING → other
-  const ORDER = ['JHU','SLP','DC','HOLDING'];
-  const byPort = {};
-  TAX_DATA.forEach(r => {
-    const p = (r.Portfolio || 'Other').toUpperCase();
-    if (!byPort[p]) byPort[p] = [];
-    byPort[p].push(r);
-  });
-  const ports = [...new Set([...ORDER.filter(p => byPort[p]), ...Object.keys(byPort).filter(p => !ORDER.includes(p))])];
-
-  container.innerHTML = '';
-  ports.forEach(port => {
-    const rows = byPort[port];
-    const paidCt = rows.filter(r => _taxBadge(r.Status, r.Health) === 'filed').length;
-
-    const group = document.createElement('div');
-    group.className = 'tax-group';
-    group.innerHTML = `
-      <div class="tax-group-header" onclick="this.parentElement.classList.toggle('collapsed')">
-        <span>${port}</span>
-        <span style="color:#666;font-weight:400;font-size:12px">${paidCt}/${rows.length} paid</span>
-        <span class="tax-arrow">▼</span>
-      </div>
-      <div class="tax-table-wrap">
-        <table class="tax-table">
-          <thead>
-            <tr>
-              <th>LLC / Property</th>
-              <th>Address</th>
-              <th>Due Date</th>
-              <th>Status</th>
-              <th>Notes</th>
-              <th>Source Doc</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${rows.map(r => {
-              const bc = _taxBadge(r.Status, r.Health);
-              const label = r.Status === 'PAID' ? 'Paid' : r.Health && r.Health.includes('PAYMENT PLAN') ? 'Payment Plan' : r.Health || r.Status || 'Pending';
-              const notes = (r.Source_Status || r.Notes || '').split('\n')[0].replace(/^Paid — /,'').replace(/\$0\.00 due/,'$0 due').trim();
-              const docUrl = r.Source_Doc && r.Source_Doc.startsWith('http') ? r.Source_Doc : null;
-              return `<tr>
-                <td style="font-weight:500;text-align:center">${r.LLC_Entity || '—'}</td>
-                <td style="color:#555;font-size:12px;text-align:center">${r.Property_Address || '—'}</td>
-                <td style="text-align:center">${r.Due_Date || '—'}</td>
-                <td style="text-align:center"><span class="tax-badge ${bc}">${label}</span></td>
-                <td style="color:#111;font-size:12px;text-align:center;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${(r.Notes||'').replace(/"/g,'&quot;')}">${notes || '—'}</td>
-                <td style="text-align:center">${docUrl ? `<a href="${docUrl}" target="_blank" style="color:#2563eb;font-size:12px;text-decoration:none;font-weight:500">📄 View</a>` : '<span style="color:#ccc">—</span>'}</td>
-              </tr>`;
-            }).join('')}
-          </tbody>
-        </table>
-      </div>`;
-    container.appendChild(group);
-  });
+const container = document.getElementById('tax-groups');
+const statsBar = document.getElementById('tax-stats');
+if (!container) return;
+const rows = DATA.filter(function(r){return (r.category||'').toLowerCase()==='property tax';});
+if (!rows.length) { container.innerHTML = '<p style="color:#666;padding:20px;text-align:center">No property tax rows loaded yet — check back shortly.</p>'; statsBar.innerHTML=''; return; }
+const cnt=function(fn){return rows.filter(fn).length;};
+const ok=cnt(function(r){return (r.flag||'')==='OK';});
+const od=cnt(function(r){return (r.flag||'')==='OVERDUE';});
+const rc=cnt(function(r){return /CHECK/.test(r.flag||'');});
+const due=rows.reduce(function(s,r){return s+_num(r.amount_due);},0);
+statsBar.innerHTML =
+'<div class="ins-kpi"><div class="ins-kpi-label">Properties</div><div class="ins-kpi-val">'+rows.length+'</div><div class="ins-kpi-sub">from PROPERTY_TAX tab</div></div>'+
+'<div class="ins-kpi"><div class="ins-kpi-label">Paid / Current</div><div class="ins-kpi-val" style="color:#15803d">'+ok+'</div><div class="ins-kpi-sub">verified on portal</div></div>'+
+'<div class="ins-kpi'+(od?' alert':'')+'"><div class="ins-kpi-label">Overdue</div><div class="ins-kpi-val">'+od+'</div><div class="ins-kpi-sub">'+_money(Math.round(due))+' due now</div></div>'+
+'<div class="ins-kpi"><div class="ins-kpi-label">Needs Re-check</div><div class="ins-kpi-val" style="color:#b45309">'+rc+'</div><div class="ins-kpi-sub">not verified recently</div></div>';
+const ORDER=['JHU','SLP','DC','HOLDING']; const byPort={};
+rows.forEach(function(r){const p=(r.portfolio||'Other').toUpperCase(); (byPort[p]=byPort[p]||[]).push(r);});
+const ports=ORDER.filter(function(p){return byPort[p];}).concat(Object.keys(byPort).filter(function(p){return ORDER.indexOf(p)<0;}));
+container.innerHTML='<div style="font-size:11px;color:#64748b;margin-bottom:8px">Live from the Blakeworth_Compliance sheet (PROPERTY_TAX tab). Update the sheet and this view follows.</div>';
+ports.forEach(function(port){
+const pr=byPort[port];
+const okCt=pr.filter(function(r){return (r.flag||'')==='OK';}).length;
+const g=document.createElement('div'); g.className='tax-group';
+let h='<div class="tax-group-header" onclick="this.parentElement.classList.toggle(\'collapsed\')"><span>'+port+'</span><span style="color:#666;font-weight:400;font-size:12px">'+okCt+'/'+pr.length+' OK</span><span class="tax-arrow">▼</span></div>';
+h+='<div class="tax-table-wrap"><table class="tax-table"><thead><tr><th>Property</th><th>LLC</th><th>Due Date</th><th>Status</th><th>Amount Due</th><th>Last Verified</th><th>Notes</th><th>Source Doc</th></tr></thead><tbody>';
+pr.forEach(function(r){
+const f=(r.flag||'');
+const bc=f==='OK'?'filed':f==='OVERDUE'?'overdue':/PLAN/i.test(r.status||'')?'extended':'pending';
+const first=String(r.notes||r.source_status||'').split(/\r?\n/)[0].replace(/^•\s*/,'');
+h+='<tr><td style="font-weight:600">'+_esc(r.address)+'</td><td style="color:#555;font-size:12px">'+_esc(r.entity)+'</td><td>'+(r.due_date?fmtDate(r.due_date):'—')+'</td><td><span class="tax-badge '+bc+'">'+_esc(f||r.status||'—')+'</span><div style="font-size:10px;color:#64748b">'+_esc(r.status)+'</div></td><td style="font-weight:600;color:'+(_num(r.amount_due)?'#b91c1c':'#64748b')+'">'+(_num(r.amount_due)?fmtAmt(r.amount_due):'$0')+'</td><td style="font-size:11px;color:#64748b">'+_esc(r.last_verified||'—')+'</td><td style="font-size:12px;max-width:260px;text-align:left" title="'+_esc(r.notes)+'">'+_esc(first||'—')+'</td><td>'+_docLinks(r)+'</td></tr>';
+});
+h+='</tbody></table></div>';
+g.innerHTML=h; container.appendChild(g);
+});
 }
 
 function hideTaxView() {
